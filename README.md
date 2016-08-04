@@ -1,6 +1,5 @@
-# Original Prusa i3 Plus Firmware
-
-PrusaMK2base
+#I made this repo to share my modifications to the official Prusa Firmware
+## Please checkout the appropriate branch for your printer
 
 Firmware for other printers, based on prusaMK2 with automatic mesh bed leveling
 
@@ -9,6 +8,9 @@ What is this repo ?
 I own a prusa MK2 and I think the FW is superb. I wanted to port it to my other machines. At the same time I'd like to share it with you. If it suits your need, just clone it :)
 
 Enjoy
+
+
+# Original Prusa i3 Plus Firmware
 
 ## General instructions
 
