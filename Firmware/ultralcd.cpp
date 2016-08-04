@@ -1968,10 +1968,10 @@ static void lcd_settings_menu()
 	MENU_ITEM(submenu, MSG_LANGUAGE_SELECT, lcd_language_menu);
 	if (!isPrintPaused)
 	{
-		MENU_ITEM(submenu, MSG_SELFTEST, lcd_selftest);
+	//	MENU_ITEM(submenu, MSG_SELFTEST, lcd_selftest);
     MENU_ITEM(submenu, MSG_SHOW_END_STOPS, menu_show_end_stops);
-    MENU_ITEM(submenu, MSG_CALIBRATE_BED, lcd_mesh_calibration);
-    MENU_ITEM(gcode, MSG_CALIBRATE_BED_RESET, PSTR("M44"));
+  //  MENU_ITEM(submenu, MSG_CALIBRATE_BED, lcd_mesh_calibration);
+  //  MENU_ITEM(gcode, MSG_CALIBRATE_BED_RESET, PSTR("M44"));
 	}
 	if (farm_mode)
 	{
