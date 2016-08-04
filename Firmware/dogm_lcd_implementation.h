@@ -140,8 +140,8 @@ static void lcd_implementation_init()
 	   } while( u8g.nextPage() );
 }
 
-static void lcd_implementation_clear()
-{
+//static void lcd_implementation_clear()
+//{
 // NO NEED TO IMPLEMENT LIKE SO. Picture loop automatically clears the display.
 //
 // Check this article: http://arduino.cc/forum/index.php?topic=91395.25;wap2
@@ -152,17 +152,17 @@ static void lcd_implementation_clear()
 //			u8g.drawBox (0, 0, u8g.getWidth(), u8g.getHeight());
 //			u8g.setColorIndex(1);
 //		} while( u8g.nextPage() );
-}
+//}
 
 /* Arduino < 1.0.0 is missing a function to print PROGMEM strings, so we need to implement our own */
-static void lcd_printPGM(const char* str)
-{
+//static void lcd_printPGM(const char* str)
+/*{
     char c;
     while((c = pgm_read_byte(str++)) != '\0')
     {
 			u8g.print(c);
     }
-}
+}*/
 
 static void _draw_heater_status(int x, int heater) {
   bool isBed = heater < 0;
@@ -467,6 +467,62 @@ static void lcd_implementation_quick_feedback()
     }
 #endif
 }
+
+#define lcd_implementation_drawmenu_back_selected(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, LCD_STR_UPLEVEL[0], LCD_STR_UPLEVEL[0])
+#define lcd_implementation_drawmenu_back(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, ' ', LCD_STR_UPLEVEL[0])
+#define lcd_implementation_drawmenu_back_RAM_selected(row, str, data) lcd_implementation_drawmenu_generic_RAM(row, str, LCD_STR_UPLEVEL[0], LCD_STR_UPLEVEL[0])
+#define lcd_implementation_drawmenu_back_RAM(row, str, data) lcd_implementation_drawmenu_generic_RAM(row, str, ' ', LCD_STR_UPLEVEL[0])
+#define lcd_implementation_drawmenu_submenu_selected(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, '>', LCD_STR_ARROW_RIGHT[0])
+#define lcd_implementation_drawmenu_submenu(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, ' ', LCD_STR_ARROW_RIGHT[0])
+#define lcd_implementation_drawmenu_gcode_selected(row, pstr, gcode) lcd_implementation_drawmenu_generic(row, pstr, '>', ' ')
+#define lcd_implementation_drawmenu_gcode(row, pstr, gcode) lcd_implementation_drawmenu_generic(row, pstr, ' ', ' ')
+#define lcd_implementation_drawmenu_function_selected(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, '>', ' ')
+#define lcd_implementation_drawmenu_function(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, ' ', ' ')
+#define lcd_implementation_drawmenu_setlang_selected(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, '>', ' ')
+#define lcd_implementation_drawmenu_setlang(row, pstr, data) lcd_implementation_drawmenu_generic(row, pstr, ' ', ' ')
+
+#ifdef LCD_HAS_STATUS_INDICATORS
+static void lcd_implementation_update_indicators()
+{
+  #if defined(LCD_I2C_PANELOLU2) || defined(LCD_I2C_VIKI)
+    //set the LEDS - referred to as backlights by the LiquidTWI2 library 
+    static uint8_t ledsprev = 0;
+    uint8_t leds = 0;
+    if (target_temperature_bed > 0) leds |= LED_A;
+    if (target_temperature[0] > 0) leds |= LED_B;
+    if (fanSpeed) leds |= LED_C;
+    #if EXTRUDERS > 1  
+      if (target_temperature[1] > 0) leds |= LED_C;
+    #endif
+    if (leds != ledsprev) {
+      lcd.setBacklight(leds);
+      ledsprev = leds;
+    }
+  #endif
+}
+#endif
+
+#ifdef LCD_HAS_SLOW_BUTTONS
+extern uint32_t blocking_enc;
+
+static uint8_t lcd_implementation_read_slow_buttons()
+{
+  #ifdef LCD_I2C_TYPE_MCP23017
+  uint8_t slow_buttons;
+    // Reading these buttons this is likely to be too slow to call inside interrupt context
+    // so they are called during normal lcd_update
+    slow_buttons = lcd.readButtons() << B_I2C_BTN_OFFSET; 
+    #if defined(LCD_I2C_VIKI)
+    if(slow_buttons & (B_MI|B_RI)) { //LCD clicked
+       if(blocking_enc > millis()) {
+         slow_buttons &= ~(B_MI|B_RI); // Disable LCD clicked buttons if screen is updated
+       }
+    }
+    #endif
+    return slow_buttons; 
+  #endif
+}
+#endif
 #endif//ULTRA_LCD_IMPLEMENTATION_DOGM_H
 
 
