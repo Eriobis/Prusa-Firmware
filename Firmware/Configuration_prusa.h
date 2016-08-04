@@ -14,7 +14,7 @@
 
 // Printer name
 #define CUSTOM_MENDEL_NAME "Afinibot A3"
-#define ZRIB
+#define ZRIB    1   //To use the ZRIB pin file
 
 // Electronics
 #define MOTHERBOARD BOARD_RAMPS_14_EFB

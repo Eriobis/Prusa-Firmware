@@ -18,8 +18,8 @@ float   world2machine_shift[2];
 #define WEIGHT_FIRST_ROW_Y_HIGH (0.3f)
 #define WEIGHT_FIRST_ROW_Y_LOW  (0.0f)
 
-#define BED_ZERO_REF_X (- 22.f + X_PROBE_OFFSET_FROM_EXTRUDER)
-#define BED_ZERO_REF_Y (- 0.6f + Y_PROBE_OFFSET_FROM_EXTRUDER)
+#define BED_ZERO_REF_X (X_PROBE_OFFSET_FROM_EXTRUDER)
+#define BED_ZERO_REF_Y (Y_PROBE_OFFSET_FROM_EXTRUDER)
 
 // Scaling of the real machine axes against the programmed dimensions in the firmware.
 // The correction is tiny, here around 0.5mm on 250mm length.
@@ -51,25 +51,25 @@ float   world2machine_shift[2];
 // The points are ordered in a zig-zag fashion to speed up the calibration.
 const float bed_ref_points[] PROGMEM = {
     13.f  - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
-    115.f - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
-    216.f - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
+    100.f - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
+    200.f - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
 
-    216.f - BED_ZERO_REF_X, 104.4f - BED_ZERO_REF_Y,
-    115.f - BED_ZERO_REF_X, 104.4f - BED_ZERO_REF_Y,
-    13.f  - BED_ZERO_REF_X, 104.4f - BED_ZERO_REF_Y,
+    200.f - BED_ZERO_REF_X, 100.0f - BED_ZERO_REF_Y,
+    100.f - BED_ZERO_REF_X, 100.0f - BED_ZERO_REF_Y,
+    13.f  - BED_ZERO_REF_X, 100.0f - BED_ZERO_REF_Y,
 
-    13.f  - BED_ZERO_REF_X, 202.4f - BED_ZERO_REF_Y,
-    115.f - BED_ZERO_REF_X, 202.4f - BED_ZERO_REF_Y,
-    216.f - BED_ZERO_REF_X, 202.4f - BED_ZERO_REF_Y
+    13.f  - BED_ZERO_REF_X, 200.0f - BED_ZERO_REF_Y,
+    100.f - BED_ZERO_REF_X, 200.0f - BED_ZERO_REF_Y,
+    200.f - BED_ZERO_REF_X, 200.0f - BED_ZERO_REF_Y
 };
 
 // Positions of the bed reference points in the machine coordinates, referenced to the P.I.N.D.A sensor.
 // The points are the following: center front, center right, center rear, center left.
 const float bed_ref_points_4[] PROGMEM = {
-    115.f - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
-    216.f - BED_ZERO_REF_X, 104.4f - BED_ZERO_REF_Y,
-    115.f - BED_ZERO_REF_X, 202.4f - BED_ZERO_REF_Y,
-    13.f  - BED_ZERO_REF_X, 104.4f - BED_ZERO_REF_Y
+    100.f - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
+    200.f - BED_ZERO_REF_X, 100.0f - BED_ZERO_REF_Y,
+    100.f - BED_ZERO_REF_X, 200.0f - BED_ZERO_REF_Y,
+    13.f  - BED_ZERO_REF_X, 100.0f - BED_ZERO_REF_Y
 };
 
 static inline float sqr(float x) { return x * x; }
