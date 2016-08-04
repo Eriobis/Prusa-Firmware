@@ -2,9 +2,11 @@
 #include "mesh_bed_calibration.h"
 #include "Configuration.h"
 
-#ifdef MESH_BED_LEVELING
+
 
 mesh_bed_leveling mbl;
+#ifdef MESH_BED_LEVELING
+
 
 mesh_bed_leveling::mesh_bed_leveling() { reset(); }
 

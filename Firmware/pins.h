@@ -3,6 +3,7 @@
 
 #include "boards.h"
 
+
 #if !MB(5DPRINT)
 #define X_MS1_PIN -1
 #define X_MS2_PIN -1
@@ -19,6 +20,10 @@
 
 #define LARGE_FLASH true
 
+#if MB(RAMPS_14_EFB)
+  #include "pins_RAMPS_14.h"
+  #define KNOWN_BOARD
+#endif
 /*****************************************************************
 * Rambo Pin Assignments 1.3
 ******************************************************************/

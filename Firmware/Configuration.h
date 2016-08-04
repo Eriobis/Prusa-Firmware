@@ -5,14 +5,13 @@
 #include "Configuration_prusa.h"
 
 // Firmware version
-#define FW_version "3.0.6-rc3"
+#define FW_version "3.0.6-rc2"
 
 #define FW_PRUSA3D_MAGIC "PRUSA3DFW"
 #define FW_PRUSA3D_MAGIC_LEN 10
 
 // The total size of the EEPROM is
 // 4096 for the Atmega2560
-#define EEPROM_TOP 4096
 #define EEPROM_SILENT 4095
 #define EEPROM_LANG 4094
 #define EEPROM_BABYSTEP_X 4092
@@ -33,15 +32,6 @@
 #define EEPROM_BED_CALIBRATION_Z_JITTER   (EEPROM_BED_CALIBRATION_VEC_Y-2*8)
 
 #define EEPROM_FARM_MODE (EEPROM_BED_CALIBRATION_Z_JITTER-4)
-
-// Correction of the bed leveling, in micrometers.
-// Maximum 50 micrometers allowed.
-// Bed correction is valid if set to 1. If set to zero or 255, the successive 4 bytes are invalid.
-#define EEPROM_BED_CORRECTION_VALID (EEPROM_FARM_MODE-1)
-#define EEPROM_BED_CORRECTION_LEFT  (EEPROM_BED_CORRECTION_VALID-1)
-#define EEPROM_BED_CORRECTION_RIGHT (EEPROM_BED_CORRECTION_LEFT-1)
-#define EEPROM_BED_CORRECTION_FRONT (EEPROM_BED_CORRECTION_RIGHT-1)
-#define EEPROM_BED_CORRECTION_REAR  (EEPROM_BED_CORRECTION_FRONT-1)
 
 // Currently running firmware, each digit stored as uint16_t.
 // The flavor differentiates a dev, alpha, beta, release candidate or a release version.
@@ -672,7 +662,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
  * Note may require analog pins to be defined for different motherboards
  **********************************************************************/
 // Uncomment below to enable
-//#define FILAMENT_SENSOR
+#define FILAMENT_SENSOR
 
 #define FILAMENT_SENSOR_EXTRUDER_NUM	0  //The number of the extruder that has the filament sensor (0,1,2)
 #define MEASUREMENT_DELAY_CM			14  //measurement delay in cm.  This is the distance from filament sensor to middle of barrel

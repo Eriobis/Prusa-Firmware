@@ -655,18 +655,13 @@ static void lcd_implementation_status_screen()
     lcd.print('/');
     lcd.print(itostr3left(tTarget));
     lcd_printPGM(PSTR(LCD_STR_DEGREE " "));
-    lcd_printPGM(PSTR("  "));
+    lcd.print("  ");
 
     //Print the Z coordinates
     lcd.setCursor(LCD_WIDTH - 8-2, 0);
-    lcd_printPGM(PSTR("  Z"));
-    if (custom_message_type == 1) {
-        // In a bed calibration mode.
-        lcd_printPGM(PSTR("   --- "));
-    } else {
-        lcd.print(ftostr32sp(current_position[Z_AXIS] + 0.00001));
-        lcd.print(' ');
-    }
+    lcd.print("  Z");
+    lcd.print(ftostr32sp(current_position[Z_AXIS] + 0.00001));
+    lcd.print(' ');
 
     //Print the Bedtemperature
     lcd.setCursor(0, 1);
@@ -677,15 +672,15 @@ static void lcd_implementation_status_screen()
     lcd.print('/');
     lcd.print(itostr3left(tTarget));
     lcd_printPGM(PSTR(LCD_STR_DEGREE " "));
-    lcd_printPGM(PSTR("  "));
+    lcd.print("  ");
 
     //Print Feedrate
     lcd.setCursor(LCD_WIDTH - 8-2, 1);
-    lcd_printPGM(PSTR("  "));
+    lcd.print("  ");
     lcd.print(LCD_STR_FEEDRATE[0]);
     lcd.print(itostr3(feedmultiply));
     lcd.print('%');
-    lcd_printPGM(PSTR("     "));
+    lcd.print("     ");
 
 
 	
@@ -718,14 +713,14 @@ static void lcd_implementation_status_screen()
 	}
 	if (farm_mode)
 	{
-		lcd_printPGM(PSTR(" F"));
+		lcd.print(" F");
 		lcd.print(farm_no);
-		lcd_printPGM(PSTR("  "));
+		lcd.print("  ");
 	}
 
     //Print time elapsed
     lcd.setCursor(LCD_WIDTH - 8 -2, 2);
-    lcd_printPGM(PSTR("  "));
+    lcd.print("  ");
     lcd.print(LCD_STR_CLOCK[0]);
     if(starttime != 0)
     {
@@ -736,7 +731,7 @@ static void lcd_implementation_status_screen()
     }else{
         lcd_printPGM(PSTR("--:--"));
     }
-    lcd_printPGM(PSTR("  "));
+    lcd.print("  ");
 
 
     //Print status line
@@ -750,7 +745,7 @@ static void lcd_implementation_status_screen()
       if(strcmp(longFilenameOLD, card.longFilename) != 0)
 	  {
         memset(longFilenameOLD,'\0',strlen(longFilenameOLD));
-        sprintf_P(longFilenameOLD, PSTR("%s"), card.longFilename);
+        sprintf(longFilenameOLD, "%s", card.longFilename);
         scrollstuff = 0;
       }
 
@@ -805,7 +800,7 @@ static void lcd_implementation_status_screen()
 				for (int dots = 0; dots < heating_status_counter; dots++)
 				{
 					lcd.setCursor(7 + dots, 3);
-					lcd.print('.');
+					lcd_printPGM(PSTR("."));
 				}
 
 				switch (heating_status)
@@ -842,10 +837,10 @@ static void lcd_implementation_status_screen()
 				if (custom_message_state > 10)
 				{
 					lcd.setCursor(0, 3);
-					lcd_printPGM(PSTR("                    "));
+					lcd.print("                    ");
 					lcd.setCursor(0, 3);
 					lcd_printPGM(MSG_HOMEYZ_PROGRESS);
-					lcd_printPGM(PSTR(" : "));
+					lcd.print(" : ");
 					lcd.print(custom_message_state-10);
 				}
 				else
@@ -860,7 +855,7 @@ static void lcd_implementation_status_screen()
 					if (custom_message_state > 3 && custom_message_state < 10 )
 					{
 						lcd.setCursor(0, 3);
-						lcd_printPGM(PSTR("                   "));
+						lcd.print("                   ");
 						lcd.setCursor(0, 3);
 						lcd_printPGM(MSG_HOMEYZ_DONE);
 						custom_message_state--;

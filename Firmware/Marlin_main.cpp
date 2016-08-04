@@ -235,6 +235,9 @@ byte b[2];
 int value;
 };
 
+// Number of baby steps applied
+int babystepLoadZ = 0;
+
 float homing_feedrate[] = HOMING_FEEDRATE;
 // Currently only the extruder axis may be switched to a relative mode.
 // Other axes are always absolute or relative based on the common relative_mode flag.
@@ -492,7 +495,7 @@ void serial_echopair_P(const char *s_P, unsigned long v)
 
 // Pop the currently processed command from the queue.
 // It is expected, that there is at least one command in the queue.
-bool cmdqueue_pop_front()
+void cmdqueue_pop_front()
 {
     if (buflen > 0) {
 #ifdef CMDBUFFER_DEBUG
@@ -542,14 +545,7 @@ bool cmdqueue_pop_front()
             SERIAL_ECHOLNPGM("");
 #endif /* CMDBUFFER_DEBUG */
         }
-        return true;
     }
-    return false;
-}
-
-void cmdqueue_reset()
-{
-    while (cmdqueue_pop_front()) ;
 }
 
 // How long a string could be pushed to the front of the command queue?
@@ -1017,16 +1013,6 @@ void setup()
 	  farm_no = 0;
   }
 
-  if (eeprom_read_dword((uint32_t*)(EEPROM_TOP-4)) == 0x0ffffffff && 
-      eeprom_read_dword((uint32_t*)(EEPROM_TOP-8)) == 0x0ffffffff &&
-      eeprom_read_dword((uint32_t*)(EEPROM_TOP-12)) == 0x0ffffffff) {
-      // Maiden startup. The firmware has been loaded and first started on a virgin RAMBo board,
-      // where all the EEPROM entries are set to 0x0ff.
-      // Once a firmware boots up, it forces at least a language selection, which changes
-      // EEPROM_LANG to number lower than 0x0ff.
-      // 1) Set a high power mode.
-      eeprom_write_byte((uint8_t*)EEPROM_SILENT, 0);
-  }
 
   // In the future, somewhere here would one compare the current firmware version against the firmware version stored in the EEPROM.
   // If they differ, an update procedure may need to be performed. At the end of this block, the current firmware version
@@ -1040,7 +1026,7 @@ void setup()
       // Get the selected laugnage index before display update.
       lang_selected = eeprom_read_byte((uint8_t*)EEPROM_LANG);
       if (lang_selected >= LANG_NUM)
-          lang_selected = LANG_ID_DEFAULT; // Czech language
+          lang_selected = 1;
       // Show the message.
       lcd_show_fullscreen_message_and_wait_P(MSG_BABYSTEP_Z_NOT_SET);
       lcd_update_enable(true);
@@ -1284,7 +1270,7 @@ void get_command()
 		if (farm_mode)
 		{
 			prusa_statistics(6);
-			lcd_commands_type = LCD_COMMAND_FARM_MODE_CONFIRM;
+			lcd_commands_type = 4;
 		}
 
       }
@@ -1916,7 +1902,8 @@ void process_commands()
 
       // Reset baby stepping to zero, if the babystepping has already been loaded before. The babystepsTodo value will be
       // consumed during the first movements following this statement.
-      babystep_undo();
+      babystepsTodoZsubtract(babystepLoadZ);
+      babystepLoadZ = 0;
 
       saved_feedrate = feedrate;
       saved_feedmultiply = feedmultiply;
@@ -2093,8 +2080,11 @@ void process_commands()
 #ifndef MESH_BED_LEVELING
       // If MESH_BED_LEVELING is not active, then it is the original Prusa i3.
       // Offer the user to load the baby step value, which has been adjusted at the previous print session.
-      if(card.sdprinting && eeprom_read_word((uint16_t *)EEPROM_BABYSTEP_Z))
+      if(card.sdprinting) {
+        EEPROM_read_B(EEPROM_BABYSTEP_Z,&babystepLoadZ);
+        if(babystepLoadZ != 0)
           lcd_adjust_z();
+      }
 #endif
 
     // Load the machine correction matrix
@@ -2296,27 +2286,6 @@ void process_commands()
 #endif // ENABLE_AUTO_BED_LEVELING
             
 #ifdef MESH_BED_LEVELING
-    case 30: // G30 Single Z Probe
-        {
-            st_synchronize();
-            // TODO: make sure the bed_level_rotation_matrix is identity or the planner will get set incorectly
-            setup_for_endstop_move();
-
-            feedrate = homing_feedrate[Z_AXIS];
-
-            find_bed_induction_sensor_point_z(-10.f, 3);
-            SERIAL_PROTOCOLRPGM(MSG_BED);
-            SERIAL_PROTOCOLPGM(" X: ");
-            MYSERIAL.print(current_position[X_AXIS], 5);
-            SERIAL_PROTOCOLPGM(" Y: ");
-            MYSERIAL.print(current_position[Y_AXIS], 5);
-            SERIAL_PROTOCOLPGM(" Z: ");
-            MYSERIAL.print(current_position[Z_AXIS], 5);
-            SERIAL_PROTOCOLPGM("\n");
-            clean_up_after_endstop_move();
-        }
-        break;
-
     /**
      * G80: Mesh-based Z probe, probes a grid and produces a
      *      mesh to compensate for variable bed height
@@ -2332,6 +2301,14 @@ void process_commands()
     case 80:
     case_G80:
         {
+			if (!IS_SD_PRINTING)
+			{
+				custom_message = true;
+				custom_message_type = 1;
+				custom_message_state = (MESH_MEAS_NUM_X_POINTS * MESH_MEAS_NUM_Y_POINTS) + 10;
+			}
+			
+
             // Firstly check if we know where we are
             if ( !( axis_known_position[X_AXIS] && axis_known_position[Y_AXIS] && axis_known_position[Z_AXIS] ) ){
                 // We don't know where we are! HOME!
@@ -2341,21 +2318,13 @@ void process_commands()
                 enquecommand_front_P((PSTR("G28 W0")));
                 break;
             }
-
-            // Save custom message state, set a new custom message state to display: Calibrating point 9.
-            bool custom_message_old = custom_message;
-            unsigned int custom_message_type_old = custom_message_type;
-            unsigned int custom_message_state_old = custom_message_state;
-            custom_message = true;
-            custom_message_type = 1;
-            custom_message_state = (MESH_MEAS_NUM_X_POINTS * MESH_MEAS_NUM_Y_POINTS) + 10;
-            lcd_update(1);
-            
+            #ifdef MESH_BED_LEVELING
             mbl.reset();
-
+            #endif
             // Reset baby stepping to zero, if the babystepping has already been loaded before. The babystepsTodo value will be
             // consumed during the first movements following this statement.
-            babystep_undo();
+            babystepsTodoZsubtract(babystepLoadZ);
+            babystepLoadZ = 0;
 
             // Cycle through all points and probe them
             // First move up. During this first movement, the babystepping will be reverted.
@@ -2429,9 +2398,12 @@ void process_commands()
 
                 mbl.set_z(ix, iy, current_position[Z_AXIS]);
 
-        				custom_message_state--;
+        				if (!IS_SD_PRINTING)
+        				{
+        					custom_message_state--;
+        				}
                 mesh_point++;
-                lcd_update(1);
+                
             }
             current_position[Z_AXIS] = MESH_HOME_Z_SEARCH;
             plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS],current_position[Z_AXIS] , current_position[E_AXIS], Z_LIFT_FEEDRATE, active_extruder);
@@ -2440,60 +2412,6 @@ void process_commands()
                 kill(kill_message);
             }
             clean_up_after_endstop_move();
-
-            // Apply Z height correction aka baby stepping before mesh bed leveing gets activated.
-            babystep_apply();
-
-            bool eeprom_bed_correction_valid = eeprom_read_byte((unsigned char*)EEPROM_BED_CORRECTION_VALID) == 1;
-            for (uint8_t i = 0; i < 4; ++ i) {
-                unsigned char codes[4] = { 'L', 'R', 'F', 'B' };
-                long correction = 0;
-                if (code_seen(codes[i]))
-                    correction = code_value_long();
-                else if (eeprom_bed_correction_valid) {
-                    unsigned char *addr = (i < 2) ? 
-                        ((i == 0) ? (unsigned char*)EEPROM_BED_CORRECTION_LEFT  : (unsigned char*)EEPROM_BED_CORRECTION_RIGHT) :
-                        ((i == 2) ? (unsigned char*)EEPROM_BED_CORRECTION_FRONT : (unsigned char*)EEPROM_BED_CORRECTION_REAR);
-                    correction = eeprom_read_int8(addr);
-                }
-                if (correction == 0)
-                    continue;
-                float offset = float(correction) * 0.001f;
-                if (fabs(offset) > 0.101f) {
-                    SERIAL_ERROR_START;
-                    SERIAL_ECHOPGM("Excessive bed leveling correction: ");
-                    SERIAL_ECHO(offset);
-                    SERIAL_ECHOLNPGM(" microns");
-                } else {
-                    switch (i) {
-                    case 0:
-                        for (uint8_t row = 0; row < 3; ++ row) {
-                            mbl.z_values[row][1] += 0.5f * offset;
-                            mbl.z_values[row][0] += offset;
-                        }
-                        break;
-                    case 1:
-                        for (uint8_t row = 0; row < 3; ++ row) {
-                            mbl.z_values[row][1] += 0.5f * offset;
-                            mbl.z_values[row][2] += offset;
-                        }
-                        break;
-                    case 2:
-                        for (uint8_t col = 0; col < 3; ++ col) {
-                            mbl.z_values[1][col] += 0.5f * offset;
-                            mbl.z_values[0][col] += offset;
-                        }
-                        break;
-                    case 3:
-                        for (uint8_t col = 0; col < 3; ++ col) {
-                            mbl.z_values[1][col] += 0.5f * offset;
-                            mbl.z_values[2][col] += offset;
-                        }
-                        break;
-                    }
-                }
-            }
-
             mbl.upsample_3x3();
             mbl.active = 1;
             current_position[X_AXIS] = X_MIN_POS+0.2;
@@ -2502,15 +2420,19 @@ void process_commands()
             world2machine_clamp(current_position[X_AXIS], current_position[Y_AXIS]);
             plan_buffer_line(current_position[X_AXIS], current_position[X_AXIS], current_position[Z_AXIS], current_position[E_AXIS], XY_AXIS_FEEDRATE, active_extruder);
             st_synchronize();
-
-            // Restore custom message state
-            custom_message       = custom_message_old;
-            custom_message_type  = custom_message_type_old;
-            custom_message_state = custom_message_state_old;
-            lcd_update(1);
+			
+			      if(card.sdprinting || is_usb_printing ) 
+			      {
+                if(eeprom_read_byte((unsigned char*)EEPROM_BABYSTEP_Z_SET) == 0x01)
+				        {
+                    // End of G80: Apply the baby stepping value.
+                    EEPROM_read_B(EEPROM_BABYSTEP_Z,&babystepLoadZ);
+                    babystepsTodoZadd(babystepLoadZ);
+                }
+            }
         }
         break;
-
+        
         /**
          * G81: Print mesh bed leveling status and bed profile if activated
          */
@@ -2534,8 +2456,6 @@ void process_commands()
             else
                 SERIAL_PROTOCOLLNPGM("Mesh bed leveling not active.");
             break;
-            
-#if 0
         /**
          * G82: Single Z probe at current location
          *
@@ -2551,7 +2471,7 @@ void process_commands()
             SERIAL_PROTOCOL_F(current_position[Z_AXIS], 5);
             SERIAL_PROTOCOLPGM("\n");
             break;
-
+            
             /**
              * G83: Prusa3D specific: Babystep in Z and store to EEPROM
              */
@@ -2591,7 +2511,6 @@ void process_commands()
         case 85:
             lcd_pick_babystep();
             break;
-#endif
             
             /**
              * G86: Prusa3D specific: Disable babystep correction after home.
@@ -2608,11 +2527,8 @@ void process_commands()
             eeprom_write_byte((unsigned char*)EEPROM_BABYSTEP_Z_SET, 0x01);
             break;
 
-            /**
-             * G88: Prusa3D specific: Don't know what it is for, it is in V2Calibration.gcode
-             */
-		    case 88:
-			      break;
+		case 88:
+			break;
 
 
 #endif  // ENABLE_MESH_BED_LEVELING
@@ -2893,74 +2809,57 @@ void process_commands()
     {
         // Disable the default update procedure of the display. We will do a modal dialog.
         lcd_update_enable(false);
+        
+        #ifdef MESH_BED_LEVELING
         // Let the planner use the uncorrected coordinates.
         mbl.reset();
+        #endif
         // Reset world2machine_rotation_and_skew and world2machine_shift, therefore
         // the planner will not perform any adjustments in the XY plane. 
         // Wait for the motors to stop and update the current position with the absolute values.
         world2machine_revert_to_uncorrected();
-        // Reset the baby step value applied without moving the axes.
-        babystep_reset();
-        // Mark all axes as in a need for homing.
-        memset(axis_known_position, 0, sizeof(axis_known_position));
         // Let the user move the Z axes up to the end stoppers.
         if (lcd_calibrate_z_end_stop_manual()) {
             refresh_cmd_timeout();
-
             // Move the print head close to the bed.
             current_position[Z_AXIS] = MESH_HOME_Z_SEARCH;
             plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS],current_position[Z_AXIS] , current_position[E_AXIS], homing_feedrate[Z_AXIS]/40, active_extruder);
             st_synchronize();
-
             // Home in the XY plane.
             set_destination_to_current();
             setup_for_endstop_move();
             home_xy();
-
             int8_t verbosity_level = 0;
             if (code_seen('V')) {
                 // Just 'V' without a number counts as V1.
                 char c = strchr_pointer[1];
                 verbosity_level = (c == ' ' || c == '\t' || c == 0) ? 1 : code_value_short();
             }
-            
-            if (code_seen('Z')) {
-                clean_up_after_endstop_move();
-                // Z only calibration.
-                // Load the machine correction matrix
-                world2machine_initialize();
-                // and correct the current_position to match the transformed coordinate system.
-                world2machine_update_current();
-                //FIXME
-                bool result = sample_mesh_and_store_reference();
-                // if (result) babystep_apply();
-            } else {
-                // Complete XYZ calibration.
-                BedSkewOffsetDetectionResultType result = find_bed_offset_and_skew(verbosity_level);
-                uint8_t point_too_far_mask = 0;
+            BedSkewOffsetDetectionResultType result = find_bed_offset_and_skew(verbosity_level);
+            uint8_t point_too_far_mask = 0;
+            clean_up_after_endstop_move();
+            // Print head up.
+            current_position[Z_AXIS] = MESH_HOME_Z_SEARCH;
+            plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS],current_position[Z_AXIS] , current_position[E_AXIS], homing_feedrate[Z_AXIS]/40, active_extruder);
+            st_synchronize();
+            if (result >= 0) {
+                // Second half: The fine adjustment.
+                // Let the planner use the uncorrected coordinates.
+                #ifdef MESH_BED_LEVELING
+                mbl.reset();
+                #endif
+                world2machine_reset();
+                // Home in the XY plane.
+                setup_for_endstop_move();
+                home_xy();
+                result = improve_bed_offset_and_skew(1, verbosity_level, point_too_far_mask);
                 clean_up_after_endstop_move();
                 // Print head up.
                 current_position[Z_AXIS] = MESH_HOME_Z_SEARCH;
                 plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS],current_position[Z_AXIS] , current_position[E_AXIS], homing_feedrate[Z_AXIS]/40, active_extruder);
                 st_synchronize();
-                if (result >= 0) {
-                    // Second half: The fine adjustment.
-                    // Let the planner use the uncorrected coordinates.
-                    mbl.reset();
-                    world2machine_reset();
-                    // Home in the XY plane.
-                    setup_for_endstop_move();
-                    home_xy();
-                    result = improve_bed_offset_and_skew(1, verbosity_level, point_too_far_mask);
-                    clean_up_after_endstop_move();
-                    // Print head up.
-                    current_position[Z_AXIS] = MESH_HOME_Z_SEARCH;
-                    plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS],current_position[Z_AXIS] , current_position[E_AXIS], homing_feedrate[Z_AXIS]/40, active_extruder);
-                    st_synchronize();
-                    // if (result >= 0) babystep_apply();
-                }
-                lcd_bed_calibration_show_result(result, point_too_far_mask);
             }
+            lcd_bed_calibration_show_result(result, point_too_far_mask);
         } else {
             // Timeouted.
         }
@@ -4756,10 +4655,9 @@ void clamp_to_software_endstops(float target[3])
         int n_segments = 0;
 		
         if (mbl.active) {
-            float len = abs(dx) + abs(dy);
+            float len = abs(dx) + abs(dy) + abs(dz);
             if (len > 0)
-                // Split to 3cm segments or shorter.
-                n_segments = int(ceil(len / 30.f));
+                n_segments = int(floor(len / 30.f));
         }
         
         if (n_segments > 1) {
@@ -4776,10 +4674,7 @@ void clamp_to_software_endstops(float target[3])
         }
         // The rest of the path.
         plan_buffer_line(x, y, z, e, feed_rate, extruder);
-        current_position[X_AXIS] = x;
-        current_position[Y_AXIS] = y;
-        current_position[Z_AXIS] = z;
-        current_position[E_AXIS] = e;
+        set_current_to_destination();
     }
 #endif  // MESH_BED_LEVELING
     
@@ -4798,9 +4693,9 @@ void prepare_move()
   }
   else {
 #ifdef MESH_BED_LEVELING
-    mesh_plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate*feedmultiply*(1./(60.f*100.f)), active_extruder);
+    mesh_plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate*feedmultiply/60/100.0, active_extruder);
 #else
-     plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate*feedmultiply*(1./(60.f*100.f)), active_extruder);
+     plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate*feedmultiply/60/100.0, active_extruder);
 #endif
   }
 

@@ -1,24 +1,8 @@
 #ifndef LANGUAGE_ALL_H
 #define LANGUAGE_ALL_H
 
-// Language indices into their particular symbol tables.
-#define LANG_ID_EN 0
-#define LANG_ID_CZ 1
-#define LANG_ID_IT 2
-#define LANG_ID_ES 3
-#define LANG_ID_PL 4
-// Language is not defined and it shall be selected from the menu.
-#define LANG_ID_FORCE_SELECTION 254
-// Language is not defined on a virgin RAMBo board.
-#define LANG_ID_UNDEFINED 255
+#define LANG_NUM (5)
 
-// Default language ID, if no language is selected.
-#define LANG_ID_DEFAULT LANG_ID_CZ
-
-// Number of languages available in the language table.
-#define LANG_NUM 5
-
-// Currectly active language selection.
 extern unsigned char lang_selected;
 
 #define LANG_TABLE_SELECT_EXPLICIT(TABLE, LANG) ((const char*)(pgm_read_ptr(TABLE + (LANG))))
@@ -60,18 +44,6 @@ extern const char* const MSG_BABYSTEP_Z_NOT_SET_LANG_TABLE[LANG_NUM];
 #define MSG_BABYSTEP_Z_NOT_SET LANG_TABLE_SELECT(MSG_BABYSTEP_Z_NOT_SET_LANG_TABLE)
 extern const char* const MSG_BED_LANG_TABLE[LANG_NUM];
 #define MSG_BED LANG_TABLE_SELECT(MSG_BED_LANG_TABLE)
-extern const char* const MSG_BED_CORRECTION_FRONT_LANG_TABLE[LANG_NUM];
-#define MSG_BED_CORRECTION_FRONT LANG_TABLE_SELECT(MSG_BED_CORRECTION_FRONT_LANG_TABLE)
-extern const char* const MSG_BED_CORRECTION_LEFT_LANG_TABLE[LANG_NUM];
-#define MSG_BED_CORRECTION_LEFT LANG_TABLE_SELECT(MSG_BED_CORRECTION_LEFT_LANG_TABLE)
-extern const char* const MSG_BED_CORRECTION_MENU_LANG_TABLE[LANG_NUM];
-#define MSG_BED_CORRECTION_MENU LANG_TABLE_SELECT(MSG_BED_CORRECTION_MENU_LANG_TABLE)
-extern const char* const MSG_BED_CORRECTION_REAR_LANG_TABLE[LANG_NUM];
-#define MSG_BED_CORRECTION_REAR LANG_TABLE_SELECT(MSG_BED_CORRECTION_REAR_LANG_TABLE)
-extern const char* const MSG_BED_CORRECTION_RESET_LANG_TABLE[1];
-#define MSG_BED_CORRECTION_RESET LANG_TABLE_SELECT_EXPLICIT(MSG_BED_CORRECTION_RESET_LANG_TABLE, 0)
-extern const char* const MSG_BED_CORRECTION_RIGHT_LANG_TABLE[LANG_NUM];
-#define MSG_BED_CORRECTION_RIGHT LANG_TABLE_SELECT(MSG_BED_CORRECTION_RIGHT_LANG_TABLE)
 extern const char* const MSG_BED_DONE_LANG_TABLE[LANG_NUM];
 #define MSG_BED_DONE LANG_TABLE_SELECT(MSG_BED_DONE_LANG_TABLE)
 extern const char* const MSG_BED_HEATING_LANG_TABLE[LANG_NUM];
@@ -286,8 +258,6 @@ extern const char* const MSG_MAIN_LANG_TABLE[LANG_NUM];
 #define MSG_MAIN LANG_TABLE_SELECT(MSG_MAIN_LANG_TABLE)
 extern const char* const MSG_MAX_LANG_TABLE[1];
 #define MSG_MAX LANG_TABLE_SELECT_EXPLICIT(MSG_MAX_LANG_TABLE, 0)
-extern const char* const MSG_MESH_BED_LEVELING_LANG_TABLE[1];
-#define MSG_MESH_BED_LEVELING LANG_TABLE_SELECT_EXPLICIT(MSG_MESH_BED_LEVELING_LANG_TABLE, 0)
 extern const char* const MSG_MIN_LANG_TABLE[1];
 #define MSG_MIN LANG_TABLE_SELECT_EXPLICIT(MSG_MIN_LANG_TABLE, 0)
 extern const char* const MSG_MOTION_LANG_TABLE[LANG_NUM];

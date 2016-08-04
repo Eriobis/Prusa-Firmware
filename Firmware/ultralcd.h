@@ -2,11 +2,12 @@
 #define ULTRALCD_H
 
 #include "Marlin.h"
-#include "mesh_bed_calibration.h"
-
+#ifdef MESH_BED_LEVELING
+  #include "mesh_bed_calibration.h"
+#endif
 #ifdef ULTRA_LCD
 
-  void lcd_update(uint8_t lcdDrawUpdateOverride = 0);
+  void lcd_update();
   // Call with a false parameter to suppress the LCD update from various places like the planner or the temp control.
   void lcd_update_enable(bool enable);
   void lcd_init();
@@ -78,15 +79,15 @@
   #else
   FORCE_INLINE void lcd_buttons_update() {}
   #endif
-
-
-  // To be used in lcd_commands_type.
-  #define LCD_COMMAND_IDLE 0
-  #define LCD_COMMAND_LOAD_FILAMENT 1
-  #define LCD_COMMAND_STOP_PRINT 2
-  #define LCD_COMMAND_FARM_MODE_CONFIRM 4
-
   extern int lcd_commands_type;
+
+  extern int plaPreheatHotendTemp;
+  extern int plaPreheatHPBTemp;
+  extern int plaPreheatFanSpeed;
+
+  extern int absPreheatHotendTemp;
+  extern int absPreheatHPBTemp;
+  extern int absPreheatFanSpeed;
   
   extern bool farm_mode;
   extern int farm_no;
