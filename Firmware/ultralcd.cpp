@@ -273,7 +273,7 @@ static void lcd_goto_menu(menuFunc_t menu, const uint32_t encoder = 0, const boo
 extern char langbuffer[];
 void lcd_printPGM(const char *s1) {
   strncpy_P(langbuffer,s1,LCD_WIDTH);
-  //lcd.print(langbuffer);
+  lcd.print(langbuffer);
 }
 */
 unsigned char langsel;
@@ -334,12 +334,12 @@ static void lcd_status_screen()
     } else {
 
       if ((ReInitLCD % 10) == 0) {
-       //lcd_implementation_nodisplay();
-        //lcd_implementation_init_noclear( // to maybe revive the LCD if static electricity killed it.
+        //lcd_implementation_nodisplay();
+        lcd_implementation_init_noclear( // to maybe revive the LCD if static electricity killed it.
 #if defined(LCD_PROGRESS_BAR) && defined(SDSUPPORT)
           currentMenu == lcd_status_screen
 #endif
-        //);
+        );
 
       }
 
@@ -725,7 +725,7 @@ static void lcd_preheat_menu()
 
   END_MENU();
 }
-/*
+
 static void lcd_support_menu()
 {
   START_MENU();
@@ -733,12 +733,12 @@ static void lcd_support_menu()
   MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
 
   // Ideally this block would be optimized out by the compiler.
- // const uint8_t fw_string_len = strlen_P(FW_VERSION_STR_P());
- // if (fw_string_len < 6) {
- //     MENU_ITEM(back, PSTR(MSG_FW_VERSION " - " FW_version), lcd_main_menu);
- // } else {
- //     MENU_ITEM(back, PSTR("FW - " FW_version), lcd_main_menu);
- // }
+  const uint8_t fw_string_len = strlen_P(FW_VERSION_STR_P());
+  if (fw_string_len < 6) {
+      MENU_ITEM(back, PSTR(MSG_FW_VERSION " - " FW_version), lcd_main_menu);
+  } else {
+      MENU_ITEM(back, PSTR("FW - " FW_version), lcd_main_menu);
+  }
       
   MENU_ITEM(back, MSG_PRUSA3D, lcd_main_menu);
   MENU_ITEM(back, MSG_PRUSA3D_FORUM, lcd_main_menu);
@@ -764,96 +764,62 @@ static void lcd_support_menu()
 
   END_MENU();
 }
-*/
+
 void lcd_unLoadFilament()
 {
-  #ifndef DOGLCD
-    if (degHotend0() > EXTRUDE_MINTEMP) {
 
-      enquecommand_P(PSTR(UNLOAD_FILAMENT_0));
-      enquecommand_P(PSTR(UNLOAD_FILAMENT_1));
+  if (degHotend0() > EXTRUDE_MINTEMP) {
 
-    } else {
+    enquecommand_P(PSTR(UNLOAD_FILAMENT_0));
+    enquecommand_P(PSTR(UNLOAD_FILAMENT_1));
 
-      lcd_implementation_clear();
-      //lcd.setCursor(0, 0);
-      lcd_printPGM(MSG_ERROR);
-      //lcd.setCursor(0, 2);
-      lcd_printPGM(MSG_PREHEAT_NOZZLE);
-
-      delay(2000);
-      lcd_implementation_clear();
-    }
-
-    lcd_return_to_status();
-  }
-
-  void lcd_change_filament() {
+  } else {
 
     lcd_implementation_clear();
+    lcd.setCursor(0, 0);
+    lcd_printPGM(MSG_ERROR);
+    lcd.setCursor(0, 2);
+    lcd_printPGM(MSG_PREHEAT_NOZZLE);
 
-    //lcd.setCursor(0, 1);
-
-    lcd_printPGM(MSG_CHANGING_FILAMENT);
-  #else
-    if (degHotend0() > EXTRUDE_MINTEMP) {
-
-      enquecommand_P(PSTR(UNLOAD_FILAMENT_0));
-      enquecommand_P(PSTR(UNLOAD_FILAMENT_1));
-
-    } else {
-
-      lcd_implementation_clear();
-      lcd_printPGM(MSG_ERROR);
-      lcd_printPGM(MSG_PREHEAT_NOZZLE);
-      delay(2000);
-      lcd_implementation_clear();
-    }
-
-    lcd_return_to_status();
+    delay(2000);
+    lcd_implementation_clear();
   }
 
-  void lcd_change_filament() {
+  lcd_return_to_status();
+}
 
-    lcd_implementation_clear();
+void lcd_change_filament() {
 
-    //lcd.setCursor(0, 1);
+  lcd_implementation_clear();
 
-    lcd_printPGM(MSG_CHANGING_FILAMENT);
-  #endif
+  lcd.setCursor(0, 1);
+
+  lcd_printPGM(MSG_CHANGING_FILAMENT);
+
 
 }
 
 
 void lcd_wait_interact() {
-  #ifndef DOGLCD
-    lcd_implementation_clear();
 
-    //lcd.setCursor(0, 1);
+  lcd_implementation_clear();
 
-    lcd_printPGM(MSG_INSERT_FILAMENT);
-    //lcd.setCursor(0, 2);
-    lcd_printPGM(MSG_PRESS);
-  #else
-    lcd_implementation_clear();
-    lcd_printPGM(MSG_INSERT_FILAMENT);
-    lcd_printPGM(MSG_PRESS);
-  #endif
+  lcd.setCursor(0, 1);
+
+  lcd_printPGM(MSG_INSERT_FILAMENT);
+  lcd.setCursor(0, 2);
+  lcd_printPGM(MSG_PRESS);
+
 }
 
 
 void lcd_change_success() {
-  #ifndef DOGLCD
 
-    lcd_implementation_clear();
+  lcd_implementation_clear();
 
-    //lcd.setCursor(0, 2);
+  lcd.setCursor(0, 2);
 
-    lcd_printPGM(MSG_CHANGE_SUCCESS);
-  #else
-    lcd_implementation_clear();
-    lcd_printPGM(MSG_CHANGE_SUCCESS);
-  #endif
+  lcd_printPGM(MSG_CHANGE_SUCCESS);
 
 
 }
@@ -861,77 +827,58 @@ void lcd_change_success() {
 
 void lcd_loading_color() {
 
-  #ifndef DOGLCD
-    lcd_implementation_clear();
+  lcd_implementation_clear();
 
-    //lcd.setCursor(0, 0);
+  lcd.setCursor(0, 0);
 
-    lcd_printPGM(MSG_LOADING_COLOR);
-    //lcd.setCursor(0, 2);
-    lcd_printPGM(MSG_PLEASE_WAIT);
-    for (int i = 0; i < 20; i++) {
+  lcd_printPGM(MSG_LOADING_COLOR);
+  lcd.setCursor(0, 2);
+  lcd_printPGM(MSG_PLEASE_WAIT);
 
-      //lcd.setCursor(i, 3);
-      //lcd.print(".");
-      for (int j = 0; j < 10 ; j++) {
-        manage_heater();
-        manage_inactivity(true);
-        delay(85);
-      }
+
+  for (int i = 0; i < 20; i++) {
+
+    lcd.setCursor(i, 3);
+    lcd.print(".");
+    for (int j = 0; j < 10 ; j++) {
+      manage_heater();
+      manage_inactivity(true);
+      delay(85);
+
     }
-  #else
-      lcd_implementation_clear();
-    lcd_printPGM(MSG_LOADING_COLOR);
-    lcd_printPGM(MSG_PLEASE_WAIT);
-    for (int i = 0; i < 20; i++) {
-      for (int j = 0; j < 10 ; j++) {
-        manage_heater();
-        manage_inactivity(true);
-        delay(85);
-      }
-    }
-  #endif
+
+
+  }
+
 }
 
 
 void lcd_loading_filament() {
 
-  #ifndef DOGLCD
-    lcd_implementation_clear();
 
-    //lcd.setCursor(0, 0);
+  lcd_implementation_clear();
 
-    lcd_printPGM(MSG_LOADING_FILAMENT);
-    //lcd.setCursor(0, 2);
-    lcd_printPGM(MSG_PLEASE_WAIT);
+  lcd.setCursor(0, 0);
+
+  lcd_printPGM(MSG_LOADING_FILAMENT);
+  lcd.setCursor(0, 2);
+  lcd_printPGM(MSG_PLEASE_WAIT);
 
 
-    for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < 20; i++) {
 
-      //lcd.setCursor(i, 3);
-      //lcd.print(".");
-      for (int j = 0; j < 10 ; j++) {
-        manage_heater();
-        manage_inactivity(true);
-        delay(110);
-
-      }
-
+    lcd.setCursor(i, 3);
+    lcd.print(".");
+    for (int j = 0; j < 10 ; j++) {
+      manage_heater();
+      manage_inactivity(true);
+      delay(110);
 
     }
-  #else
-    lcd_implementation_clear();
-    lcd_printPGM(MSG_LOADING_FILAMENT);
-    lcd_printPGM(MSG_PLEASE_WAIT);
 
-    for (int i = 0; i < 20; i++) {
-      for (int j = 0; j < 10 ; j++) {
-        manage_heater();
-        manage_inactivity(true);
-        delay(110);
-      }
-    }
-  #endif
+
+  }
+
 }
 
 void lcd_alright() {
@@ -943,26 +890,26 @@ void lcd_alright() {
 
   lcd_implementation_clear();
 
-  //lcd.setCursor(0, 0);
+  lcd.setCursor(0, 0);
 
   lcd_printPGM(MSG_CORRECTLY);
 
-  //lcd.setCursor(1, 1);
+  lcd.setCursor(1, 1);
 
   lcd_printPGM(MSG_YES);
 
-  //lcd.setCursor(1, 2);
+  lcd.setCursor(1, 2);
 
   lcd_printPGM(MSG_NOT_LOADED);
 
 
-  //lcd.setCursor(1, 3);
+  lcd.setCursor(1, 3);
   lcd_printPGM(MSG_NOT_COLOR);
 
 
-  //lcd.setCursor(0, 1);
+  lcd.setCursor(0, 1);
 
-  //lcd.print(">");
+  lcd.print(">");
 
 
   enc_dif = encoderDiff;
@@ -990,14 +937,14 @@ void lcd_alright() {
         if (cursor_pos < 1) {
           cursor_pos = 1;
         }
-        //lcd.setCursor(0, 1);
-        //lcd.print(" ");
-        //lcd.setCursor(0, 2);
-        //lcd.print(" ");
-        //lcd.setCursor(0, 3);
-        //lcd.print(" ");
-        //lcd.setCursor(0, cursor_pos);
-        //lcd.print(">");
+        lcd.setCursor(0, 1);
+        lcd.print(" ");
+        lcd.setCursor(0, 2);
+        lcd.print(" ");
+        lcd.setCursor(0, 3);
+        lcd.print(" ");
+        lcd.setCursor(0, cursor_pos);
+        lcd.print(">");
         enc_dif = encoderDiff;
         delay(100);
       }
@@ -1037,9 +984,9 @@ void lcd_LoadFilament()
   {
 
     lcd_implementation_clear();
-    //lcd.setCursor(0, 0);
+    lcd.setCursor(0, 0);
     lcd_printPGM(MSG_ERROR);
-    //lcd.setCursor(0, 2);
+    lcd.setCursor(0, 2);
 	lcd_printPGM(MSG_PREHEAT_NOZZLE);
     delay(2000);
     lcd_implementation_clear();
@@ -1062,25 +1009,25 @@ static void lcd_menu_statistics()
 		int _m = (_t - (_h * 3600)) / 60;
 		int _s = _t - ((_h * 3600) + (_m * 60));
 		
-		//lcd.setCursor(0, 0);
+		lcd.setCursor(0, 0);
 		lcd_printPGM(MSG_STATS_FILAMENTUSED);
 
-		//lcd.setCursor(6, 1);
-		//lcd.print(itostr3(_met));
-		//lcd.print("m ");
-		//lcd.print(ftostr32ns(_cm));
-		//lcd.print("cm");
+		lcd.setCursor(6, 1);
+		lcd.print(itostr3(_met));
+		lcd.print("m ");
+		lcd.print(ftostr32ns(_cm));
+		lcd.print("cm");
 		
-		//lcd.setCursor(0, 2);
+		lcd.setCursor(0, 2);
 		lcd_printPGM(MSG_STATS_PRINTTIME);
 
-		//lcd.setCursor(8, 3);
-		//lcd.print(itostr2(_h));
-		//lcd.print("h ");
-		//lcd.print(itostr2(_m));
-		//lcd.print("m ");
-		//lcd.print(itostr2(_s));
-		//lcd.print("s");
+		lcd.setCursor(8, 3);
+		lcd.print(itostr2(_h));
+		lcd.print("h ");
+		lcd.print(itostr2(_m));
+		lcd.print("m ");
+		lcd.print(itostr2(_s));
+		lcd.print("s");
 
 		if (lcd_clicked())
 		{
@@ -1104,46 +1051,46 @@ static void lcd_menu_statistics()
 
 		lcd_implementation_clear();
 
-		//lcd.setCursor(0, 0);
+		lcd.setCursor(0, 0);
 		lcd_printPGM(MSG_STATS_TOTALFILAMENT);
-		//lcd.setCursor(17 - strlen(ftostr32ns(_filament_m)), 1);
-		//lcd.print(ftostr32ns(_filament_m));
+		lcd.setCursor(17 - strlen(ftostr32ns(_filament_m)), 1);
+		lcd.print(ftostr32ns(_filament_m));
 
 		if (_filament_km > 0)
 		{
-			//lcd.setCursor(17 - strlen(ftostr32ns(_filament_m)) - 3, 1);
-			//lcd.print("km");
-			//lcd.setCursor(17 - strlen(ftostr32ns(_filament_m)) - 8, 1);
-			//lcd.print(itostr4(_filament_km));
+			lcd.setCursor(17 - strlen(ftostr32ns(_filament_m)) - 3, 1);
+			lcd.print("km");
+			lcd.setCursor(17 - strlen(ftostr32ns(_filament_m)) - 8, 1);
+			lcd.print(itostr4(_filament_km));
 		}
 
 
-		//lcd.setCursor(18, 1);
-		//lcd.print("m");
+		lcd.setCursor(18, 1);
+		lcd.print("m");
 
-		//lcd.setCursor(0, 2);
+		lcd.setCursor(0, 2);
 		lcd_printPGM(MSG_STATS_TOTALPRINTTIME);;
 
-		//lcd.setCursor(18, 3);
-		//lcd.print("m");
-		//lcd.setCursor(14, 3);
-		//lcd.print(itostr3(_minutes));
+		lcd.setCursor(18, 3);
+		lcd.print("m");
+		lcd.setCursor(14, 3);
+		lcd.print(itostr3(_minutes));
 
-		//lcd.setCursor(14, 3);
-		//lcd.print(":");
+		lcd.setCursor(14, 3);
+		lcd.print(":");
 
-		//lcd.setCursor(12, 3);
-		//lcd.print("h");
-		//lcd.setCursor(9, 3);
-		//lcd.print(itostr3(_hours));
+		lcd.setCursor(12, 3);
+		lcd.print("h");
+		lcd.setCursor(9, 3);
+		lcd.print(itostr3(_hours));
 
-		//lcd.setCursor(9, 3);
-		//lcd.print(":");
+		lcd.setCursor(9, 3);
+		lcd.print(":");
 
-		//lcd.setCursor(7, 3);
-		//lcd.print("d");
-		//lcd.setCursor(4, 3);
-		//lcd.print(itostr3(_days));
+		lcd.setCursor(7, 3);
+		lcd.print("d");
+		lcd.setCursor(4, 3);
+		lcd.print(itostr3(_days));
 
 
 
@@ -1267,18 +1214,18 @@ void lcd_adjust_z() {
 
 
   lcd_implementation_clear();
-  //lcd.setCursor(0, 0);
+  lcd.setCursor(0, 0);
   lcd_printPGM(MSG_ADJUSTZ);
-  //lcd.setCursor(1, 1);
+  lcd.setCursor(1, 1);
   lcd_printPGM(MSG_YES);
 
-  //lcd.setCursor(1, 2);
+  lcd.setCursor(1, 2);
 
   lcd_printPGM(MSG_NO);
 
-  //lcd.setCursor(0, 1);
+  lcd.setCursor(0, 1);
 
-  //lcd.print(">");
+  lcd.print(">");
 
 
   enc_dif = encoderDiff;
@@ -1306,12 +1253,12 @@ void lcd_adjust_z() {
         if (cursor_pos < 1) {
           cursor_pos = 1;
         }
-        //lcd.setCursor(0, 1);
-        //lcd.print(" ");
-        //lcd.setCursor(0, 2);
-        //lcd.print(" ");
-        //lcd.setCursor(0, cursor_pos);
-        //lcd.print(">");
+        lcd.setCursor(0, 1);
+        lcd.print(" ");
+        lcd.setCursor(0, 2);
+        lcd.print(" ");
+        lcd.setCursor(0, cursor_pos);
+        lcd.print(">");
         enc_dif = encoderDiff;
         delay(100);
       }
@@ -1434,7 +1381,7 @@ const char* lcd_display_message_fullscreen_P(const char *msg)
     // Disable update of the screen by the usual lcd_update() routine. 
     lcd_update_enable(false);
     lcd_implementation_clear();
-    //lcd.setCursor(0, 0);
+    lcd.setCursor(0, 0);
     const char *msgend = msg;
     for (int8_t row = 0; row < 4; ++ row) {
         while (pgm_is_whitespace(msg))
@@ -1442,7 +1389,7 @@ const char* lcd_display_message_fullscreen_P(const char *msg)
         if (pgm_read_byte(msg) == 0)
             // End of the message.
             break;
-        //lcd.setCursor(0, row);
+        lcd.setCursor(0, row);
         const char *msgend2 = msg + min(strlen_P(msg), 20);
         msgend = msgend2;
         if (pgm_read_byte(msgend) != 0 && ! pgm_is_whitespace(msgend) && ! pgm_is_interpunction(msgend)) {
@@ -1457,7 +1404,7 @@ const char* lcd_display_message_fullscreen_P(const char *msg)
             char c = char(pgm_read_byte(msg));
             if (c == '~')
                 c = ' ';
-            //lcd.print(c);
+            lcd.print(c);
         }
     }
 
@@ -1507,9 +1454,9 @@ int8_t lcd_show_fullscreen_message_yes_no_and_wait_P(const char *msg, bool allow
 {
     lcd_display_message_fullscreen_P(msg);
 
-    //lcd.setCursor(1, 2);
+    lcd.setCursor(1, 2);
     lcd_printPGM(MSG_YES);
-    //lcd.setCursor(0, 3);
+    lcd.setCursor(0, 3);
     lcd_printPGM(PSTR(">"));
     lcd_printPGM(MSG_NO);
     bool yes = false;
@@ -1524,15 +1471,15 @@ int8_t lcd_show_fullscreen_message_yes_no_and_wait_P(const char *msg, bool allow
         manage_inactivity(true);
         if (abs((enc_dif - encoderDiff)) > 4) {
             if (abs(enc_dif - encoderDiff) > 1) {
-                //lcd.setCursor(0, 2);
+                lcd.setCursor(0, 2);
                 if (enc_dif > encoderDiff && yes) {
                     lcd_printPGM((PSTR(" ")));
-                    //lcd.setCursor(0, 3);
+                    lcd.setCursor(0, 3);
                     lcd_printPGM((PSTR(">")));
                     yes = false;
                 } else if (enc_dif < encoderDiff && ! yes) {
                     lcd_printPGM((PSTR(">")));
-                    //lcd.setCursor(0, 3);
+                    lcd.setCursor(0, 3);
                     lcd_printPGM((PSTR(" ")));
                     yes = true;
                 }
@@ -1601,13 +1548,13 @@ void lcd_bed_calibration_show_result(BedSkewOffsetDetectionResultType result, ui
 }
 
 static void lcd_show_end_stops() {
-    //lcd.setCursor(0, 0);
+    lcd.setCursor(0, 0);
     lcd_printPGM((PSTR("End stops diag")));
-    //lcd.setCursor(0, 1);
+    lcd.setCursor(0, 1);
     lcd_printPGM((READ(X_MIN_PIN) ^ X_MIN_ENDSTOP_INVERTING == 1) ? (PSTR("X1")) : (PSTR("X0")));
-    //lcd.setCursor(0, 2);
+    lcd.setCursor(0, 2);
     lcd_printPGM((READ(Y_MIN_PIN) ^ Y_MIN_ENDSTOP_INVERTING == 1) ? (PSTR("Y1")) : (PSTR("Y0")));
-    //lcd.setCursor(0, 3);
+    lcd.setCursor(0, 3);
     lcd_printPGM((READ(Z_MIN_PIN) ^ Z_MIN_ENDSTOP_INVERTING == 1) ? (PSTR("Z1")) : (PSTR("Z0")));
 }
 
@@ -1790,30 +1737,30 @@ void lcd_pick_babystep(){
     
     lcd_implementation_clear();
     
-    //lcd.setCursor(0, 0);
+    lcd.setCursor(0, 0);
     
     lcd_printPGM(MSG_PICK_Z);
     
     
-    //lcd.setCursor(3, 2);
+    lcd.setCursor(3, 2);
     
-    //lcd.print("1");
+    lcd.print("1");
     
-    //lcd.setCursor(3, 3);
+    lcd.setCursor(3, 3);
     
-    //lcd.print("2");
+    lcd.print("2");
     
-    //lcd.setCursor(12, 2);
+    lcd.setCursor(12, 2);
     
-    //lcd.print("3");
+    lcd.print("3");
     
-    //lcd.setCursor(12, 3);
+    lcd.setCursor(12, 3);
     
-    //lcd.print("4");
+    lcd.print("4");
     
-    //lcd.setCursor(1, 2);
+    lcd.setCursor(1, 2);
     
-    //lcd.print(">");
+    lcd.print(">");
     
     
     enc_dif = encoderDiff;
@@ -1843,21 +1790,21 @@ void lcd_pick_babystep(){
                 }
 
                 
-                //lcd.setCursor(1, 2);
-                //lcd.print(" ");
-                //lcd.setCursor(1, 3);
-                //lcd.print(" ");
-                //lcd.setCursor(10, 2);
-                //lcd.print(" ");
-                //lcd.setCursor(10, 3);
-                //lcd.print(" ");
+                lcd.setCursor(1, 2);
+                lcd.print(" ");
+                lcd.setCursor(1, 3);
+                lcd.print(" ");
+                lcd.setCursor(10, 2);
+                lcd.print(" ");
+                lcd.setCursor(10, 3);
+                lcd.print(" ");
                 
                 if (cursor_pos < 3) {
-                    //lcd.setCursor(1, cursor_pos+1);
-                    //lcd.print(">");
+                    lcd.setCursor(1, cursor_pos+1);
+                    lcd.print(">");
                 }else{
-                    //lcd.setCursor(10, cursor_pos-1);
-                    //lcd.print(">");
+                    lcd.setCursor(10, cursor_pos-1);
+                    lcd.print(">");
                 }
                 
    
@@ -2034,9 +1981,9 @@ static void lcd_settings_menu()
 }
 /*
 void lcd_mylang_top(int hlaska) {
-    //lcd.setCursor(0,0);
-    //lcd.print("                    ");
-    //lcd.setCursor(0,0);
+    lcd.setCursor(0,0);
+    lcd.print("                    ");
+    lcd.setCursor(0,0);
     lcd_printPGM(MSG_ALL[hlaska-1][LANGUAGE_SELECT]);   
 }
 
@@ -2044,34 +1991,34 @@ void lcd_mylang_drawmenu(int cursor) {
   int first = 0;
   if (cursor>2) first = cursor-2;
   if (cursor==LANG_NUM) first = LANG_NUM-3;
-  //lcd.setCursor(0, 1);
-  //lcd.print("                    ");
-  //lcd.setCursor(1, 1);
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(1, 1);
   lcd_printPGM(MSG_ALL[first][LANGUAGE_NAME]);
 
-  //lcd.setCursor(0, 2);
-  //lcd.print("                    ");
-  //lcd.setCursor(1, 2);
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
+  lcd.setCursor(1, 2);
   lcd_printPGM(MSG_ALL[first+1][LANGUAGE_NAME]);
 
-  //lcd.setCursor(0, 3);
-  //lcd.print("                    ");
-  //lcd.setCursor(1, 3);
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
+  lcd.setCursor(1, 3);
   lcd_printPGM(MSG_ALL[first+2][LANGUAGE_NAME]);  
   
-  if (cursor==1) //lcd.setCursor(0, 1);
-  if (cursor>1 && cursor<LANG_NUM) //lcd.setCursor(0, 2);
-  if (cursor==LANG_NUM) //lcd.setCursor(0, 3);
+  if (cursor==1) lcd.setCursor(0, 1);
+  if (cursor>1 && cursor<LANG_NUM) lcd.setCursor(0, 2);
+  if (cursor==LANG_NUM) lcd.setCursor(0, 3);
 
-  //lcd.print(">");
+  lcd.print(">");
   
   if (cursor<LANG_NUM-1) {
-    //lcd.setCursor(19,3);
-    //lcd.print("\x01");
+    lcd.setCursor(19,3);
+    lcd.print("\x01");
   }
   if (cursor>2) {
-    //lcd.setCursor(19,1);
-    //lcd.print("^");
+    lcd.setCursor(19,1);
+    lcd.print("^");
   }  
 }
 */
@@ -2083,45 +2030,45 @@ void lcd_mylang_drawmenu(int cursor) {
   if (cursor==LANG_NUM && LANG_NUM==4) first = LANG_NUM-4;
 
 
-  //lcd.setCursor(0, 0);
-  //lcd.print("                    ");
-  //lcd.setCursor(1, 0);
+  lcd.setCursor(0, 0);
+  lcd.print("                    ");
+  lcd.setCursor(1, 0);
   lcd_printPGM(MSG_LANGUAGE_NAME_EXPLICIT(first+0));
 
-  //lcd.setCursor(0, 1);
-  //lcd.print("                    ");
-  //lcd.setCursor(1, 1);
+  lcd.setCursor(0, 1);
+  lcd.print("                    ");
+  lcd.setCursor(1, 1);
   lcd_printPGM(MSG_LANGUAGE_NAME_EXPLICIT(first+1));
 
-  //lcd.setCursor(0, 2);
-  //lcd.print("                    ");
+  lcd.setCursor(0, 2);
+  lcd.print("                    ");
 
   if (LANG_NUM > 2){
-    //lcd.setCursor(1, 2);
+    lcd.setCursor(1, 2);
     lcd_printPGM(MSG_LANGUAGE_NAME_EXPLICIT(first+2));
   }
 
-  //lcd.setCursor(0, 3);
-  //lcd.print("                    ");
+  lcd.setCursor(0, 3);
+  lcd.print("                    ");
   if (LANG_NUM>3) {
-    //lcd.setCursor(1, 3);
+    lcd.setCursor(1, 3);
     lcd_printPGM(MSG_LANGUAGE_NAME_EXPLICIT(first+3));
   }
   
-  if (cursor==1) //lcd.setCursor(0, 0);
-  if (cursor==2) //lcd.setCursor(0, 1);
-  if (cursor>2) //lcd.setCursor(0, 2);
-  if (cursor==LANG_NUM && LANG_NUM>3) //lcd.setCursor(0, 3);
+  if (cursor==1) lcd.setCursor(0, 0);
+  if (cursor==2) lcd.setCursor(0, 1);
+  if (cursor>2) lcd.setCursor(0, 2);
+  if (cursor==LANG_NUM && LANG_NUM>3) lcd.setCursor(0, 3);
 
-  //lcd.print(">");
+  lcd.print(">");
   
   if (cursor<LANG_NUM-1 && LANG_NUM>4) {
-    //lcd.setCursor(19,3);
-    //lcd.print("\x01");
+    lcd.setCursor(19,3);
+    lcd.print("\x01");
   }
   if (cursor>3 && LANG_NUM>4) {
-    //lcd.setCursor(19,0);
-    //lcd.print("^");
+    lcd.setCursor(19,0);
+    lcd.print("^");
   }  
 }
  
@@ -2130,11 +2077,11 @@ void lcd_set_custom_characters_degree();
 
 void lcd_mylang_drawcursor(int cursor) {
   
-  if (cursor==1) //lcd.setCursor(0, 1);
-  if (cursor>1 && cursor<LANG_NUM) //lcd.setCursor(0, 2);
-  if (cursor==LANG_NUM) //lcd.setCursor(0, 3);
+  if (cursor==1) lcd.setCursor(0, 1);
+  if (cursor>1 && cursor<LANG_NUM) lcd.setCursor(0, 2);
+  if (cursor==LANG_NUM) lcd.setCursor(0, 3);
 
-  //lcd.print(">");
+  lcd.print(">");
   
 }  
 
@@ -2224,8 +2171,8 @@ static void lcd_farm_no()
 	int _ret = 0;
 	lcd_implementation_clear();
 
-	//lcd.setCursor(0, 0);
-	//lcd.print("Farm no");
+	lcd.setCursor(0, 0);
+	lcd.print("Farm no");
 
 	do
 	{
@@ -2246,9 +2193,9 @@ static void lcd_farm_no()
 		if (_farmno < 1) { _farmno = 254; }
 
 
-		//lcd.setCursor(0, 2);
-		//lcd.print(_farmno);
-		//lcd.print("  ");
+		lcd.setCursor(0, 2);
+		lcd.print(_farmno);
+		lcd.print("  ");
 		delay(100);
 
 		if (lcd_clicked())
@@ -2275,8 +2222,8 @@ void lcd_confirm_print()
 
 	lcd_implementation_clear();
 
-	//lcd.setCursor(0, 0);
-	//lcd.print("Print ok ?");
+	lcd.setCursor(0, 0);
+	lcd.print("Print ok ?");
 
 	do
 	{
@@ -2294,14 +2241,14 @@ void lcd_confirm_print()
 		if (cursor_pos > 2) { cursor_pos = 2; }
 		if (cursor_pos < 1) { cursor_pos = 1; }
 
-		//lcd.setCursor(0, 2); //lcd.print("          ");
-		//lcd.setCursor(0, 3); //lcd.print("          ");
-		//lcd.setCursor(2, 2);
+		lcd.setCursor(0, 2); lcd.print("          ");
+		lcd.setCursor(0, 3); lcd.print("          ");
+		lcd.setCursor(2, 2);
 		lcd_printPGM(MSG_YES);
-		//lcd.setCursor(2, 3);
+		lcd.setCursor(2, 3);
 		lcd_printPGM(MSG_NO);
-		//lcd.setCursor(0, 1 + cursor_pos);
-		//lcd.print(">");
+		lcd.setCursor(0, 1 + cursor_pos);
+		lcd.print(">");
 		delay(100);
 
 		_t = _t + 1;
@@ -2418,7 +2365,7 @@ static void lcd_main_menu()
   {
 	  MENU_ITEM(submenu, MSG_STATISTICS, lcd_menu_statistics);
   }
-  //MENU_ITEM(submenu, MSG_SUPPORT, lcd_support_menu);
+  MENU_ITEM(submenu, MSG_SUPPORT, lcd_support_menu);
 
   END_MENU();
 }
@@ -2532,20 +2479,20 @@ static void lcd_sd_updir()
 void lcd_sdcard_stop()
 {
 	
-	//lcd.setCursor(0, 0);
+	lcd.setCursor(0, 0);
 	lcd_printPGM(MSG_STOP_PRINT);
-	//lcd.setCursor(2, 2);
+	lcd.setCursor(2, 2);
 	lcd_printPGM(MSG_NO);
-	//lcd.setCursor(2, 3);
+	lcd.setCursor(2, 3);
 	lcd_printPGM(MSG_YES);
-	//lcd.setCursor(0, 2); //lcd.print(" ");
-	//lcd.setCursor(0, 3); //lcd.print(" ");
+	lcd.setCursor(0, 2); lcd.print(" ");
+	lcd.setCursor(0, 3); lcd.print(" ");
 
 	if ((int32_t)encoderPosition > 2) { encoderPosition = 2; }
 	if ((int32_t)encoderPosition < 1) { encoderPosition = 1; }
 	
-	//lcd.setCursor(0, 1 + encoderPosition);
-	//lcd.print(">");
+	lcd.setCursor(0, 1 + encoderPosition);
+	lcd.print(">");
 
 	if (lcd_clicked())
 	{
@@ -2923,50 +2870,50 @@ static void lcd_selftest_error(int _error_no, const char *_error_1, const char *
 
 	lcd_implementation_clear();
 
-	//lcd.setCursor(0, 0);
+	lcd.setCursor(0, 0);
 	lcd_printPGM(MSG_SELFTEST_ERROR);
-	//lcd.setCursor(0, 1);
+	lcd.setCursor(0, 1);
 	lcd_printPGM(MSG_SELFTEST_PLEASECHECK);
 
 	switch (_error_no)
 	{
 	case 1:
-		//lcd.setCursor(0, 2);
+		lcd.setCursor(0, 2);
 		lcd_printPGM(MSG_SELFTEST_HEATERTHERMISTOR);
-		//lcd.setCursor(0, 3);
+		lcd.setCursor(0, 3);
 		lcd_printPGM(MSG_SELFTEST_NOTCONNECTED);
 		break;
 	case 2:
-		//lcd.setCursor(0, 2);
+		lcd.setCursor(0, 2);
 		lcd_printPGM(MSG_SELFTEST_BEDHEATER);
-		//lcd.setCursor(0, 3);
+		lcd.setCursor(0, 3);
 		lcd_printPGM(MSG_SELFTEST_WIRINGERROR);
 		break;
 	case 3:
-		//lcd.setCursor(0, 2);
+		lcd.setCursor(0, 2);
 		lcd_printPGM(MSG_SELFTEST_ENDSTOPS);
-		//lcd.setCursor(0, 3);
+		lcd.setCursor(0, 3);
 		lcd_printPGM(MSG_SELFTEST_WIRINGERROR);
-		//lcd.setCursor(17, 3);
-		//lcd.print(_error_1);
+		lcd.setCursor(17, 3);
+		lcd.print(_error_1);
 		break;
 	case 4:
-		//lcd.setCursor(0, 2);
+		lcd.setCursor(0, 2);
 		lcd_printPGM(MSG_SELFTEST_MOTOR);
-		//lcd.setCursor(18, 2);
-		//lcd.print(_error_1);
-		//lcd.setCursor(0, 3);
+		lcd.setCursor(18, 2);
+		lcd.print(_error_1);
+		lcd.setCursor(0, 3);
 		lcd_printPGM(MSG_SELFTEST_ENDSTOP);
-		//lcd.setCursor(18, 3);
-		//lcd.print(_error_2);
+		lcd.setCursor(18, 3);
+		lcd.print(_error_2);
 		break;
 	case 5:
-		//lcd.setCursor(0, 2);
+		lcd.setCursor(0, 2);
 		lcd_printPGM(MSG_SELFTEST_ENDSTOP_NOTHIT);
-		//lcd.setCursor(0, 3);
+		lcd.setCursor(0, 3);
 		lcd_printPGM(MSG_SELFTEST_MOTOR);
-		//lcd.setCursor(18, 3);
-		//lcd.print(_error_1);
+		lcd.setCursor(18, 3);
+		lcd.print(_error_1);
 		break;
 
 	}
@@ -2994,7 +2941,7 @@ static int lcd_selftest_screen(int _step, int _progress, int _progress_scale, bo
 	if (_clear) lcd_implementation_clear();
 
 
-	//lcd.setCursor(0, 0);
+	lcd.setCursor(0, 0);
 
 	if (_step == -1) lcd_printPGM(MSG_SELFTEST_START);
 	if (_step == 0) lcd_printPGM(MSG_SELFTEST_CHECK_ENDSTOPS);
@@ -3006,8 +2953,8 @@ static int lcd_selftest_screen(int _step, int _progress, int _progress_scale, bo
 	if (_step == 6) lcd_printPGM(MSG_SELFTEST_CHECK_ALLCORRECT);
 	if (_step == 7) lcd_printPGM(MSG_SELFTEST_FAILED);
 
-	//lcd.setCursor(0, 1);
-	//lcd.print("--------------------");
+	lcd.setCursor(0, 1);
+	lcd.print("--------------------");
 
 	_step_block = 1;
 	lcd_selftest_screen_step(3, 9, ((_step == _step_block) ? 1 : (_step < _step_block) ? 0 : 2), "Hotend", _indicator);
@@ -3032,26 +2979,26 @@ static int lcd_selftest_screen(int _step, int _progress, int _progress_scale, bo
 }
 static void lcd_selftest_screen_step(int _row, int _col, int _state, const char *_name, const char *_indicator)
 {
-	//lcd.setCursor(_col, _row);
+	lcd.setCursor(_col, _row);
 
 	switch (_state)
 	{
 	case 1:
-		//lcd.print(_name);
-		//lcd.setCursor(_col + strlen(_name), _row);
-		//lcd.print(":");
-		//lcd.setCursor(_col + strlen(_name) + 1, _row);
-		//lcd.print(_indicator);
+		lcd.print(_name);
+		lcd.setCursor(_col + strlen(_name), _row);
+		lcd.print(":");
+		lcd.setCursor(_col + strlen(_name) + 1, _row);
+		lcd.print(_indicator);
 		break;
 	case 2:
-		//lcd.print(_name);
-		//lcd.setCursor(_col + strlen(_name), _row);
-		//lcd.print(":");
-		//lcd.setCursor(_col + strlen(_name) + 1, _row);
-		//lcd.print("OK");
+		lcd.print(_name);
+		lcd.setCursor(_col + strlen(_name), _row);
+		lcd.print(":");
+		lcd.setCursor(_col + strlen(_name) + 1, _row);
+		lcd.print("OK");
 		break;
 	default:
-		//lcd.print(_name);
+		lcd.print(_name);
 	}
 }
 
@@ -3438,7 +3385,7 @@ void lcd_buttons_update()
 bool lcd_detected(void)
 {
 #if (defined(LCD_I2C_TYPE_MCP23017) || defined(LCD_I2C_TYPE_MCP23008)) && defined(DETECT_DEVICE)
-  return //lcd.LcdDetected() == 1;
+  return lcd.LcdDetected() == 1;
 #else
   return true;
 #endif
@@ -3447,7 +3394,7 @@ bool lcd_detected(void)
 void lcd_buzz(long duration, uint16_t freq)
 {
 #ifdef LCD_USE_I2C_BUZZER
-  //lcd.buzz(duration, freq);
+  lcd.buzz(duration, freq);
 #endif
 }
 
