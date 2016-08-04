@@ -1,5 +1,5 @@
 #include <avr/pgmspace.h>
-#include "configuration_prusa.h"
+#include "Configuration_prusa.h"
 #include "language_all.h"
 
 #define LCD_WIDTH 20
@@ -2035,7 +2035,7 @@ const char * const MSG_SELFTEST_START_LANG_TABLE[LANG_NUM] PROGMEM = {
 const char MSG_SELFTEST_WIRINGERROR_EN[] PROGMEM = "Wiring error";
 const char MSG_SELFTEST_WIRINGERROR_CZ[] PROGMEM = "Chyba zapojeni";
 const char MSG_SELFTEST_WIRINGERROR_IT[] PROGMEM = "Errore cablaggio";
-const char MSG_SELFTEST_WIRINGERROR_ES[] PROGMEM = "Error de conexión";
+const char MSG_SELFTEST_WIRINGERROR_ES[] PROGMEM = "Error de conexiï¿½n";
 const char MSG_SELFTEST_WIRINGERROR_PL[] PROGMEM = "Blad polaczenia";
 const char * const MSG_SELFTEST_WIRINGERROR_LANG_TABLE[LANG_NUM] PROGMEM = {
 	MSG_SELFTEST_WIRINGERROR_EN,
@@ -2128,7 +2128,7 @@ const char * const MSG_SOFTWARE_RESET_LANG_TABLE[1] PROGMEM = {
 
 const char MSG_SPEED_EN[] PROGMEM = "Speed";
 const char MSG_SPEED_CZ[] PROGMEM = "Rychlost";
-const char MSG_SPEED_IT[] PROGMEM = "Velcità";
+const char MSG_SPEED_IT[] PROGMEM = "Velcitï¿½";
 const char MSG_SPEED_ES[] PROGMEM = "Velocidad";
 const char MSG_SPEED_PL[] PROGMEM = "Predkosc";
 const char * const MSG_SPEED_LANG_TABLE[LANG_NUM] PROGMEM = {

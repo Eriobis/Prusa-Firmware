@@ -48,7 +48,7 @@ const bool Z_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 // Travel limits after homing
 #define X_MAX_POS 200
-#define X_MIN_POS -11
+#define X_MIN_POS -12
 #define Y_MAX_POS 200
 #define Y_MIN_POS -18
 #define Z_MAX_POS 180
@@ -187,7 +187,7 @@ BED SETTINGS
 // Mesh definitions
 #define MESH_MIN_X 35
 #define MESH_MAX_X 200
-#define MESH_MIN_Y 6
+#define MESH_MIN_Y 15
 #define MESH_MAX_Y 190
 
 // Mesh upsample definition
@@ -200,9 +200,9 @@ BED SETTINGS
 #define MESH_HOME_Z_CALIB 0.2
 #define MESH_HOME_Z_SEARCH 5
 
-#define X_PROBE_OFFSET_FROM_EXTRUDER 23     // Z probe to nozzle X offset: -left  +right
-#define Y_PROBE_OFFSET_FROM_EXTRUDER -9     // Z probe to nozzle Y offset: -front +behind
-#define Z_PROBE_OFFSET_FROM_EXTRUDER -0.4  // Z probe to nozzle Z offset: -below (always!)
+#define X_PROBE_OFFSET_FROM_EXTRUDER -25     // Z probe to nozzle X offset: -left  +right
+#define Y_PROBE_OFFSET_FROM_EXTRUDER -32     // Z probe to nozzle Y offset: -front +behind
+#define Z_PROBE_OFFSET_FROM_EXTRUDER -2  // Z probe to nozzle Z offset: -below (always!)
 #endif
 
 // Bed Temperature Control
