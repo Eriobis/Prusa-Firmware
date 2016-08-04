@@ -2,7 +2,7 @@
 #define CONFIGURATION_H
 
 #include "boards.h"
-#include "Configuration_prusa.h"
+#include "configuration_prusa.h"
 
 // Firmware version
 #define FW_version "3.0.6-rc2"
