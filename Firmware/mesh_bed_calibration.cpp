@@ -52,15 +52,15 @@ float   world2machine_shift[2];
 const float bed_ref_points[] PROGMEM = {
     13.f  - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
     100.f - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
-    200.f - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
+    190.f - BED_ZERO_REF_X,   6.4f - BED_ZERO_REF_Y,
 
-    200.f - BED_ZERO_REF_X, 100.0f - BED_ZERO_REF_Y,
+    190.f - BED_ZERO_REF_X, 100.0f - BED_ZERO_REF_Y,
     100.f - BED_ZERO_REF_X, 100.0f - BED_ZERO_REF_Y,
     13.f  - BED_ZERO_REF_X, 100.0f - BED_ZERO_REF_Y,
 
     13.f  - BED_ZERO_REF_X, 200.0f - BED_ZERO_REF_Y,
     100.f - BED_ZERO_REF_X, 200.0f - BED_ZERO_REF_Y,
-    200.f - BED_ZERO_REF_X, 200.0f - BED_ZERO_REF_Y
+    190.f - BED_ZERO_REF_X, 200.0f - BED_ZERO_REF_Y
 };
 
 // Positions of the bed reference points in the machine coordinates, referenced to the P.I.N.D.A sensor.

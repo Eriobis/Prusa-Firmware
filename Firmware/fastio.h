@@ -48,7 +48,7 @@
 #define _TOGGLE(IO)  do {DIO ##  IO ## _RPORT = MASK(DIO ## IO ## _PIN); } while (0)
 
 /// set pin as input
-#define	_SET_INPUT(IO) do {DIO ##  IO ## _DDR &= ~MASK(DIO ## IO ## _PIN); } while (0)
+  #define	_SET_INPUT(IO) do {DIO ##  IO ## _DDR &= ~MASK(DIO ## IO ## _PIN); } while (0)
 /// set pin as output
 #define	_SET_OUTPUT(IO) do {DIO ##  IO ## _DDR |=  MASK(DIO ## IO ## _PIN); } while (0)
 

@@ -24,7 +24,7 @@ AXIS SETTINGS
 *------------------------------------*/
 
 // Steps per unit {X,Y,Z,E}
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,400,250}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,3200/8,161.3}
 
 // Endstop inverting
 const bool X_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
@@ -177,10 +177,10 @@ BED SETTINGS
 #define MBL_Z_STEP 0.01
 
 // Mesh definitions
-#define MESH_MIN_X 20
-#define MESH_MAX_X 170
+#define MESH_MIN_X 35
+#define MESH_MAX_X 238
 #define MESH_MIN_Y 6
-#define MESH_MAX_Y 190
+#define MESH_MAX_Y 202
 
 // Mesh upsample definition
 #define MESH_NUM_X_POINTS 7
@@ -192,8 +192,8 @@ BED SETTINGS
 #define MESH_HOME_Z_CALIB 0.2
 #define MESH_HOME_Z_SEARCH 5
 
-#define X_PROBE_OFFSET_FROM_EXTRUDER 30     // Z probe to nozzle X offset: -left  +right
-#define Y_PROBE_OFFSET_FROM_EXTRUDER -15     // Z probe to nozzle Y offset: -front +behind
+#define X_PROBE_OFFSET_FROM_EXTRUDER 23     // Z probe to nozzle X offset: -left  +right
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 9     // Z probe to nozzle Y offset: -front +behind
 #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.4  // Z probe to nozzle Z offset: -below (always!)
 #endif
 

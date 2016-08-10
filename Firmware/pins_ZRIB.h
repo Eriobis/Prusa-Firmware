@@ -105,7 +105,7 @@
   #define FILRUNOUT_PIN     4
 #endif
 
-#define FAN_PIN             9 // (Sprinter config)
+#define FAN_PIN             7 // (Sprinter config)
 #define PS_ON_PIN           12
 
 #if ENABLED(REPRAP_DISCOUNT_SMART_CONTROLLER) || ENABLED(G3D_PANEL)
@@ -114,7 +114,7 @@
 
 
 #define HEATER_0_PIN        10   // EXTRUDER 1
-#define HEATER_1_PIN        7 //ZRIB BOARD
+#define HEATER_1_PIN        -1//7 //ZRIB BOARD
 #define HEATER_2_PIN        -1
 
 #define TEMP_0_PIN          13   // ANALOG NUMBERING
