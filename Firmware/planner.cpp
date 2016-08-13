@@ -82,9 +82,9 @@ unsigned long axis_steps_per_sqr_second[NUM_AXIS];
 #ifdef ENABLE_AUTO_BED_LEVELING
 // this holds the required transform to compensate for bed level
 matrix_3x3 plan_bed_level_matrix = {
-	1.0, 0.0, 0.0,
-	0.0, 1.0, 0.0,
-	0.0, 0.0, 1.0,
+  1.0, 0.0, 0.0,
+  0.0, 1.0, 0.0,
+  0.0, 0.0, 1.0,
 };
 #endif // #ifdef ENABLE_AUTO_BED_LEVELING
 
@@ -459,6 +459,54 @@ void check_axes_activity()
 #endif
 }
 
+bool waiting_inside_plan_buffer_line_print_aborted = false;
+/*
+void planner_abort_soft()
+{
+    // Empty the queue.
+    while (blocks_queued()) plan_discard_current_block();
+    // Relay to planner wait routine, that the current line shall be canceled.
+    waiting_inside_plan_buffer_line_print_aborted = true;
+    //current_position[i]
+}
+*/
+
+void planner_abort_hard()
+{
+    // Abort the stepper routine and flush the planner queue.
+    quickStop();
+
+    // Now the front-end (the Marlin_main.cpp with its current_position) is out of sync.
+    // First update the planner's current position in the physical motor steps.
+    position[X_AXIS] = st_get_position(X_AXIS);
+    position[Y_AXIS] = st_get_position(Y_AXIS);
+    position[Z_AXIS] = st_get_position(Z_AXIS);
+    position[E_AXIS] = st_get_position(E_AXIS);
+
+    // Second update the current position of the front end.
+    current_position[X_AXIS] = st_get_position_mm(X_AXIS);
+    current_position[Y_AXIS] = st_get_position_mm(Y_AXIS);
+    current_position[Z_AXIS] = st_get_position_mm(Z_AXIS);
+    current_position[E_AXIS] = st_get_position_mm(E_AXIS);
+    // Apply the mesh bed leveling correction to the Z axis.
+#ifdef MESH_BED_LEVELING
+    if (mbl.active)
+        current_position[Z_AXIS] -= mbl.get_z(current_position[X_AXIS], current_position[Y_AXIS]);
+#endif
+    // Apply inverse world correction matrix.
+    machine2world(current_position[X_AXIS], current_position[Y_AXIS]);
+    memcpy(destination, current_position, sizeof(destination));
+
+    // Resets planner junction speeds. Assumes start from rest.
+    previous_nominal_speed = 0.0;
+    previous_speed[0] = 0.0;
+    previous_speed[1] = 0.0;
+    previous_speed[2] = 0.0;
+    previous_speed[3] = 0.0;
+
+    // Relay to planner wait routine, that the current line shall be canceled.
+    waiting_inside_plan_buffer_line_print_aborted = true;
+}
 
 float junction_deviation = 0.1;
 // Add a new linear movement to the buffer. steps_x, _y and _z is the absolute position in 
@@ -471,12 +519,18 @@ void plan_buffer_line(float x, float y, float z, const float &e, float feed_rate
 
   // If the buffer is full: good! That means we are well ahead of the robot. 
   // Rest here until there is room in the buffer.
-  while(block_buffer_tail == next_buffer_head)
-  {
-    manage_heater(); 
-    // Vojtech: Don't disable motors inside the planner!
-    manage_inactivity(false); 
-    lcd_update();
+  if (block_buffer_tail == next_buffer_head) {
+      waiting_inside_plan_buffer_line_print_aborted = false;
+      do {
+          manage_heater(); 
+          // Vojtech: Don't disable motors inside the planner!
+          manage_inactivity(false); 
+          lcd_update();
+      } while (block_buffer_tail == next_buffer_head);
+      if (waiting_inside_plan_buffer_line_print_aborted)
+          // Inside the lcd_update() routine the print has been aborted.
+          // Cancel the print, do not plan the current line this routine is waiting on.
+          return;
   }
 
 #ifdef ENABLE_AUTO_BED_LEVELING
@@ -723,9 +777,9 @@ Having the real displacement of the head, we can calculate the total movement le
   {
     #ifndef COREXY
       block->millimeters = sqrt(square(delta_mm[X_AXIS]) + square(delta_mm[Y_AXIS]) + square(delta_mm[Z_AXIS]));
-	#else
-	  block->millimeters = sqrt(square(delta_mm[X_HEAD]) + square(delta_mm[Y_HEAD]) + square(delta_mm[Z_AXIS]));
-    #endif	
+  #else
+    block->millimeters = sqrt(square(delta_mm[X_HEAD]) + square(delta_mm[Y_HEAD]) + square(delta_mm[Z_AXIS]));
+    #endif  
   }
   float inverse_millimeters = 1.0/block->millimeters;  // Inverse millimeters to remove multiple divides 
 
@@ -755,41 +809,41 @@ Having the real displacement of the head, we can calculate the total movement le
   
   
     if((extruder==FILAMENT_SENSOR_EXTRUDER_NUM) && (delay_index2 > -1))  //only for extruder with filament sensor and if ring buffer is initialized
-  	  {
+      {
     delay_dist = delay_dist + delta_mm[E_AXIS];  //increment counter with next move in e axis
   
     while (delay_dist >= (10*(MAX_MEASUREMENT_DELAY+1)))  //check if counter is over max buffer size in mm
-      	  delay_dist = delay_dist - 10*(MAX_MEASUREMENT_DELAY+1);  //loop around the buffer
+          delay_dist = delay_dist - 10*(MAX_MEASUREMENT_DELAY+1);  //loop around the buffer
     while (delay_dist<0)
-    	  delay_dist = delay_dist + 10*(MAX_MEASUREMENT_DELAY+1); //loop around the buffer
+        delay_dist = delay_dist + 10*(MAX_MEASUREMENT_DELAY+1); //loop around the buffer
       
     delay_index1=delay_dist/10.0;  //calculate index
     
     //ensure the number is within range of the array after converting from floating point
     if(delay_index1<0)
-    	delay_index1=0;
+      delay_index1=0;
     else if (delay_index1>MAX_MEASUREMENT_DELAY)
-    	delay_index1=MAX_MEASUREMENT_DELAY;
-    	
+      delay_index1=MAX_MEASUREMENT_DELAY;
+      
     if(delay_index1 != delay_index2)  //moved index
-  	  {
-    	meas_sample=widthFil_to_size_ratio()-100;  //subtract off 100 to reduce magnitude - to store in a signed char
-  	  }
+      {
+      meas_sample=widthFil_to_size_ratio()-100;  //subtract off 100 to reduce magnitude - to store in a signed char
+      }
     while( delay_index1 != delay_index2)
-  	  {
-  	  delay_index2 = delay_index2 + 1;
-  	if(delay_index2>MAX_MEASUREMENT_DELAY)
-  			  delay_index2=delay_index2-(MAX_MEASUREMENT_DELAY+1);  //loop around buffer when incrementing
-  	  if(delay_index2<0)
-  		delay_index2=0;
-  	  else if (delay_index2>MAX_MEASUREMENT_DELAY)
-  		delay_index2=MAX_MEASUREMENT_DELAY;  
-  	  
-  	  measurement_delay[delay_index2]=meas_sample;
-  	  }
-    	
+      {
+      delay_index2 = delay_index2 + 1;
+    if(delay_index2>MAX_MEASUREMENT_DELAY)
+          delay_index2=delay_index2-(MAX_MEASUREMENT_DELAY+1);  //loop around buffer when incrementing
+      if(delay_index2<0)
+      delay_index2=0;
+      else if (delay_index2>MAX_MEASUREMENT_DELAY)
+      delay_index2=MAX_MEASUREMENT_DELAY;  
+      
+      measurement_delay[delay_index2]=meas_sample;
+      }
+      
     
-  	  }
+      }
 #endif
 
 
@@ -1043,16 +1097,16 @@ Having the real displacement of the head, we can calculate the total movement le
 
 #ifdef ENABLE_AUTO_BED_LEVELING
 vector_3 plan_get_position() {
-	vector_3 position = vector_3(st_get_position_mm(X_AXIS), st_get_position_mm(Y_AXIS), st_get_position_mm(Z_AXIS));
+  vector_3 position = vector_3(st_get_position_mm(X_AXIS), st_get_position_mm(Y_AXIS), st_get_position_mm(Z_AXIS));
 
-	//position.debug("in plan_get position");
-	//plan_bed_level_matrix.debug("in plan_get bed_level");
-	matrix_3x3 inverse = matrix_3x3::transpose(plan_bed_level_matrix);
-	//inverse.debug("in plan_get inverse");
-	position.apply_rotation(inverse);
-	//position.debug("after rotation");
+  //position.debug("in plan_get position");
+  //plan_bed_level_matrix.debug("in plan_get bed_level");
+  matrix_3x3 inverse = matrix_3x3::transpose(plan_bed_level_matrix);
+  //inverse.debug("in plan_get inverse");
+  position.apply_rotation(inverse);
+  //position.debug("after rotation");
 
-	return position;
+  return position;
 }
 #endif // ENABLE_AUTO_BED_LEVELING
 
@@ -1113,7 +1167,7 @@ void set_extrude_min_temp(float temp)
 // Calculate the steps/s^2 acceleration rates, based on the mm/s^s
 void reset_acceleration_rates()
 {
-	for(int8_t i=0; i < NUM_AXIS; i++)
+  for(int8_t i=0; i < NUM_AXIS; i++)
         {
         axis_steps_per_sqr_second[i] = max_acceleration_units_per_sq_second[i] * axis_steps_per_unit[i];
         }
