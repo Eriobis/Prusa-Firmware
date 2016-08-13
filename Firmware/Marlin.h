@@ -136,23 +136,23 @@ void manage_inactivity(bool ignore_stepper_queue=false);
 #endif
 
 #if defined(Z_ENABLE_PIN) && Z_ENABLE_PIN > -1 
-	#if defined(Z_AXIS_ALWAYS_ON)
-		  #ifdef Z_DUAL_STEPPER_DRIVERS
-			#define  enable_z() { WRITE(Z_ENABLE_PIN, Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN, Z_ENABLE_ON); }
-			#define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
-		  #else
-			#define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
-			#define  disable_z() ;
-		  #endif
-	#else
-		#ifdef Z_DUAL_STEPPER_DRIVERS
-			#define  enable_z() { WRITE(Z_ENABLE_PIN, Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN, Z_ENABLE_ON); }
-			#define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
-		#else
-			#define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
-			#define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
-		#endif
-	#endif
+  #if defined(Z_AXIS_ALWAYS_ON)
+      #ifdef Z_DUAL_STEPPER_DRIVERS
+      #define  enable_z() { WRITE(Z_ENABLE_PIN, Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN, Z_ENABLE_ON); }
+      #define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
+      #else
+      #define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
+      #define  disable_z() ;
+      #endif
+  #else
+    #ifdef Z_DUAL_STEPPER_DRIVERS
+      #define  enable_z() { WRITE(Z_ENABLE_PIN, Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN, Z_ENABLE_ON); }
+      #define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
+    #else
+      #define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
+      #define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
+    #endif
+  #endif
 #else
   #define enable_z() ;
   #define disable_z() ;
@@ -222,6 +222,8 @@ void enquecommand_front(const char *cmd, bool from_progmem = false);
 #define enquecommand_P(cmd) enquecommand(cmd, true)
 #define enquecommand_front_P(cmd) enquecommand_front(cmd, true)
 void repeatcommand_front();
+// Remove all lines from the command queue.
+void cmdqueue_reset();
 
 void prepare_arc_move(char isclockwise);
 void clamp_to_software_endstops(float target[3]);
