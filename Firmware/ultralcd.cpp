@@ -2129,7 +2129,7 @@ static void lcd_calibration_menu()
     MENU_ITEM(gcode, MSG_HOMEYZ, PSTR("G28 Z"));
 #else
     // MK2
-    MENU_ITEM(submenu, MSG_CALIBRATE_BED, lcd_mesh_calibration);
+   // MENU_ITEM(submenu, MSG_CALIBRATE_BED, lcd_mesh_calibration);
     // "Calibrate Z" with storing the reference values to EEPROM.
     MENU_ITEM(submenu, MSG_HOMEYZ, lcd_mesh_calibration_z);
     // "Mesh Bed Leveling"
