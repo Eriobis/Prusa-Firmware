@@ -83,9 +83,9 @@ void Config_StoreSettings()
     EEPROM_WRITE_VAR(i,Ki);
     EEPROM_WRITE_VAR(i,Kd);
   #else
-		float dummy = 3000.0f;
+    float dummy = 3000.0f;
     EEPROM_WRITE_VAR(i,dummy);
-		dummy = 0.0f;
+    dummy = 0.0f;
     EEPROM_WRITE_VAR(i,dummy);
     EEPROM_WRITE_VAR(i,dummy);
   #endif
@@ -204,7 +204,7 @@ void Config_PrintSettings()
     SERIAL_ECHO_START;
     SERIAL_ECHOPAIR("   M208 S",retract_recover_length);
     SERIAL_ECHOPAIR(" F", retract_recover_feedrate*60);
-	SERIAL_ECHOLN("");
+  SERIAL_ECHOLN("");
     SERIAL_ECHO_START;
     SERIAL_ECHOLNPGM("Auto-Retract: S=0 to disable, 1 to interpret extrude-only moves as retracts or recoveries");
     SERIAL_ECHO_START;
@@ -227,13 +227,13 @@ void Config_PrintSettings()
         SERIAL_ECHOPAIR("   M200 D", filament_size[0]);
         SERIAL_ECHOLN(""); 
 #if EXTRUDERS > 1
-		SERIAL_ECHO_START;
+    SERIAL_ECHO_START;
         SERIAL_ECHOPAIR("   M200 T1 D", filament_size[1]);
         SERIAL_ECHOLN(""); 
 #if EXTRUDERS > 2
-		SERIAL_ECHO_START;
+    SERIAL_ECHO_START;
         SERIAL_ECHOPAIR("   M200 T2 D", filament_size[2]);
-		SERIAL_ECHOLN("");
+    SERIAL_ECHOLN("");
 #endif
 #endif
     } else {
@@ -260,7 +260,7 @@ void Config_RetrieveSettings()
         EEPROM_READ_VAR(i,max_acceleration_units_per_sq_second);
         
         // steps per sq second need to be updated to agree with the units per sq second (as they are what is used in the planner)
-		reset_acceleration_rates();
+    reset_acceleration_rates();
         
         EEPROM_READ_VAR(i,acceleration);
         EEPROM_READ_VAR(i,retract_acceleration);
@@ -289,7 +289,7 @@ void Config_RetrieveSettings()
         #ifndef PIDTEMP
         float Kp,Ki,Kd;
         #endif
-        // do not need to scale PID values as the values in EEPROM are already scaled		
+        // do not need to scale PID values as the values in EEPROM are already scaled   
         EEPROM_READ_VAR(i,Kp);
         EEPROM_READ_VAR(i,Ki);
         EEPROM_READ_VAR(i,Kd);
@@ -298,32 +298,32 @@ void Config_RetrieveSettings()
         #endif
         EEPROM_READ_VAR(i,lcd_contrast);
 
-		#ifdef FWRETRACT
-		EEPROM_READ_VAR(i,autoretract_enabled);
-		EEPROM_READ_VAR(i,retract_length);
-		#if EXTRUDERS > 1
-		EEPROM_READ_VAR(i,retract_length_swap);
-		#endif
-		EEPROM_READ_VAR(i,retract_feedrate);
-		EEPROM_READ_VAR(i,retract_zlift);
-		EEPROM_READ_VAR(i,retract_recover_length);
-		#if EXTRUDERS > 1
-		EEPROM_READ_VAR(i,retract_recover_length_swap);
-		#endif
-		EEPROM_READ_VAR(i,retract_recover_feedrate);
-		#endif
+    #ifdef FWRETRACT
+    EEPROM_READ_VAR(i,autoretract_enabled);
+    EEPROM_READ_VAR(i,retract_length);
+    #if EXTRUDERS > 1
+    EEPROM_READ_VAR(i,retract_length_swap);
+    #endif
+    EEPROM_READ_VAR(i,retract_feedrate);
+    EEPROM_READ_VAR(i,retract_zlift);
+    EEPROM_READ_VAR(i,retract_recover_length);
+    #if EXTRUDERS > 1
+    EEPROM_READ_VAR(i,retract_recover_length_swap);
+    #endif
+    EEPROM_READ_VAR(i,retract_recover_feedrate);
+    #endif
 
-		EEPROM_READ_VAR(i, volumetric_enabled);
-		EEPROM_READ_VAR(i, filament_size[0]);
+    EEPROM_READ_VAR(i, volumetric_enabled);
+    EEPROM_READ_VAR(i, filament_size[0]);
 #if EXTRUDERS > 1
-		EEPROM_READ_VAR(i, filament_size[1]);
+    EEPROM_READ_VAR(i, filament_size[1]);
 #if EXTRUDERS > 2
-		EEPROM_READ_VAR(i, filament_size[2]);
+    EEPROM_READ_VAR(i, filament_size[2]);
 #endif
 #endif
-		calculate_volumetric_multipliers();
-		// Call updatePID (similar to when we have processed M301)
-		updatePID();
+    calculate_volumetric_multipliers();
+    // Call updatePID (similar to when we have processed M301)
+    updatePID();
         SERIAL_ECHO_START;
         SERIAL_ECHOLNPGM("Stored settings retrieved");
     }
@@ -362,16 +362,7 @@ void Config_ResetDefault()
     max_jerk[Z_AXIS] = DEFAULT_ZJERK;
     max_jerk[E_AXIS] = DEFAULT_EJERK;
     add_homing[X_AXIS] = add_homing[Y_AXIS] = add_homing[Z_AXIS] = 0;
-#ifdef ULTIPANEL
-    plaPreheatHotendTemp = PLA_PREHEAT_HOTEND_TEMP;
-    plaPreheatHPBTemp = PLA_PREHEAT_HPB_TEMP;
-    plaPreheatFanSpeed = PLA_PREHEAT_FAN_SPEED;
-    absPreheatHotendTemp = ABS_PREHEAT_HOTEND_TEMP;
-    absPreheatHPBTemp = ABS_PREHEAT_HPB_TEMP;
-    absPreheatFanSpeed = ABS_PREHEAT_FAN_SPEED;
-    
 
-#endif
 #ifdef ENABLE_AUTO_BED_LEVELING
     zprobe_zoffset = -Z_PROBE_OFFSET_FROM_EXTRUDER;
 #endif
@@ -392,29 +383,29 @@ void Config_ResetDefault()
 #endif//PIDTEMP
 
 #ifdef FWRETRACT
-	autoretract_enabled = false;
-	retract_length = RETRACT_LENGTH;
+  autoretract_enabled = false;
+  retract_length = RETRACT_LENGTH;
 #if EXTRUDERS > 1
-	retract_length_swap = RETRACT_LENGTH_SWAP;
+  retract_length_swap = RETRACT_LENGTH_SWAP;
 #endif
-	retract_feedrate = RETRACT_FEEDRATE;
-	retract_zlift = RETRACT_ZLIFT;
-	retract_recover_length = RETRACT_RECOVER_LENGTH;
+  retract_feedrate = RETRACT_FEEDRATE;
+  retract_zlift = RETRACT_ZLIFT;
+  retract_recover_length = RETRACT_RECOVER_LENGTH;
 #if EXTRUDERS > 1
-	retract_recover_length_swap = RETRACT_RECOVER_LENGTH_SWAP;
+  retract_recover_length_swap = RETRACT_RECOVER_LENGTH_SWAP;
 #endif
-	retract_recover_feedrate = RETRACT_RECOVER_FEEDRATE;
+  retract_recover_feedrate = RETRACT_RECOVER_FEEDRATE;
 #endif
 
-	volumetric_enabled = false;
-	filament_size[0] = DEFAULT_NOMINAL_FILAMENT_DIA;
+  volumetric_enabled = false;
+  filament_size[0] = DEFAULT_NOMINAL_FILAMENT_DIA;
 #if EXTRUDERS > 1
-	filament_size[1] = DEFAULT_NOMINAL_FILAMENT_DIA;
+  filament_size[1] = DEFAULT_NOMINAL_FILAMENT_DIA;
 #if EXTRUDERS > 2
-	filament_size[2] = DEFAULT_NOMINAL_FILAMENT_DIA;
+  filament_size[2] = DEFAULT_NOMINAL_FILAMENT_DIA;
 #endif
 #endif
-	calculate_volumetric_multipliers();
+  calculate_volumetric_multipliers();
 
 SERIAL_ECHO_START;
 SERIAL_ECHOLNPGM("Hardcoded Default Settings Loaded");
