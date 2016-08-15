@@ -16,7 +16,7 @@ GENERAL SETTINGS
 #define CUSTOM_MENDEL_NAME "Prusa i3 MK2"
 
 // Electronics
-#define MOTHERBOARD BOARD_RAMBO_MINI_1_3
+#define MOTHERBOARD BOARD_RAMBO_MINI_1_3 //I know it's not the rambo but it has all the needed defined
 
 
 /*------------------------------------

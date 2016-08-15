@@ -20,10 +20,6 @@
 
 #define LARGE_FLASH true
 
-#if MB(RAMPS_14_EFB)
-  #include "pins_RAMPS_14.h"
-  #define KNOWN_BOARD
-#endif
 /*****************************************************************
 * Rambo Pin Assignments 1.3
 ******************************************************************/
@@ -38,9 +34,9 @@
   #endif
   
 
-  #define FR_SENS 21
+  #define FR_SENS 4
 
-
+//RAMPS 1.4
   #define X_STEP_PIN 54
   #define X_DIR_PIN 55
   #define X_MIN_PIN 3
@@ -58,7 +54,7 @@
   #define Z_STEP_PIN 46
   #define Z_DIR_PIN 48
   #define Z_MIN_PIN 18
-  #define Z_MAX_PIN -1
+  #define Z_MAX_PIN 19
   #define Z_ENABLE_PIN 62
   #define Z_MS1_PIN -1
   #define Z_MS2_PIN -1
