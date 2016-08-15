@@ -24,7 +24,7 @@ AXIS SETTINGS
 *------------------------------------*/
 
 // Steps per unit {X,Y,Z,E}
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,400,250}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,402.5,250}
 
 // Endstop inverting
 const bool X_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
