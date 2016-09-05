@@ -16,7 +16,7 @@ GENERAL SETTINGS
 #define CUSTOM_MENDEL_NAME "Prusa i3 MK2"
 
 // Electronics
-#define MOTHERBOARD BOARD_RAMBO_MINI_1_3 //I know it's not the rambo but it has all the needed defined
+#define MOTHERBOARD BOARD_RAMBO_MINI_1_3
 
 
 /*------------------------------------
@@ -24,7 +24,7 @@ AXIS SETTINGS
 *------------------------------------*/
 
 // Steps per unit {X,Y,Z,E}
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,400,250}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,402.5,250}
 
 // Endstop inverting
 const bool X_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
@@ -38,10 +38,10 @@ const bool Z_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 // Travel limits after homing
 #define X_MAX_POS 200
-#define X_MIN_POS -12
+#define X_MIN_POS -32
 #define Y_MAX_POS 200
-#define Y_MIN_POS -18
-#define Z_MAX_POS 180
+#define Y_MIN_POS -12
+#define Z_MAX_POS 220
 #define Z_MIN_POS 0.25
 
 // Canceled home position
@@ -178,7 +178,7 @@ BED SETTINGS
 
 // Mesh definitions
 #define MESH_MIN_X 20
-#define MESH_MAX_X 170
+#define MESH_MAX_X 180
 #define MESH_MIN_Y 6
 #define MESH_MAX_Y 190
 
@@ -192,8 +192,8 @@ BED SETTINGS
 #define MESH_HOME_Z_CALIB 0.2
 #define MESH_HOME_Z_SEARCH 5
 
-#define X_PROBE_OFFSET_FROM_EXTRUDER 30     // Z probe to nozzle X offset: -left  +right
-#define Y_PROBE_OFFSET_FROM_EXTRUDER -15     // Z probe to nozzle Y offset: -front +behind
+#define X_PROBE_OFFSET_FROM_EXTRUDER -12     // Z probe to nozzle X offset: -left  +right
+#define Y_PROBE_OFFSET_FROM_EXTRUDER -44     // Z probe to nozzle Y offset: -front +behind
 #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.4  // Z probe to nozzle Z offset: -below (always!)
 #endif
 
@@ -310,7 +310,7 @@ THERMISTORS SETTINGS
 #define TEMP_SENSOR_0 5
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
-#define TEMP_SENSOR_BED 501
+#define TEMP_SENSOR_BED 5
 
 
 #endif //__CONFIGURATION_PRUSA_H

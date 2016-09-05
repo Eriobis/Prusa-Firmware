@@ -20,8 +20,7 @@ void _EEPROM_writeData(int &pos, uint8_t* value, uint8_t size)
 }
 #define EEPROM_WRITE_VAR(pos, value) _EEPROM_writeData(pos, (uint8_t*)&value, sizeof(value))
 void _EEPROM_readData(int &pos, uint8_t* value, uint8_t size)
-{
-    do
+{   do
     {
         *value = eeprom_read_byte((unsigned char*)pos);
         pos++;
