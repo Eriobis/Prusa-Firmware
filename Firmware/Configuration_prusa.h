@@ -13,7 +13,7 @@ GENERAL SETTINGS
 #define DEVELOPER
 
 // Printer name
-#define CUSTOM_MENDEL_NAME "Prusa i3 MK2"
+#define CUSTOM_MENDEL_NAME "Nismon3D P1"
 
 // Electronics
 #define MOTHERBOARD BOARD_RAMBO_MINI_1_3
@@ -24,7 +24,7 @@ AXIS SETTINGS
 *------------------------------------*/
 
 // Steps per unit {X,Y,Z,E}
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,402.5,250}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,400,250}
 
 // Endstop inverting
 const bool X_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
@@ -38,7 +38,7 @@ const bool Z_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 // Travel limits after homing
 #define X_MAX_POS 200
-#define X_MIN_POS -12
+#define X_MIN_POS -10
 #define Y_MAX_POS 200
 #define Y_MIN_POS -18
 #define Z_MAX_POS 180
