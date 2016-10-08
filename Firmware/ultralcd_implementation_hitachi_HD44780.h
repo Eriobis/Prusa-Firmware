@@ -663,6 +663,29 @@ static void lcd_implementation_status_screen()
     lcd.print(ftostr32sp(current_position[Z_AXIS] + 0.00001));
     lcd.print(' ');
 
+    //If dualHotend, we print the hotend 1 instead of the bec
+#if defined(DUAL_EXTRUDER)
+    lcd.setCursor(0, 1);
+    tHotend=int(degHotend(1) + 0.5);
+    tTarget=int(degTargetHotend(1) + 0.5);
+    lcd.print(LCD_STR_THERMOMETER[0]);
+    lcd.print(itostr3(tHotend));
+    lcd.print('/');
+    lcd.print(itostr3left(tTarget));
+    lcd_printPGM(PSTR(LCD_STR_DEGREE " "));
+    lcd.print("  ");
+
+    //Print the Bedtemperature instead of the SD status
+    lcd.setCursor(0, 2);
+    tHotend=int(degBed() + 0.5);
+    tTarget=int(degTargetBed() + 0.5);
+    lcd.print(LCD_STR_BEDTEMP[0]);
+    lcd.print(itostr3(tHotend));
+    lcd.print('/');
+    lcd.print(itostr3left(tTarget));
+    lcd_printPGM(PSTR(LCD_STR_DEGREE " "));
+    lcd.print("  ");
+#else 
     //Print the Bedtemperature
     lcd.setCursor(0, 1);
     tHotend=int(degBed() + 0.5);
@@ -673,17 +696,6 @@ static void lcd_implementation_status_screen()
     lcd.print(itostr3left(tTarget));
     lcd_printPGM(PSTR(LCD_STR_DEGREE " "));
     lcd.print("  ");
-
-    //Print Feedrate
-    lcd.setCursor(LCD_WIDTH - 8-2, 1);
-    lcd.print("  ");
-    lcd.print(LCD_STR_FEEDRATE[0]);
-    lcd.print(itostr3(feedmultiply));
-    lcd.print('%');
-    lcd.print("     ");
-
-
-	
     //Print SD status
     lcd.setCursor(0, 2);
 	if (is_usb_printing)
@@ -711,6 +723,19 @@ static void lcd_implementation_status_screen()
 			lcd.print('%');
 		}
 	}
+#endif
+
+
+    //Print Feedrate
+    lcd.setCursor(LCD_WIDTH - 8-2, 1);
+    lcd.print("  ");
+    lcd.print(LCD_STR_FEEDRATE[0]);
+    lcd.print(itostr3(feedmultiply));
+    lcd.print('%');
+    lcd.print("     ");
+
+
+  
     
     // Farm number display
 	if (farm_mode)

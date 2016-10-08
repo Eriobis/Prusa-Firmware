@@ -1199,6 +1199,24 @@ static void lcd_move_e()
   if (LCD_CLICKED) lcd_goto_menu(lcd_move_menu_axis);
 }
 
+static void lcd_move_e1()
+{
+  if (encoderPosition != 0)
+  {
+    refresh_cmd_timeout();
+    if (! planner_queue_full()) {
+      current_position[E1_AXIS] += float((int)encoderPosition) * move_menu_scale;
+      encoderPosition = 0;
+      plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E1_AXIS], manual_feedrate[E1_AXIS] / 60, active_extruder);
+      lcdDrawUpdate = 1;
+    }
+  }
+  if (lcdDrawUpdate)
+  {
+    lcd_implementation_drawedit(PSTR("Extruder"), ftostr31(current_position[E_AXIS]));
+  }
+  if (LCD_CLICKED) lcd_goto_menu(lcd_move_menu_axis);
+}
 
 // Save a single axis babystep value.
 void EEPROM_save_B(int pos, int* value)
@@ -1984,6 +2002,7 @@ void lcd_move_menu_axis()
 		  MENU_ITEM(submenu, MSG_MOVE_Z, lcd_move_z);
 	  }
 	  MENU_ITEM(submenu, MSG_MOVE_E, lcd_move_e);
+    MENU_ITEM(submenu, MSG_MOVE_E, lcd_move_e1);
   }
   END_MENU();
 }
@@ -2454,9 +2473,7 @@ static void lcd_main_menu()
   START_MENU();
 
   // Majkl superawesome menu
-
-  
- MENU_ITEM(back, MSG_WATCH, lcd_status_screen);
+  MENU_ITEM(back, MSG_WATCH, lcd_status_screen);
 
   if ( ( IS_SD_PRINTING || is_usb_printing ) && (current_position[Z_AXIS] < Z_HEIGHT_HIDE_LIVE_ADJUST_MENU) ) 
   {

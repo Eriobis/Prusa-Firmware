@@ -17,14 +17,14 @@ GENERAL SETTINGS
 
 // Electronics
 #define MOTHERBOARD BOARD_RAMBO_MINI_1_3
-
+#define DUAL_EXTRUDER
 
 /*------------------------------------
 AXIS SETTINGS
 *------------------------------------*/
 
 // Steps per unit {X,Y,Z,E}
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,402.5,250}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,402.5,250, 250}
 
 // Endstop inverting
 const bool X_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
@@ -48,17 +48,17 @@ const bool Z_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define X_CANCEL_POS 50
 #define Y_CANCEL_POS 190
 
-#define NUM_AXIS 4 // The axis order in all axis related arrays is X, Y, Z, E
-#define HOMING_FEEDRATE {3000, 3000, 800, 0}  // set the homing speeds (mm/min)
+#define NUM_AXIS 5 // The axis order in all axis related arrays is X, Y, Z, E0. E1
+#define HOMING_FEEDRATE {3000, 3000, 800, 0, 0}  // set the homing speeds (mm/min)
 
-#define DEFAULT_MAX_FEEDRATE          {500, 500, 12, 25}    // (mm/sec)
-#define DEFAULT_MAX_ACCELERATION      {4000,4000,300,5000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_MAX_FEEDRATE          {500, 500, 12, 25, 25}    // (mm/sec)
+#define DEFAULT_MAX_ACCELERATION      {4000,4000,300,5000, 5000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION          1500    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  1500   // X, Y, Z and E max acceleration in mm/s^2 for retracts
 
 
-#define MANUAL_FEEDRATE {3000, 3000, 1000, 100}   // set the speeds for manual moves (mm/min)
+#define MANUAL_FEEDRATE {3000, 3000, 1000, 100, 100}   // set the speeds for manual moves (mm/min)
 
 #define Z_AXIS_ALWAYS_ON 0
 
