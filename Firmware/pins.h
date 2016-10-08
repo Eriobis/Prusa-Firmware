@@ -76,9 +76,9 @@ overriden, if you have a rambo board, switch branch
   #define PS_ON_PIN 12
 
   #define TEMP_0_PIN 13
-  #define TEMP_1_PIN 15
+  #define TEMP_1_PIN 14
   #define TEMP_2_PIN -1
-  #define TEMP_BED_PIN 14
+  #define TEMP_BED_PIN 15
   // The SDSS pin uses a different pin mapping from file Sd2PinMap.h
   #define SDSS               53
 

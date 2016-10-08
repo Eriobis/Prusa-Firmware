@@ -60,7 +60,7 @@ const bool Z_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 #define MANUAL_FEEDRATE {3000, 3000, 1000, 100}   // set the speeds for manual moves (mm/min)
 
-#define Z_AXIS_ALWAYS_ON 1
+#define Z_AXIS_ALWAYS_ON 0
 
 /*------------------------------------
 EXTRUDER SETTINGS
@@ -309,7 +309,7 @@ THERMISTORS SETTINGS
 // 110 is Pt100 with 1k pullup (non standard)
 
 #define TEMP_SENSOR_0 5
-#define TEMP_SENSOR_1 0
+#define TEMP_SENSOR_1 5
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 5
 
