@@ -32,15 +32,15 @@ const bool Y_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 const bool Z_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
 
 // Home position
-#define MANUAL_X_HOME_POS -10
-#define MANUAL_Y_HOME_POS -2.2
-#define MANUAL_Z_HOME_POS 0.2
+#define MANUAL_X_HOME_POS 0
+#define MANUAL_Y_HOME_POS 0
+#define MANUAL_Z_HOME_POS 0.5
 
 // Travel limits after homing
 #define X_MAX_POS 200
-#define X_MIN_POS -10
+#define X_MIN_POS 0
 #define Y_MAX_POS 200
-#define Y_MIN_POS -18
+#define Y_MIN_POS 0
 #define Z_MAX_POS 180
 #define Z_MIN_POS 0.25
 
@@ -307,10 +307,10 @@ THERMISTORS SETTINGS
 // 147 is Pt100 with 4k7 pullup
 // 110 is Pt100 with 1k pullup (non standard)
 
-#define TEMP_SENSOR_0 5
+#define TEMP_SENSOR_0 1
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
-#define TEMP_SENSOR_BED 501
+#define TEMP_SENSOR_BED 1
 
 
 #endif //__CONFIGURATION_PRUSA_H
