@@ -53,6 +53,7 @@
 #define M_UBRRxH SERIAL_REGNAME(UBRR,SERIAL_PORT,H)
 #define M_UBRRxL SERIAL_REGNAME(UBRR,SERIAL_PORT,L)
 #define M_RXCx SERIAL_REGNAME(RXC,SERIAL_PORT,)
+#define M_FEx SERIAL_REGNAME(FE,SERIAL_PORT,)
 #define M_USARTx_RX_vect SERIAL_REGNAME(USART,SERIAL_PORT,_RX_vect)
 #define M_U2Xx SERIAL_REGNAME(U2X,SERIAL_PORT,)
 
@@ -72,6 +73,7 @@
 // is the index of the location from which to read.
 #define RX_BUFFER_SIZE 128
 
+extern uint8_t selectedSerialPort;
 
 struct ring_buffer
 {
@@ -99,7 +101,7 @@ class MarlinSerial //: public Stream
     {
       return (unsigned int)(RX_BUFFER_SIZE + rx_buffer.head - rx_buffer.tail) % RX_BUFFER_SIZE;
     }
-    
+    /*
     FORCE_INLINE void write(uint8_t c)
     {
       while (!((M_UCSRxA) & (1 << M_UDREx)))
@@ -107,23 +109,72 @@ class MarlinSerial //: public Stream
 
       M_UDRx = c;
     }
+    */
+	void write(uint8_t c)
+	{
+		if (selectedSerialPort == 0)
+		{
+			while (!((M_UCSRxA) & (1 << M_UDREx)));
+			M_UDRx = c;
+		}
+		else if (selectedSerialPort == 1)
+		{
+			while (!((UCSR1A) & (1 << UDRE1)));
+			UDR1 = c;
+		}
+	}
     
-    
-    FORCE_INLINE void checkRx(void)
+    void checkRx(void)
     {
-      if((M_UCSRxA & (1<<M_RXCx)) != 0) {
-        unsigned char c  =  M_UDRx;
-        int i = (unsigned int)(rx_buffer.head + 1) % RX_BUFFER_SIZE;
-
-        // if we should be storing the received character into the location
-        // just before the tail (meaning that the head would advance to the
-        // current location of the tail), we're about to overflow the buffer
-        // and so we don't write the character or advance the head.
-        if (i != rx_buffer.tail) {
-          rx_buffer.buffer[rx_buffer.head] = c;
-          rx_buffer.head = i;
+        if (selectedSerialPort == 0) {
+            if((M_UCSRxA & (1<<M_RXCx)) != 0) {
+                // Test for a framing error.
+                if (M_UCSRxA & (1<<M_FEx)) {
+                    // Characters received with the framing errors will be ignored.
+                    // The temporary variable "c" was made volatile, so the compiler does not optimize this out.
+                    volatile unsigned char c = M_UDRx;
+                } else {
+                    unsigned char c  =  M_UDRx;
+                    int i = (unsigned int)(rx_buffer.head + 1) % RX_BUFFER_SIZE;
+                    // if we should be storing the received character into the location
+                    // just before the tail (meaning that the head would advance to the
+                    // current location of the tail), we're about to overflow the buffer
+                    // and so we don't write the character or advance the head.
+                    if (i != rx_buffer.tail) {
+                        rx_buffer.buffer[rx_buffer.head] = c;
+                        rx_buffer.head = i;
+                    }
+                    //selectedSerialPort = 0;
+#ifdef DEBUG_DUMP_TO_2ND_SERIAL
+					UDR1 = c;
+#endif //DEBUG_DUMP_TO_2ND_SERIAL
+                }
+            }
+        } else if(selectedSerialPort == 1) {
+            if((UCSR1A & (1<<RXC1)) != 0) {
+                // Test for a framing error.
+                if (UCSR1A & (1<<FE1)) {
+                    // Characters received with the framing errors will be ignored.
+                    // The temporary variable "c" was made volatile, so the compiler does not optimize this out.
+                    volatile unsigned char c = UDR1;
+                } else {
+                    unsigned char c  =  UDR1;
+                    int i = (unsigned int)(rx_buffer.head + 1) % RX_BUFFER_SIZE;
+                    // if we should be storing the received character into the location
+                    // just before the tail (meaning that the head would advance to the
+                    // current location of the tail), we're about to overflow the buffer
+                    // and so we don't write the character or advance the head.
+                    if (i != rx_buffer.tail) {
+                        rx_buffer.buffer[rx_buffer.head] = c;
+                        rx_buffer.head = i;
+                    }
+                    //selectedSerialPort = 1;
+#ifdef DEBUG_DUMP_TO_2ND_SERIAL
+					M_UDRx = c;
+#endif //DEBUG_DUMP_TO_2ND_SERIAL
+                }
+            }
         }
-      }
     }
     
     

@@ -1,2244 +1,2540 @@
-#include <avr/pgmspace.h>
+
+#include "Configuration_prusa.h"
+#include "language_all.h"
+
 #define LCD_WIDTH 20
 extern unsigned char lang_selected;
-const char MSGEN0[] PROGMEM = { "Prusa i3 ready." }; //WELCOME_MSG
-const char MSGCZ0[] PROGMEM = { "Prusa i3 pripravena" }; //WELCOME_MSG
-const char MSGIT0[] PROGMEM = { "Prusa i3 pronto." }; //WELCOME_MSG
-const char MSGES0[] PROGMEM = { "Prusa i3 lista" }; //WELCOME_MSG
-const char MSGPL0[] PROGMEM = { "Prusa i3 gotowa" }; //WELCOME_MSG
-const char MSGEN1[] PROGMEM = { "Card inserted" }; //MSG_SD_INSERTED
-const char MSGCZ1[] PROGMEM = { "Karta vlozena" }; //MSG_SD_INSERTED
-const char MSGIT1[] PROGMEM = { "SD Card inserita" }; //MSG_SD_INSERTED
-const char MSGES1[] PROGMEM = { "Tarjeta colocada" }; //MSG_SD_INSERTED
-const char MSGPL1[] PROGMEM = { "Karta wlozona" }; //MSG_SD_INSERTED
-const char MSGEN2[] PROGMEM = { "Card removed" }; //MSG_SD_REMOVED
-const char MSGCZ2[] PROGMEM = { "Karta vyjmuta" }; //MSG_SD_REMOVED
-const char MSGIT2[] PROGMEM = { "SD Card rimossa" }; //MSG_SD_REMOVED
-const char MSGES2[] PROGMEM = { "Tarjeta retirada" }; //MSG_SD_REMOVED
-const char MSGPL2[] PROGMEM = { "Karta wyjeta" }; //MSG_SD_REMOVED
-const char MSGEN3[] PROGMEM = { "Main" }; //MSG_MAIN
-const char MSGCZ3[] PROGMEM = { "Hlavni nabidka" }; //MSG_MAIN
-const char MSGIT3[] PROGMEM = { "Menu principale" }; //MSG_MAIN
-const char MSGES3[] PROGMEM = { "Menu principal" }; //MSG_MAIN
-const char MSGPL3[] PROGMEM = { "Menu glowne" }; //MSG_MAIN
-const char MSGEN4[] PROGMEM = { "Autostart" }; //MSG_AUTOSTART
-const char MSGCZ4[] PROGMEM = { "Autostart" }; //MSG_AUTOSTART
-const char MSGIT4[] PROGMEM = { "Autostart" }; //MSG_AUTOSTART
-const char MSGES4[] PROGMEM = { "Autostart" }; //MSG_AUTOSTART
-const char MSGPL4[] PROGMEM = { "Autostart" }; //MSG_AUTOSTART
-const char MSGEN5[] PROGMEM = { "Disable steppers" }; //MSG_DISABLE_STEPPERS
-const char MSGCZ5[] PROGMEM = { "Vypnout motory" }; //MSG_DISABLE_STEPPERS
-const char MSGIT5[] PROGMEM = { "Disabilita Motori" }; //MSG_DISABLE_STEPPERS
-const char MSGES5[] PROGMEM = { "Apagar motores" }; //MSG_DISABLE_STEPPERS
-const char MSGPL5[] PROGMEM = { "Wylaczyc silniki" }; //MSG_DISABLE_STEPPERS
-const char MSGEN6[] PROGMEM = { "Auto home" }; //MSG_AUTO_HOME
-const char MSGCZ6[] PROGMEM = { "Auto home" }; //MSG_AUTO_HOME
-const char MSGIT6[] PROGMEM = { "Auto Home" }; //MSG_AUTO_HOME
-const char MSGES6[] PROGMEM = { "Llevar al origen" }; //MSG_AUTO_HOME
-const char MSGPL6[] PROGMEM = { "Auto home" }; //MSG_AUTO_HOME
-const char MSGEN7[] PROGMEM = { "Set home offsets" }; //MSG_SET_HOME_OFFSETS
-const char MSGCZ7[] PROGMEM = { "Nastav pocatek home" }; //MSG_SET_HOME_OFFSETS
-const char MSGIT7[] PROGMEM = { "Set home offsets" }; //MSG_SET_HOME_OFFSETS
-const char MSGES7[] PROGMEM = { "Set home offsets" }; //MSG_SET_HOME_OFFSETS
-const char MSGPL7[] PROGMEM = { "Nastav pocatek home" }; //MSG_SET_HOME_OFFSETS
-const char MSGEN8[] PROGMEM = { "Set origin" }; //MSG_SET_ORIGIN
-const char MSGCZ8[] PROGMEM = { "Nastav pocatek" }; //MSG_SET_ORIGIN
-const char MSGIT8[] PROGMEM = { "Set origin" }; //MSG_SET_ORIGIN
-const char MSGES8[] PROGMEM = { "Set origin" }; //MSG_SET_ORIGIN
-const char MSGPL8[] PROGMEM = { "Nastav pocatek" }; //MSG_SET_ORIGIN
-const char MSGEN9[] PROGMEM = { "Preheat PLA" }; //MSG_PREHEAT_PLA
-const char MSGCZ9[] PROGMEM = { "Predehrev PLA" }; //MSG_PREHEAT_PLA
-const char MSGIT9[] PROGMEM = { "Preheat PLA" }; //MSG_PREHEAT_PLA
-const char MSGES9[] PROGMEM = { "Preheat PLA" }; //MSG_PREHEAT_PLA
-const char MSGPL9[] PROGMEM = { "Predehrev PLA" }; //MSG_PREHEAT_PLA
-const char MSGEN10[] PROGMEM = { "Preheat PLA 1" }; //MSG_PREHEAT_PLA0
-const char MSGCZ10[] PROGMEM = { "Predehrev PLA 1" }; //MSG_PREHEAT_PLA0
-const char MSGIT10[] PROGMEM = { "Preheat PLA 1" }; //MSG_PREHEAT_PLA0
-const char MSGES10[] PROGMEM = { "Preheat PLA 1" }; //MSG_PREHEAT_PLA0
-const char MSGPL10[] PROGMEM = { "Predehrev PLA 1" }; //MSG_PREHEAT_PLA0
-const char MSGEN11[] PROGMEM = { "Preheat PLA 2" }; //MSG_PREHEAT_PLA1
-const char MSGCZ11[] PROGMEM = { "Predehrev PLA 2" }; //MSG_PREHEAT_PLA1
-const char MSGIT11[] PROGMEM = { "Preheat PLA 2" }; //MSG_PREHEAT_PLA1
-const char MSGES11[] PROGMEM = { "Preheat PLA 2" }; //MSG_PREHEAT_PLA1
-const char MSGPL11[] PROGMEM = { "Predehrev PLA 2" }; //MSG_PREHEAT_PLA1
-const char MSGEN12[] PROGMEM = { "Preheat PLA 3" }; //MSG_PREHEAT_PLA2
-const char MSGCZ12[] PROGMEM = { "Predehrev PLA 3" }; //MSG_PREHEAT_PLA2
-const char MSGIT12[] PROGMEM = { "Preheat PLA 3" }; //MSG_PREHEAT_PLA2
-const char MSGES12[] PROGMEM = { "Preheat PLA 3" }; //MSG_PREHEAT_PLA2
-const char MSGPL12[] PROGMEM = { "Predehrev PLA 3" }; //MSG_PREHEAT_PLA2
-const char MSGEN13[] PROGMEM = { "Preheat PLA All" }; //MSG_PREHEAT_PLA012
-const char MSGCZ13[] PROGMEM = { "Predehrev PLA All" }; //MSG_PREHEAT_PLA012
-const char MSGIT13[] PROGMEM = { "Preheat PLA All" }; //MSG_PREHEAT_PLA012
-const char MSGES13[] PROGMEM = { "Preheat PLA All" }; //MSG_PREHEAT_PLA012
-const char MSGPL13[] PROGMEM = { "Predehrev PLA All" }; //MSG_PREHEAT_PLA012
-const char MSGEN14[] PROGMEM = { "Preheat PLA Bed" }; //MSG_PREHEAT_PLA_BEDONLY
-const char MSGCZ14[] PROGMEM = { "Predehrev PLA Bed" }; //MSG_PREHEAT_PLA_BEDONLY
-const char MSGIT14[] PROGMEM = { "Preheat PLA Bed" }; //MSG_PREHEAT_PLA_BEDONLY
-const char MSGES14[] PROGMEM = { "Preheat PLA Bed" }; //MSG_PREHEAT_PLA_BEDONLY
-const char MSGPL14[] PROGMEM = { "Predehrev PLA Bed" }; //MSG_PREHEAT_PLA_BEDONLY
-const char MSGEN15[] PROGMEM = { "Preheat PLA conf" }; //MSG_PREHEAT_PLA_SETTINGS
-const char MSGCZ15[] PROGMEM = { "Predehrev PLA conf" }; //MSG_PREHEAT_PLA_SETTINGS
-const char MSGIT15[] PROGMEM = { "Preheat PLA conf" }; //MSG_PREHEAT_PLA_SETTINGS
-const char MSGES15[] PROGMEM = { "Preheat PLA conf" }; //MSG_PREHEAT_PLA_SETTINGS
-const char MSGPL15[] PROGMEM = { "Predehrev PLA conf" }; //MSG_PREHEAT_PLA_SETTINGS
-const char MSGEN16[] PROGMEM = { "Preheat ABS" }; //MSG_PREHEAT_ABS
-const char MSGCZ16[] PROGMEM = { "Predehrev ABS" }; //MSG_PREHEAT_ABS
-const char MSGIT16[] PROGMEM = { "Preheat ABS" }; //MSG_PREHEAT_ABS
-const char MSGES16[] PROGMEM = { "Preheat ABS" }; //MSG_PREHEAT_ABS
-const char MSGPL16[] PROGMEM = { "Predehrev ABS" }; //MSG_PREHEAT_ABS
-const char MSGEN17[] PROGMEM = { "Preheat ABS 1" }; //MSG_PREHEAT_ABS0
-const char MSGCZ17[] PROGMEM = { "Predehrev ABS 1" }; //MSG_PREHEAT_ABS0
-const char MSGIT17[] PROGMEM = { "Preheat ABS 1" }; //MSG_PREHEAT_ABS0
-const char MSGES17[] PROGMEM = { "Preheat ABS 1" }; //MSG_PREHEAT_ABS0
-const char MSGPL17[] PROGMEM = { "Predehrev ABS 1" }; //MSG_PREHEAT_ABS0
-const char MSGEN18[] PROGMEM = { "Preheat ABS 2" }; //MSG_PREHEAT_ABS1
-const char MSGCZ18[] PROGMEM = { "Predehrev ABS 2" }; //MSG_PREHEAT_ABS1
-const char MSGIT18[] PROGMEM = { "Preheat ABS 2" }; //MSG_PREHEAT_ABS1
-const char MSGES18[] PROGMEM = { "Preheat ABS 2" }; //MSG_PREHEAT_ABS1
-const char MSGPL18[] PROGMEM = { "Predehrev ABS 2" }; //MSG_PREHEAT_ABS1
-const char MSGEN19[] PROGMEM = { "Preheat ABS 3" }; //MSG_PREHEAT_ABS2
-const char MSGCZ19[] PROGMEM = { "Predehrev ABS 3" }; //MSG_PREHEAT_ABS2
-const char MSGIT19[] PROGMEM = { "Preheat ABS 3" }; //MSG_PREHEAT_ABS2
-const char MSGES19[] PROGMEM = { "Preheat ABS 3" }; //MSG_PREHEAT_ABS2
-const char MSGPL19[] PROGMEM = { "Predehrev ABS 3" }; //MSG_PREHEAT_ABS2
-const char MSGEN20[] PROGMEM = { "Preheat ABS All" }; //MSG_PREHEAT_ABS012
-const char MSGCZ20[] PROGMEM = { "Predehrev ABS All" }; //MSG_PREHEAT_ABS012
-const char MSGIT20[] PROGMEM = { "Preheat ABS All" }; //MSG_PREHEAT_ABS012
-const char MSGES20[] PROGMEM = { "Preheat ABS All" }; //MSG_PREHEAT_ABS012
-const char MSGPL20[] PROGMEM = { "Predehrev ABS All" }; //MSG_PREHEAT_ABS012
-const char MSGEN21[] PROGMEM = { "Preheat ABS Bed" }; //MSG_PREHEAT_ABS_BEDONLY
-const char MSGCZ21[] PROGMEM = { "Predehrev ABS Bed" }; //MSG_PREHEAT_ABS_BEDONLY
-const char MSGIT21[] PROGMEM = { "Preheat ABS Bed" }; //MSG_PREHEAT_ABS_BEDONLY
-const char MSGES21[] PROGMEM = { "Preheat ABS Bed" }; //MSG_PREHEAT_ABS_BEDONLY
-const char MSGPL21[] PROGMEM = { "Predehrev ABS Bed" }; //MSG_PREHEAT_ABS_BEDONLY
-const char MSGEN22[] PROGMEM = { "Preheat ABS conf" }; //MSG_PREHEAT_ABS_SETTINGS
-const char MSGCZ22[] PROGMEM = { "Predehrev ABS conf" }; //MSG_PREHEAT_ABS_SETTINGS
-const char MSGIT22[] PROGMEM = { "Preheat ABS conf" }; //MSG_PREHEAT_ABS_SETTINGS
-const char MSGES22[] PROGMEM = { "Preheat ABS conf" }; //MSG_PREHEAT_ABS_SETTINGS
-const char MSGPL22[] PROGMEM = { "Predehrev ABS conf" }; //MSG_PREHEAT_ABS_SETTINGS
-const char MSGEN23[] PROGMEM = { "Cooldown" }; //MSG_COOLDOWN
-const char MSGCZ23[] PROGMEM = { "Zchladit" }; //MSG_COOLDOWN
-const char MSGIT23[] PROGMEM = { "Raffredda" }; //MSG_COOLDOWN
-const char MSGES23[] PROGMEM = { "Enfriar" }; //MSG_COOLDOWN
-const char MSGPL23[] PROGMEM = { "Wychlodzic" }; //MSG_COOLDOWN
-const char MSGEN24[] PROGMEM = { "Switch power on" }; //MSG_SWITCH_PS_ON
-const char MSGCZ24[] PROGMEM = { "Vypnout zdroj" }; //MSG_SWITCH_PS_ON
-const char MSGIT24[] PROGMEM = { "Switch power on" }; //MSG_SWITCH_PS_ON
-const char MSGES24[] PROGMEM = { "Switch power on" }; //MSG_SWITCH_PS_ON
-const char MSGPL24[] PROGMEM = { "Vypnout zdroj" }; //MSG_SWITCH_PS_ON
-const char MSGEN25[] PROGMEM = { "Switch power off" }; //MSG_SWITCH_PS_OFF
-const char MSGCZ25[] PROGMEM = { "Zapnout zdroj" }; //MSG_SWITCH_PS_OFF
-const char MSGIT25[] PROGMEM = { "Switch power off" }; //MSG_SWITCH_PS_OFF
-const char MSGES25[] PROGMEM = { "Switch power off" }; //MSG_SWITCH_PS_OFF
-const char MSGPL25[] PROGMEM = { "Zapnout zdroj" }; //MSG_SWITCH_PS_OFF
-const char MSGEN26[] PROGMEM = { "Extrude" }; //MSG_EXTRUDE
-const char MSGCZ26[] PROGMEM = { "Extrudovat" }; //MSG_EXTRUDE
-const char MSGIT26[] PROGMEM = { "Extrude" }; //MSG_EXTRUDE
-const char MSGES26[] PROGMEM = { "Extrude" }; //MSG_EXTRUDE
-const char MSGPL26[] PROGMEM = { "Extrudovat" }; //MSG_EXTRUDE
-const char MSGEN27[] PROGMEM = { "Retract" }; //MSG_RETRACT
-const char MSGCZ27[] PROGMEM = { "Retract" }; //MSG_RETRACT
-const char MSGIT27[] PROGMEM = { "Retract" }; //MSG_RETRACT
-const char MSGES27[] PROGMEM = { "Retract" }; //MSG_RETRACT
-const char MSGPL27[] PROGMEM = { "Retract" }; //MSG_RETRACT
-const char MSGEN28[] PROGMEM = { "Move axis" }; //MSG_MOVE_AXIS
-const char MSGCZ28[] PROGMEM = { "Posunout osu" }; //MSG_MOVE_AXIS
-const char MSGIT28[] PROGMEM = { "Muovi Asse" }; //MSG_MOVE_AXIS
-const char MSGES28[] PROGMEM = { "Mover ejes" }; //MSG_MOVE_AXIS
-const char MSGPL28[] PROGMEM = { "Ruch osi" }; //MSG_MOVE_AXIS
-const char MSGEN29[] PROGMEM = { "Move X" }; //MSG_MOVE_X
-const char MSGCZ29[] PROGMEM = { "Posunout X" }; //MSG_MOVE_X
-const char MSGIT29[] PROGMEM = { "Muovi X" }; //MSG_MOVE_X
-const char MSGES29[] PROGMEM = { "Mover X" }; //MSG_MOVE_X
-const char MSGPL29[] PROGMEM = { "Przesunac X" }; //MSG_MOVE_X
-const char MSGEN30[] PROGMEM = { "Move Y" }; //MSG_MOVE_Y
-const char MSGCZ30[] PROGMEM = { "Posunout Y" }; //MSG_MOVE_Y
-const char MSGIT30[] PROGMEM = { "Muovi Y" }; //MSG_MOVE_Y
-const char MSGES30[] PROGMEM = { "Mover Y" }; //MSG_MOVE_Y
-const char MSGPL30[] PROGMEM = { "Przesunac Y" }; //MSG_MOVE_Y
-const char MSGEN31[] PROGMEM = { "Move Z" }; //MSG_MOVE_Z
-const char MSGCZ31[] PROGMEM = { "Posunout Z" }; //MSG_MOVE_Z
-const char MSGIT31[] PROGMEM = { "Muovi Z" }; //MSG_MOVE_Z
-const char MSGES31[] PROGMEM = { "Mover Z" }; //MSG_MOVE_Z
-const char MSGPL31[] PROGMEM = { "Przesunac Z" }; //MSG_MOVE_Z
-const char MSGEN32[] PROGMEM = { "Extruder" }; //MSG_MOVE_E
-const char MSGCZ32[] PROGMEM = { "Extruder" }; //MSG_MOVE_E
-const char MSGIT32[] PROGMEM = { "Estrusore" }; //MSG_MOVE_E
-const char MSGES32[] PROGMEM = { "Extrusor" }; //MSG_MOVE_E
-const char MSGPL32[] PROGMEM = { "Extruder" }; //MSG_MOVE_E
-const char MSGEN33[] PROGMEM = { "Extruder2" }; //MSG_MOVE_E1
-const char MSGCZ33[] PROGMEM = { "Extruder2" }; //MSG_MOVE_E1
-const char MSGIT33[] PROGMEM = { "Extruder2" }; //MSG_MOVE_E1
-const char MSGES33[] PROGMEM = { "Extruder2" }; //MSG_MOVE_E1
-const char MSGPL33[] PROGMEM = { "Extruder2" }; //MSG_MOVE_E1
-const char MSGEN34[] PROGMEM = { "Extruder3" }; //MSG_MOVE_E2
-const char MSGCZ34[] PROGMEM = { "Extruder3" }; //MSG_MOVE_E2
-const char MSGIT34[] PROGMEM = { "Extruder3" }; //MSG_MOVE_E2
-const char MSGES34[] PROGMEM = { "Extruder3" }; //MSG_MOVE_E2
-const char MSGPL34[] PROGMEM = { "Extruder3" }; //MSG_MOVE_E2
-const char MSGEN35[] PROGMEM = { "Move 0.1mm" }; //MSG_MOVE_01MM
-const char MSGCZ35[] PROGMEM = { "Posunout o 0.1mm" }; //MSG_MOVE_01MM
-const char MSGIT35[] PROGMEM = { "Move 0.1mm" }; //MSG_MOVE_01MM
-const char MSGES35[] PROGMEM = { "Move 0.1mm" }; //MSG_MOVE_01MM
-const char MSGPL35[] PROGMEM = { "Posunout o 0.1mm" }; //MSG_MOVE_01MM
-const char MSGEN36[] PROGMEM = { "Move 1mm" }; //MSG_MOVE_1MM
-const char MSGCZ36[] PROGMEM = { "Posunout o 1mm" }; //MSG_MOVE_1MM
-const char MSGIT36[] PROGMEM = { "Move 1mm" }; //MSG_MOVE_1MM
-const char MSGES36[] PROGMEM = { "Move 1mm" }; //MSG_MOVE_1MM
-const char MSGPL36[] PROGMEM = { "Posunout o 1mm" }; //MSG_MOVE_1MM
-const char MSGEN37[] PROGMEM = { "Move 10mm" }; //MSG_MOVE_10MM
-const char MSGCZ37[] PROGMEM = { "Posunout o 10mm" }; //MSG_MOVE_10MM
-const char MSGIT37[] PROGMEM = { "Move 10mm" }; //MSG_MOVE_10MM
-const char MSGES37[] PROGMEM = { "Move 10mm" }; //MSG_MOVE_10MM
-const char MSGPL37[] PROGMEM = { "Posunout o 10mm" }; //MSG_MOVE_10MM
-const char MSGEN38[] PROGMEM = { "Speed" }; //MSG_SPEED
-const char MSGCZ38[] PROGMEM = { "Rychlost" }; //MSG_SPEED
-const char MSGIT38[] PROGMEM = { "Velcità" }; //MSG_SPEED
-const char MSGES38[] PROGMEM = { "Velocidad" }; //MSG_SPEED
-const char MSGPL38[] PROGMEM = { "Predkosc" }; //MSG_SPEED
-const char MSGEN39[] PROGMEM = { "Nozzle" }; //MSG_NOZZLE
-const char MSGCZ39[] PROGMEM = { "Tryska" }; //MSG_NOZZLE
-const char MSGIT39[] PROGMEM = { "Ugello" }; //MSG_NOZZLE
-const char MSGES39[] PROGMEM = { "Fusor" }; //MSG_NOZZLE
-const char MSGPL39[] PROGMEM = { "Dysza" }; //MSG_NOZZLE
-const char MSGEN40[] PROGMEM = { "Nozzle2" }; //MSG_NOZZLE1
-const char MSGCZ40[] PROGMEM = { "Tryska2" }; //MSG_NOZZLE1
-const char MSGIT40[] PROGMEM = { "Nozzle2" }; //MSG_NOZZLE1
-const char MSGES40[] PROGMEM = { "Nozzle2" }; //MSG_NOZZLE1
-const char MSGPL40[] PROGMEM = { "Tryska2" }; //MSG_NOZZLE1
-const char MSGEN41[] PROGMEM = { "Nozzle3" }; //MSG_NOZZLE2
-const char MSGCZ41[] PROGMEM = { "Tryska3" }; //MSG_NOZZLE2
-const char MSGIT41[] PROGMEM = { "Nozzle3" }; //MSG_NOZZLE2
-const char MSGES41[] PROGMEM = { "Nozzle3" }; //MSG_NOZZLE2
-const char MSGPL41[] PROGMEM = { "Tryska3" }; //MSG_NOZZLE2
-const char MSGEN42[] PROGMEM = { "Bed" }; //MSG_BED
-const char MSGCZ42[] PROGMEM = { "Bed" }; //MSG_BED
-const char MSGIT42[] PROGMEM = { "Piatto" }; //MSG_BED
-const char MSGES42[] PROGMEM = { "Base" }; //MSG_BED
-const char MSGPL42[] PROGMEM = { "Stolik" }; //MSG_BED
-const char MSGEN43[] PROGMEM = { "Fan speed" }; //MSG_FAN_SPEED
-const char MSGCZ43[] PROGMEM = { "Rychlost vent." }; //MSG_FAN_SPEED
-const char MSGIT43[] PROGMEM = { "Ventola" }; //MSG_FAN_SPEED
-const char MSGES43[] PROGMEM = { "Ventilador" }; //MSG_FAN_SPEED
-const char MSGPL43[] PROGMEM = { "Predkosc went." }; //MSG_FAN_SPEED
-const char MSGEN44[] PROGMEM = { "Flow" }; //MSG_FLOW
-const char MSGCZ44[] PROGMEM = { "Prutok" }; //MSG_FLOW
-const char MSGIT44[] PROGMEM = { "Flusso" }; //MSG_FLOW
-const char MSGES44[] PROGMEM = { "Flujo" }; //MSG_FLOW
-const char MSGPL44[] PROGMEM = { "Przeplyw" }; //MSG_FLOW
-const char MSGEN45[] PROGMEM = { "Flow 0" }; //MSG_FLOW0
-const char MSGCZ45[] PROGMEM = { "Prutok 0" }; //MSG_FLOW0
-const char MSGIT45[] PROGMEM = { "Flow 0" }; //MSG_FLOW0
-const char MSGES45[] PROGMEM = { "Flow 0" }; //MSG_FLOW0
-const char MSGPL45[] PROGMEM = { "Prutok 0" }; //MSG_FLOW0
-const char MSGEN46[] PROGMEM = { "Flow 1" }; //MSG_FLOW1
-const char MSGCZ46[] PROGMEM = { "Prutok 1" }; //MSG_FLOW1
-const char MSGIT46[] PROGMEM = { "Flow 1" }; //MSG_FLOW1
-const char MSGES46[] PROGMEM = { "Flow 1" }; //MSG_FLOW1
-const char MSGPL46[] PROGMEM = { "Prutok 1" }; //MSG_FLOW1
-const char MSGEN47[] PROGMEM = { "Flow 2" }; //MSG_FLOW2
-const char MSGCZ47[] PROGMEM = { "Prutok 2" }; //MSG_FLOW2
-const char MSGIT47[] PROGMEM = { "Flow 2" }; //MSG_FLOW2
-const char MSGES47[] PROGMEM = { "Flow 2" }; //MSG_FLOW2
-const char MSGPL47[] PROGMEM = { "Prutok 2" }; //MSG_FLOW2
-const char MSGEN48[] PROGMEM = { "Control" }; //MSG_CONTROL
-const char MSGCZ48[] PROGMEM = { "Kontrola" }; //MSG_CONTROL
-const char MSGIT48[] PROGMEM = { "Control" }; //MSG_CONTROL
-const char MSGES48[] PROGMEM = { "Control" }; //MSG_CONTROL
-const char MSGPL48[] PROGMEM = { "Kontrola" }; //MSG_CONTROL
-const char MSGEN49[] PROGMEM = { " \002 Min" }; //MSG_MIN
-const char MSGCZ49[] PROGMEM = { " \002 Min" }; //MSG_MIN
-const char MSGIT49[] PROGMEM = { " \002 Min" }; //MSG_MIN
-const char MSGES49[] PROGMEM = { " \002 Min" }; //MSG_MIN
-const char MSGPL49[] PROGMEM = { " \002 Min" }; //MSG_MIN
-const char MSGEN50[] PROGMEM = { " \002 Max" }; //MSG_MAX
-const char MSGCZ50[] PROGMEM = { " \002 Max" }; //MSG_MAX
-const char MSGIT50[] PROGMEM = { " \002 Max" }; //MSG_MAX
-const char MSGES50[] PROGMEM = { " \002 Max" }; //MSG_MAX
-const char MSGPL50[] PROGMEM = { " \002 Max" }; //MSG_MAX
-const char MSGEN51[] PROGMEM = { " \002 Fact" }; //MSG_FACTOR
-const char MSGCZ51[] PROGMEM = { " \002 Fact" }; //MSG_FACTOR
-const char MSGIT51[] PROGMEM = { " \002 Fact" }; //MSG_FACTOR
-const char MSGES51[] PROGMEM = { " \002 Fact" }; //MSG_FACTOR
-const char MSGPL51[] PROGMEM = { " \002 Fact" }; //MSG_FACTOR
-const char MSGEN52[] PROGMEM = { "Autotemp" }; //MSG_AUTOTEMP
-const char MSGCZ52[] PROGMEM = { "Autotemp" }; //MSG_AUTOTEMP
-const char MSGIT52[] PROGMEM = { "Autotemp" }; //MSG_AUTOTEMP
-const char MSGES52[] PROGMEM = { "Autotemp" }; //MSG_AUTOTEMP
-const char MSGPL52[] PROGMEM = { "Autotemp" }; //MSG_AUTOTEMP
-const char MSGEN53[] PROGMEM = { "On " }; //MSG_ON
-const char MSGCZ53[] PROGMEM = { "On " }; //MSG_ON
-const char MSGIT53[] PROGMEM = { "On " }; //MSG_ON
-const char MSGES53[] PROGMEM = { "On " }; //MSG_ON
-const char MSGPL53[] PROGMEM = { "On " }; //MSG_ON
-const char MSGEN54[] PROGMEM = { "Off" }; //MSG_OFF
-const char MSGCZ54[] PROGMEM = { "Off" }; //MSG_OFF
-const char MSGIT54[] PROGMEM = { "Off" }; //MSG_OFF
-const char MSGES54[] PROGMEM = { "Off" }; //MSG_OFF
-const char MSGPL54[] PROGMEM = { "Off" }; //MSG_OFF
-const char MSGEN55[] PROGMEM = { "PID-P" }; //MSG_PID_P
-const char MSGCZ55[] PROGMEM = { "PID-P" }; //MSG_PID_P
-const char MSGIT55[] PROGMEM = { "PID-P" }; //MSG_PID_P
-const char MSGES55[] PROGMEM = { "PID-P" }; //MSG_PID_P
-const char MSGPL55[] PROGMEM = { "PID-P" }; //MSG_PID_P
-const char MSGEN56[] PROGMEM = { "PID-I" }; //MSG_PID_I
-const char MSGCZ56[] PROGMEM = { "PID-I" }; //MSG_PID_I
-const char MSGIT56[] PROGMEM = { "PID-I" }; //MSG_PID_I
-const char MSGES56[] PROGMEM = { "PID-I" }; //MSG_PID_I
-const char MSGPL56[] PROGMEM = { "PID-I" }; //MSG_PID_I
-const char MSGEN57[] PROGMEM = { "PID-D" }; //MSG_PID_D
-const char MSGCZ57[] PROGMEM = { "PID-D" }; //MSG_PID_D
-const char MSGIT57[] PROGMEM = { "PID-D" }; //MSG_PID_D
-const char MSGES57[] PROGMEM = { "PID-D" }; //MSG_PID_D
-const char MSGPL57[] PROGMEM = { "PID-D" }; //MSG_PID_D
-const char MSGEN58[] PROGMEM = { "PID-C" }; //MSG_PID_C
-const char MSGCZ58[] PROGMEM = { "PID-C" }; //MSG_PID_C
-const char MSGIT58[] PROGMEM = { "PID-C" }; //MSG_PID_C
-const char MSGES58[] PROGMEM = { "PID-C" }; //MSG_PID_C
-const char MSGPL58[] PROGMEM = { "PID-C" }; //MSG_PID_C
-const char MSGEN59[] PROGMEM = { "Accel" }; //MSG_ACC
-const char MSGCZ59[] PROGMEM = { "Accel" }; //MSG_ACC
-const char MSGIT59[] PROGMEM = { "Accel" }; //MSG_ACC
-const char MSGES59[] PROGMEM = { "Accel" }; //MSG_ACC
-const char MSGPL59[] PROGMEM = { "Accel" }; //MSG_ACC
-const char MSGEN60[] PROGMEM = { "Vxy-jerk" }; //MSG_VXY_JERK
-const char MSGCZ60[] PROGMEM = { "Vxy-jerk" }; //MSG_VXY_JERK
-const char MSGIT60[] PROGMEM = { "Vxy-jerk" }; //MSG_VXY_JERK
-const char MSGES60[] PROGMEM = { "Vxy-jerk" }; //MSG_VXY_JERK
-const char MSGPL60[] PROGMEM = { "Vxy-jerk" }; //MSG_VXY_JERK
-const char MSGEN61[] PROGMEM = { "Vz-jerk" }; //MSG_VZ_JERK
-const char MSGCZ61[] PROGMEM = { "Vz-jerk" }; //MSG_VZ_JERK
-const char MSGIT61[] PROGMEM = { "Vz-jerk" }; //MSG_VZ_JERK
-const char MSGES61[] PROGMEM = { "Vz-jerk" }; //MSG_VZ_JERK
-const char MSGPL61[] PROGMEM = { "Vz-jerk" }; //MSG_VZ_JERK
-const char MSGEN62[] PROGMEM = { "Ve-jerk" }; //MSG_VE_JERK
-const char MSGCZ62[] PROGMEM = { "Ve-jerk" }; //MSG_VE_JERK
-const char MSGIT62[] PROGMEM = { "Ve-jerk" }; //MSG_VE_JERK
-const char MSGES62[] PROGMEM = { "Ve-jerk" }; //MSG_VE_JERK
-const char MSGPL62[] PROGMEM = { "Ve-jerk" }; //MSG_VE_JERK
-const char MSGEN63[] PROGMEM = { "Vmax " }; //MSG_VMAX
-const char MSGCZ63[] PROGMEM = { "Vmax " }; //MSG_VMAX
-const char MSGIT63[] PROGMEM = { "Vmax " }; //MSG_VMAX
-const char MSGES63[] PROGMEM = { "Vmax " }; //MSG_VMAX
-const char MSGPL63[] PROGMEM = { "Vmax " }; //MSG_VMAX
-const char MSGEN64[] PROGMEM = { "x" }; //MSG_X
-const char MSGCZ64[] PROGMEM = { "x" }; //MSG_X
-const char MSGIT64[] PROGMEM = { "x" }; //MSG_X
-const char MSGES64[] PROGMEM = { "x" }; //MSG_X
-const char MSGPL64[] PROGMEM = { "x" }; //MSG_X
-const char MSGEN65[] PROGMEM = { "y" }; //MSG_Y
-const char MSGCZ65[] PROGMEM = { "y" }; //MSG_Y
-const char MSGIT65[] PROGMEM = { "y" }; //MSG_Y
-const char MSGES65[] PROGMEM = { "y" }; //MSG_Y
-const char MSGPL65[] PROGMEM = { "y" }; //MSG_Y
-const char MSGEN66[] PROGMEM = { "z" }; //MSG_Z
-const char MSGCZ66[] PROGMEM = { "z" }; //MSG_Z
-const char MSGIT66[] PROGMEM = { "z" }; //MSG_Z
-const char MSGES66[] PROGMEM = { "z" }; //MSG_Z
-const char MSGPL66[] PROGMEM = { "z" }; //MSG_Z
-const char MSGEN67[] PROGMEM = { "e" }; //MSG_E
-const char MSGCZ67[] PROGMEM = { "e" }; //MSG_E
-const char MSGIT67[] PROGMEM = { "e" }; //MSG_E
-const char MSGES67[] PROGMEM = { "e" }; //MSG_E
-const char MSGPL67[] PROGMEM = { "e" }; //MSG_E
-const char MSGEN68[] PROGMEM = { "Vmin" }; //MSG_VMIN
-const char MSGCZ68[] PROGMEM = { "Vmin" }; //MSG_VMIN
-const char MSGIT68[] PROGMEM = { "Vmin" }; //MSG_VMIN
-const char MSGES68[] PROGMEM = { "Vmin" }; //MSG_VMIN
-const char MSGPL68[] PROGMEM = { "Vmin" }; //MSG_VMIN
-const char MSGEN69[] PROGMEM = { "VTrav min" }; //MSG_VTRAV_MIN
-const char MSGCZ69[] PROGMEM = { "VTrav min" }; //MSG_VTRAV_MIN
-const char MSGIT69[] PROGMEM = { "VTrav min" }; //MSG_VTRAV_MIN
-const char MSGES69[] PROGMEM = { "VTrav min" }; //MSG_VTRAV_MIN
-const char MSGPL69[] PROGMEM = { "VTrav min" }; //MSG_VTRAV_MIN
-const char MSGEN70[] PROGMEM = { "Amax " }; //MSG_AMAX
-const char MSGCZ70[] PROGMEM = { "Amax " }; //MSG_AMAX
-const char MSGIT70[] PROGMEM = { "Amax " }; //MSG_AMAX
-const char MSGES70[] PROGMEM = { "Amax " }; //MSG_AMAX
-const char MSGPL70[] PROGMEM = { "Amax " }; //MSG_AMAX
-const char MSGEN71[] PROGMEM = { "A-retract" }; //MSG_A_RETRACT
-const char MSGCZ71[] PROGMEM = { "A-retract" }; //MSG_A_RETRACT
-const char MSGIT71[] PROGMEM = { "A-retract" }; //MSG_A_RETRACT
-const char MSGES71[] PROGMEM = { "A-retract" }; //MSG_A_RETRACT
-const char MSGPL71[] PROGMEM = { "A-retract" }; //MSG_A_RETRACT
-const char MSGEN72[] PROGMEM = { "Xsteps/mm" }; //MSG_XSTEPS
-const char MSGCZ72[] PROGMEM = { "Xsteps/mm" }; //MSG_XSTEPS
-const char MSGIT72[] PROGMEM = { "Xsteps/mm" }; //MSG_XSTEPS
-const char MSGES72[] PROGMEM = { "Xsteps/mm" }; //MSG_XSTEPS
-const char MSGPL72[] PROGMEM = { "Xsteps/mm" }; //MSG_XSTEPS
-const char MSGEN73[] PROGMEM = { "Ysteps/mm" }; //MSG_YSTEPS
-const char MSGCZ73[] PROGMEM = { "Ysteps/mm" }; //MSG_YSTEPS
-const char MSGIT73[] PROGMEM = { "Ysteps/mm" }; //MSG_YSTEPS
-const char MSGES73[] PROGMEM = { "Ysteps/mm" }; //MSG_YSTEPS
-const char MSGPL73[] PROGMEM = { "Ysteps/mm" }; //MSG_YSTEPS
-const char MSGEN74[] PROGMEM = { "Zsteps/mm" }; //MSG_ZSTEPS
-const char MSGCZ74[] PROGMEM = { "Zsteps/mm" }; //MSG_ZSTEPS
-const char MSGIT74[] PROGMEM = { "Zsteps/mm" }; //MSG_ZSTEPS
-const char MSGES74[] PROGMEM = { "Zsteps/mm" }; //MSG_ZSTEPS
-const char MSGPL74[] PROGMEM = { "Zsteps/mm" }; //MSG_ZSTEPS
-const char MSGEN75[] PROGMEM = { "Esteps/mm" }; //MSG_ESTEPS
-const char MSGCZ75[] PROGMEM = { "Esteps/mm" }; //MSG_ESTEPS
-const char MSGIT75[] PROGMEM = { "Esteps/mm" }; //MSG_ESTEPS
-const char MSGES75[] PROGMEM = { "Esteps/mm" }; //MSG_ESTEPS
-const char MSGPL75[] PROGMEM = { "Esteps/mm" }; //MSG_ESTEPS
-const char MSGEN76[] PROGMEM = { "Temperature" }; //MSG_TEMPERATURE
-const char MSGCZ76[] PROGMEM = { "Teplota" }; //MSG_TEMPERATURE
-const char MSGIT76[] PROGMEM = { "Temperatura" }; //MSG_TEMPERATURE
-const char MSGES76[] PROGMEM = { "Temperatura" }; //MSG_TEMPERATURE
-const char MSGPL76[] PROGMEM = { "Temperatura" }; //MSG_TEMPERATURE
-const char MSGEN77[] PROGMEM = { "Motion" }; //MSG_MOTION
-const char MSGCZ77[] PROGMEM = { "Pohyb" }; //MSG_MOTION
-const char MSGIT77[] PROGMEM = { "Motion" }; //MSG_MOTION
-const char MSGES77[] PROGMEM = { "Motion" }; //MSG_MOTION
-const char MSGPL77[] PROGMEM = { "Pohyb" }; //MSG_MOTION
-const char MSGEN78[] PROGMEM = { "Filament" }; //MSG_VOLUMETRIC
-const char MSGCZ78[] PROGMEM = { "Filament" }; //MSG_VOLUMETRIC
-const char MSGIT78[] PROGMEM = { "Filament" }; //MSG_VOLUMETRIC
-const char MSGES78[] PROGMEM = { "Filament" }; //MSG_VOLUMETRIC
-const char MSGPL78[] PROGMEM = { "Filament" }; //MSG_VOLUMETRIC
-const char MSGEN79[] PROGMEM = { "E in mm3" }; //MSG_VOLUMETRIC_ENABLED
-const char MSGCZ79[] PROGMEM = { "E in mm3" }; //MSG_VOLUMETRIC_ENABLED
-const char MSGIT79[] PROGMEM = { "E in mm3" }; //MSG_VOLUMETRIC_ENABLED
-const char MSGES79[] PROGMEM = { "E in mm3" }; //MSG_VOLUMETRIC_ENABLED
-const char MSGPL79[] PROGMEM = { "E in mm3" }; //MSG_VOLUMETRIC_ENABLED
-const char MSGEN80[] PROGMEM = { "Fil. Dia. 1" }; //MSG_FILAMENT_SIZE_EXTRUDER_0
-const char MSGCZ80[] PROGMEM = { "Fil. Dia. 1" }; //MSG_FILAMENT_SIZE_EXTRUDER_0
-const char MSGIT80[] PROGMEM = { "Fil. Dia. 1" }; //MSG_FILAMENT_SIZE_EXTRUDER_0
-const char MSGES80[] PROGMEM = { "Fil. Dia. 1" }; //MSG_FILAMENT_SIZE_EXTRUDER_0
-const char MSGPL80[] PROGMEM = { "Fil. Dia. 1" }; //MSG_FILAMENT_SIZE_EXTRUDER_0
-const char MSGEN81[] PROGMEM = { "Fil. Dia. 2" }; //MSG_FILAMENT_SIZE_EXTRUDER_1
-const char MSGCZ81[] PROGMEM = { "Fil. Dia. 2" }; //MSG_FILAMENT_SIZE_EXTRUDER_1
-const char MSGIT81[] PROGMEM = { "Fil. Dia. 2" }; //MSG_FILAMENT_SIZE_EXTRUDER_1
-const char MSGES81[] PROGMEM = { "Fil. Dia. 2" }; //MSG_FILAMENT_SIZE_EXTRUDER_1
-const char MSGPL81[] PROGMEM = { "Fil. Dia. 2" }; //MSG_FILAMENT_SIZE_EXTRUDER_1
-const char MSGEN82[] PROGMEM = { "Fil. Dia. 3" }; //MSG_FILAMENT_SIZE_EXTRUDER_2
-const char MSGCZ82[] PROGMEM = { "Fil. Dia. 3" }; //MSG_FILAMENT_SIZE_EXTRUDER_2
-const char MSGIT82[] PROGMEM = { "Fil. Dia. 3" }; //MSG_FILAMENT_SIZE_EXTRUDER_2
-const char MSGES82[] PROGMEM = { "Fil. Dia. 3" }; //MSG_FILAMENT_SIZE_EXTRUDER_2
-const char MSGPL82[] PROGMEM = { "Fil. Dia. 3" }; //MSG_FILAMENT_SIZE_EXTRUDER_2
-const char MSGEN83[] PROGMEM = { "LCD contrast" }; //MSG_CONTRAST
-const char MSGCZ83[] PROGMEM = { "LCD contrast" }; //MSG_CONTRAST
-const char MSGIT83[] PROGMEM = { "LCD contrast" }; //MSG_CONTRAST
-const char MSGES83[] PROGMEM = { "LCD contrast" }; //MSG_CONTRAST
-const char MSGPL83[] PROGMEM = { "LCD contrast" }; //MSG_CONTRAST
-const char MSGEN84[] PROGMEM = { "Store memory" }; //MSG_STORE_EPROM
-const char MSGCZ84[] PROGMEM = { "Store memory" }; //MSG_STORE_EPROM
-const char MSGIT84[] PROGMEM = { "Store memory" }; //MSG_STORE_EPROM
-const char MSGES84[] PROGMEM = { "Store memory" }; //MSG_STORE_EPROM
-const char MSGPL84[] PROGMEM = { "Store memory" }; //MSG_STORE_EPROM
-const char MSGEN85[] PROGMEM = { "Load memory" }; //MSG_LOAD_EPROM
-const char MSGCZ85[] PROGMEM = { "Ulozit pamet" }; //MSG_LOAD_EPROM
-const char MSGIT85[] PROGMEM = { "Load memory" }; //MSG_LOAD_EPROM
-const char MSGES85[] PROGMEM = { "Load memory" }; //MSG_LOAD_EPROM
-const char MSGPL85[] PROGMEM = { "Ulozit pamet" }; //MSG_LOAD_EPROM
-const char MSGEN86[] PROGMEM = { "Restore failsafe" }; //MSG_RESTORE_FAILSAFE
-const char MSGCZ86[] PROGMEM = { "Obnovit vychozi" }; //MSG_RESTORE_FAILSAFE
-const char MSGIT86[] PROGMEM = { "Restore failsafe" }; //MSG_RESTORE_FAILSAFE
-const char MSGES86[] PROGMEM = { "Restore failsafe" }; //MSG_RESTORE_FAILSAFE
-const char MSGPL86[] PROGMEM = { "Obnovit vychozi" }; //MSG_RESTORE_FAILSAFE
-const char MSGEN87[] PROGMEM = { "Refresh" }; //MSG_REFRESH
-const char MSGCZ87[] PROGMEM = { "Obnovit" }; //MSG_REFRESH
-const char MSGIT87[] PROGMEM = { "Refresh" }; //MSG_REFRESH
-const char MSGES87[] PROGMEM = { "Refresh" }; //MSG_REFRESH
-const char MSGPL87[] PROGMEM = { "Obnovit" }; //MSG_REFRESH
-const char MSGEN88[] PROGMEM = { "Info screen" }; //MSG_WATCH
-const char MSGCZ88[] PROGMEM = { "Informace" }; //MSG_WATCH
-const char MSGIT88[] PROGMEM = { "Guarda" }; //MSG_WATCH
-const char MSGES88[] PROGMEM = { "Monitorizar" }; //MSG_WATCH
-const char MSGPL88[] PROGMEM = { "Informacje" }; //MSG_WATCH
-const char MSGEN89[] PROGMEM = { "Prepare" }; //MSG_PREPARE
-const char MSGCZ89[] PROGMEM = { "Priprava" }; //MSG_PREPARE
-const char MSGIT89[] PROGMEM = { "Prepare" }; //MSG_PREPARE
-const char MSGES89[] PROGMEM = { "Prepare" }; //MSG_PREPARE
-const char MSGPL89[] PROGMEM = { "Priprava" }; //MSG_PREPARE
-const char MSGEN90[] PROGMEM = { "Tune" }; //MSG_TUNE
-const char MSGCZ90[] PROGMEM = { "Ladit" }; //MSG_TUNE
-const char MSGIT90[] PROGMEM = { "Adatta" }; //MSG_TUNE
-const char MSGES90[] PROGMEM = { "Ajustar" }; //MSG_TUNE
-const char MSGPL90[] PROGMEM = { "Nastroic" }; //MSG_TUNE
-const char MSGEN91[] PROGMEM = { "Pause print" }; //MSG_PAUSE_PRINT
-const char MSGCZ91[] PROGMEM = { "Pozastavit tisk" }; //MSG_PAUSE_PRINT
-const char MSGIT91[] PROGMEM = { "Pausa" }; //MSG_PAUSE_PRINT
-const char MSGES91[] PROGMEM = { "Pausar impresion" }; //MSG_PAUSE_PRINT
-const char MSGPL91[] PROGMEM = { "Przerwac druk" }; //MSG_PAUSE_PRINT
-const char MSGEN92[] PROGMEM = { "Resume print" }; //MSG_RESUME_PRINT
-const char MSGCZ92[] PROGMEM = { "Pokracovat" }; //MSG_RESUME_PRINT
-const char MSGIT92[] PROGMEM = { "Riprendi stampa" }; //MSG_RESUME_PRINT
-const char MSGES92[] PROGMEM = { "Reanudar impres." }; //MSG_RESUME_PRINT
-const char MSGPL92[] PROGMEM = { "Kontynuowac" }; //MSG_RESUME_PRINT
-const char MSGEN93[] PROGMEM = { "Stop print" }; //MSG_STOP_PRINT
-const char MSGCZ93[] PROGMEM = { "Zastavit tisk" }; //MSG_STOP_PRINT
-const char MSGIT93[] PROGMEM = { "Arresta stampa" }; //MSG_STOP_PRINT
-const char MSGES93[] PROGMEM = { "Detener impresion" }; //MSG_STOP_PRINT
-const char MSGPL93[] PROGMEM = { "Zatrzymac druk" }; //MSG_STOP_PRINT
-const char MSGEN94[] PROGMEM = { "Print from SD" }; //MSG_CARD_MENU
-const char MSGCZ94[] PROGMEM = { "Tisk z SD" }; //MSG_CARD_MENU
-const char MSGIT94[] PROGMEM = { "Menu SD Carta" }; //MSG_CARD_MENU
-const char MSGES94[] PROGMEM = { "Menu de SD" }; //MSG_CARD_MENU
-const char MSGPL94[] PROGMEM = { "Druk z SD" }; //MSG_CARD_MENU
-const char MSGEN95[] PROGMEM = { "No SD card" }; //MSG_NO_CARD
-const char MSGCZ95[] PROGMEM = { "Zadna SD karta" }; //MSG_NO_CARD
-const char MSGIT95[] PROGMEM = { "No SD Carta" }; //MSG_NO_CARD
-const char MSGES95[] PROGMEM = { "No hay tarjeta SD" }; //MSG_NO_CARD
-const char MSGPL95[] PROGMEM = { "Brak karty SD" }; //MSG_NO_CARD
-const char MSGEN96[] PROGMEM = { "Sleep..." }; //MSG_DWELL
-const char MSGCZ96[] PROGMEM = { "Sleep..." }; //MSG_DWELL
-const char MSGIT96[] PROGMEM = { "Sospensione..." }; //MSG_DWELL
-const char MSGES96[] PROGMEM = { "Reposo..." }; //MSG_DWELL
-const char MSGPL96[] PROGMEM = { "Sleep..." }; //MSG_DWELL
-const char MSGEN97[] PROGMEM = { "Wait for user..." }; //MSG_USERWAIT
-const char MSGCZ97[] PROGMEM = { "Wait for user..." }; //MSG_USERWAIT
-const char MSGIT97[] PROGMEM = { "Attendi Utente..." }; //MSG_USERWAIT
-const char MSGES97[] PROGMEM = { "Esperando ordenes" }; //MSG_USERWAIT
-const char MSGPL97[] PROGMEM = { "Wait for user..." }; //MSG_USERWAIT
-const char MSGEN98[] PROGMEM = { "Resuming print" }; //MSG_RESUMING
-const char MSGCZ98[] PROGMEM = { "Obnoveni tisku" }; //MSG_RESUMING
-const char MSGIT98[] PROGMEM = { "Riprendi Stampa" }; //MSG_RESUMING
-const char MSGES98[] PROGMEM = { "Resumiendo impre." }; //MSG_RESUMING
-const char MSGPL98[] PROGMEM = { "Wznowienie druku" }; //MSG_RESUMING
-const char MSGEN99[] PROGMEM = { "Print aborted" }; //MSG_PRINT_ABORTED
-const char MSGCZ99[] PROGMEM = { "Tisk prerusen" }; //MSG_PRINT_ABORTED
-const char MSGIT99[] PROGMEM = { "Stampa abortita" }; //MSG_PRINT_ABORTED
-const char MSGES99[] PROGMEM = { "Print aborted" }; //MSG_PRINT_ABORTED
-const char MSGPL99[] PROGMEM = { "Druk przerwany" }; //MSG_PRINT_ABORTED
-const char MSGEN100[] PROGMEM = { "No move." }; //MSG_NO_MOVE
-const char MSGCZ100[] PROGMEM = { "No move." }; //MSG_NO_MOVE
-const char MSGIT100[] PROGMEM = { "Nessun Movimento" }; //MSG_NO_MOVE
-const char MSGES100[] PROGMEM = { "Sin movimiento" }; //MSG_NO_MOVE
-const char MSGPL100[] PROGMEM = { "No move." }; //MSG_NO_MOVE
-const char MSGEN101[] PROGMEM = { "KILLED. " }; //MSG_KILLED
-const char MSGCZ101[] PROGMEM = { "KILLED. " }; //MSG_KILLED
-const char MSGIT101[] PROGMEM = { "UCCISO " }; //MSG_KILLED
-const char MSGES101[] PROGMEM = { "PARADA DE EMERG." }; //MSG_KILLED
-const char MSGPL101[] PROGMEM = { "KILLED. " }; //MSG_KILLED
-const char MSGEN102[] PROGMEM = { "STOPPED. " }; //MSG_STOPPED
-const char MSGCZ102[] PROGMEM = { "STOPPED. " }; //MSG_STOPPED
-const char MSGIT102[] PROGMEM = { "ARRESTATO " }; //MSG_STOPPED
-const char MSGES102[] PROGMEM = { "PARADA" }; //MSG_STOPPED
-const char MSGPL102[] PROGMEM = { "STOPPED. " }; //MSG_STOPPED
-const char MSGEN103[] PROGMEM = { "Retract mm" }; //MSG_CONTROL_RETRACT
-const char MSGCZ103[] PROGMEM = { "Retract mm" }; //MSG_CONTROL_RETRACT
-const char MSGIT103[] PROGMEM = { "Retract mm" }; //MSG_CONTROL_RETRACT
-const char MSGES103[] PROGMEM = { "Retract mm" }; //MSG_CONTROL_RETRACT
-const char MSGPL103[] PROGMEM = { "Retract mm" }; //MSG_CONTROL_RETRACT
-const char MSGEN104[] PROGMEM = { "Swap Re.mm" }; //MSG_CONTROL_RETRACT_SWAP
-const char MSGCZ104[] PROGMEM = { "Swap Re.mm" }; //MSG_CONTROL_RETRACT_SWAP
-const char MSGIT104[] PROGMEM = { "Swap Re.mm" }; //MSG_CONTROL_RETRACT_SWAP
-const char MSGES104[] PROGMEM = { "Swap Re.mm" }; //MSG_CONTROL_RETRACT_SWAP
-const char MSGPL104[] PROGMEM = { "Swap Re.mm" }; //MSG_CONTROL_RETRACT_SWAP
-const char MSGEN105[] PROGMEM = { "Retract  V" }; //MSG_CONTROL_RETRACTF
-const char MSGCZ105[] PROGMEM = { "Retract  V" }; //MSG_CONTROL_RETRACTF
-const char MSGIT105[] PROGMEM = { "Retract  V" }; //MSG_CONTROL_RETRACTF
-const char MSGES105[] PROGMEM = { "Retract  V" }; //MSG_CONTROL_RETRACTF
-const char MSGPL105[] PROGMEM = { "Retract  V" }; //MSG_CONTROL_RETRACTF
-const char MSGEN106[] PROGMEM = { "Hop mm" }; //MSG_CONTROL_RETRACT_ZLIFT
-const char MSGCZ106[] PROGMEM = { "Hop mm" }; //MSG_CONTROL_RETRACT_ZLIFT
-const char MSGIT106[] PROGMEM = { "Hop mm" }; //MSG_CONTROL_RETRACT_ZLIFT
-const char MSGES106[] PROGMEM = { "Hop mm" }; //MSG_CONTROL_RETRACT_ZLIFT
-const char MSGPL106[] PROGMEM = { "Hop mm" }; //MSG_CONTROL_RETRACT_ZLIFT
-const char MSGEN107[] PROGMEM = { "UnRet +mm" }; //MSG_CONTROL_RETRACT_RECOVER
-const char MSGCZ107[] PROGMEM = { "UnRet +mm" }; //MSG_CONTROL_RETRACT_RECOVER
-const char MSGIT107[] PROGMEM = { "UnRet +mm" }; //MSG_CONTROL_RETRACT_RECOVER
-const char MSGES107[] PROGMEM = { "UnRet +mm" }; //MSG_CONTROL_RETRACT_RECOVER
-const char MSGPL107[] PROGMEM = { "UnRet +mm" }; //MSG_CONTROL_RETRACT_RECOVER
-const char MSGEN108[] PROGMEM = { "S UnRet+mm" }; //MSG_CONTROL_RETRACT_RECOVER_SWAP
-const char MSGCZ108[] PROGMEM = { "S UnRet+mm" }; //MSG_CONTROL_RETRACT_RECOVER_SWAP
-const char MSGIT108[] PROGMEM = { "S UnRet+mm" }; //MSG_CONTROL_RETRACT_RECOVER_SWAP
-const char MSGES108[] PROGMEM = { "S UnRet+mm" }; //MSG_CONTROL_RETRACT_RECOVER_SWAP
-const char MSGPL108[] PROGMEM = { "S UnRet+mm" }; //MSG_CONTROL_RETRACT_RECOVER_SWAP
-const char MSGEN109[] PROGMEM = { "UnRet  V" }; //MSG_CONTROL_RETRACT_RECOVERF
-const char MSGCZ109[] PROGMEM = { "UnRet  V" }; //MSG_CONTROL_RETRACT_RECOVERF
-const char MSGIT109[] PROGMEM = { "UnRet  V" }; //MSG_CONTROL_RETRACT_RECOVERF
-const char MSGES109[] PROGMEM = { "UnRet  V" }; //MSG_CONTROL_RETRACT_RECOVERF
-const char MSGPL109[] PROGMEM = { "UnRet  V" }; //MSG_CONTROL_RETRACT_RECOVERF
-const char MSGEN110[] PROGMEM = { "AutoRetr." }; //MSG_AUTORETRACT
-const char MSGCZ110[] PROGMEM = { "AutoRetr." }; //MSG_AUTORETRACT
-const char MSGIT110[] PROGMEM = { "AutoRetr." }; //MSG_AUTORETRACT
-const char MSGES110[] PROGMEM = { "AutoRetr." }; //MSG_AUTORETRACT
-const char MSGPL110[] PROGMEM = { "AutoRetr." }; //MSG_AUTORETRACT
-const char MSGEN111[] PROGMEM = { "Change filament" }; //MSG_FILAMENTCHANGE
-const char MSGCZ111[] PROGMEM = { "Vymenit filament" }; //MSG_FILAMENTCHANGE
-const char MSGIT111[] PROGMEM = { "Cambiare filamento" }; //MSG_FILAMENTCHANGE
-const char MSGES111[] PROGMEM = { "Cambiar filamento" }; //MSG_FILAMENTCHANGE
-const char MSGPL111[] PROGMEM = { "Wymienic filament" }; //MSG_FILAMENTCHANGE
-const char MSGEN112[] PROGMEM = { "Init. SD card" }; //MSG_INIT_SDCARD
-const char MSGCZ112[] PROGMEM = { "Inic. SD" }; //MSG_INIT_SDCARD
-const char MSGIT112[] PROGMEM = { "Init. SD card" }; //MSG_INIT_SDCARD
-const char MSGES112[] PROGMEM = { "Init. SD card" }; //MSG_INIT_SDCARD
-const char MSGPL112[] PROGMEM = { "Inic. SD" }; //MSG_INIT_SDCARD
-const char MSGEN113[] PROGMEM = { "Change SD card" }; //MSG_CNG_SDCARD
-const char MSGCZ113[] PROGMEM = { "Vymenit SD" }; //MSG_CNG_SDCARD
-const char MSGIT113[] PROGMEM = { "Change SD card" }; //MSG_CNG_SDCARD
-const char MSGES113[] PROGMEM = { "Change SD card" }; //MSG_CNG_SDCARD
-const char MSGPL113[] PROGMEM = { "Vymenit SD" }; //MSG_CNG_SDCARD
-const char MSGEN114[] PROGMEM = { "Z probe out. bed" }; //MSG_ZPROBE_OUT
-const char MSGCZ114[] PROGMEM = { "Z probe out. bed" }; //MSG_ZPROBE_OUT
-const char MSGIT114[] PROGMEM = { "Z probe out. bed" }; //MSG_ZPROBE_OUT
-const char MSGES114[] PROGMEM = { "Z probe out. bed" }; //MSG_ZPROBE_OUT
-const char MSGPL114[] PROGMEM = { "Z probe out. bed" }; //MSG_ZPROBE_OUT
-const char MSGEN115[] PROGMEM = { "Home X/Y before Z" }; //MSG_POSITION_UNKNOWN
-const char MSGCZ115[] PROGMEM = { "Home X/Y before Z" }; //MSG_POSITION_UNKNOWN
-const char MSGIT115[] PROGMEM = { "Home X/Y before Z" }; //MSG_POSITION_UNKNOWN
-const char MSGES115[] PROGMEM = { "Home X/Y before Z" }; //MSG_POSITION_UNKNOWN
-const char MSGPL115[] PROGMEM = { "Home X/Y before Z" }; //MSG_POSITION_UNKNOWN
-const char MSGEN116[] PROGMEM = { "Z Offset" }; //MSG_ZPROBE_ZOFFSET
-const char MSGCZ116[] PROGMEM = { "Z Offset" }; //MSG_ZPROBE_ZOFFSET
-const char MSGIT116[] PROGMEM = { "Z Offset" }; //MSG_ZPROBE_ZOFFSET
-const char MSGES116[] PROGMEM = { "Z Offset" }; //MSG_ZPROBE_ZOFFSET
-const char MSGPL116[] PROGMEM = { "Z Offset" }; //MSG_ZPROBE_ZOFFSET
-const char MSGEN117[] PROGMEM = { "Babystep X" }; //MSG_BABYSTEP_X
-const char MSGCZ117[] PROGMEM = { "Babystep X" }; //MSG_BABYSTEP_X
-const char MSGIT117[] PROGMEM = { "Babystep X" }; //MSG_BABYSTEP_X
-const char MSGES117[] PROGMEM = { "Babystep X" }; //MSG_BABYSTEP_X
-const char MSGPL117[] PROGMEM = { "Babystep X" }; //MSG_BABYSTEP_X
-const char MSGEN118[] PROGMEM = { "Babystep Y" }; //MSG_BABYSTEP_Y
-const char MSGCZ118[] PROGMEM = { "Babystep Y" }; //MSG_BABYSTEP_Y
-const char MSGIT118[] PROGMEM = { "Babystep Y" }; //MSG_BABYSTEP_Y
-const char MSGES118[] PROGMEM = { "Babystep Y" }; //MSG_BABYSTEP_Y
-const char MSGPL118[] PROGMEM = { "Babystep Y" }; //MSG_BABYSTEP_Y
-const char MSGEN119[] PROGMEM = { "Live adjust Z" }; //MSG_BABYSTEP_Z
-const char MSGCZ119[] PROGMEM = { "Doladeni osy Z" }; //MSG_BABYSTEP_Z
-const char MSGIT119[] PROGMEM = { "Babystep Z" }; //MSG_BABYSTEP_Z
-const char MSGES119[] PROGMEM = { "Micropaso Z" }; //MSG_BABYSTEP_Z
-const char MSGPL119[] PROGMEM = { "Dostrojenie osy Z" }; //MSG_BABYSTEP_Z
-const char MSGEN120[] PROGMEM = { "Endstop abort" }; //MSG_ENDSTOP_ABORT
-const char MSGCZ120[] PROGMEM = { "Endstop abort" }; //MSG_ENDSTOP_ABORT
-const char MSGIT120[] PROGMEM = { "Endstop abort" }; //MSG_ENDSTOP_ABORT
-const char MSGES120[] PROGMEM = { "Endstop abort" }; //MSG_ENDSTOP_ABORT
-const char MSGPL120[] PROGMEM = { "Endstop abort" }; //MSG_ENDSTOP_ABORT
-const char MSGEN121[] PROGMEM = { "Auto adjust Z ?" }; //MSG_ADJUSTZ
-const char MSGCZ121[] PROGMEM = { "Auto doladit Z ?" }; //MSG_ADJUSTZ
-const char MSGIT121[] PROGMEM = { "Auto regolare Z ?" }; //MSG_ADJUSTZ
-const char MSGES121[] PROGMEM = { "Auto Micropaso Z?" }; //MSG_ADJUSTZ
-const char MSGPL121[] PROGMEM = { "Autodostroic Z?" }; //MSG_ADJUSTZ
-const char MSGEN122[] PROGMEM = { "Calibrate Z" }; //MSG_HOMEYZ
-const char MSGCZ122[] PROGMEM = { "Kalibrovat Z" }; //MSG_HOMEYZ
-const char MSGIT122[] PROGMEM = { "Calibrate Z" }; //MSG_HOMEYZ
-const char MSGES122[] PROGMEM = { "Graduar Z" }; //MSG_HOMEYZ
-const char MSGPL122[] PROGMEM = { "Kalibrowac Z" }; //MSG_HOMEYZ
-const char MSGEN123[] PROGMEM = { "Settings" }; //MSG_SETTINGS
-const char MSGCZ123[] PROGMEM = { "Nastaveni" }; //MSG_SETTINGS
-const char MSGIT123[] PROGMEM = { "Impostazioni" }; //MSG_SETTINGS
-const char MSGES123[] PROGMEM = { "Ajuste" }; //MSG_SETTINGS
-const char MSGPL123[] PROGMEM = { "Ustawienia" }; //MSG_SETTINGS
-const char MSGEN124[] PROGMEM = { "Preheat" }; //MSG_PREHEAT
-const char MSGCZ124[] PROGMEM = { "Predehrev" }; //MSG_PREHEAT
-const char MSGIT124[] PROGMEM = { "Preriscalda" }; //MSG_PREHEAT
-const char MSGES124[] PROGMEM = { "Precalentar" }; //MSG_PREHEAT
-const char MSGPL124[] PROGMEM = { "Grzanie" }; //MSG_PREHEAT
-const char MSGEN125[] PROGMEM = { "Unload filament" }; //MSG_UNLOAD_FILAMENT
-const char MSGCZ125[] PROGMEM = { "Vyjmout filament" }; //MSG_UNLOAD_FILAMENT
-const char MSGIT125[] PROGMEM = { "Scaricare fil." }; //MSG_UNLOAD_FILAMENT
-const char MSGES125[] PROGMEM = { "Sacar filamento" }; //MSG_UNLOAD_FILAMENT
-const char MSGPL125[] PROGMEM = { "Wyjac filament" }; //MSG_UNLOAD_FILAMENT
-const char MSGEN126[] PROGMEM = { "Load filament" }; //MSG_LOAD_FILAMENT
-const char MSGCZ126[] PROGMEM = { "Zavest filament" }; //MSG_LOAD_FILAMENT
-const char MSGIT126[] PROGMEM = { "Caricare filamento" }; //MSG_LOAD_FILAMENT
-const char MSGES126[] PROGMEM = { "Introducir filamento" }; //MSG_LOAD_FILAMENT
-const char MSGPL126[] PROGMEM = { "Wprowadz filament" }; //MSG_LOAD_FILAMENT
-const char MSGEN127[] PROGMEM = { "Rectract" }; //MSG_RECTRACT
-const char MSGCZ127[] PROGMEM = { "Rectract" }; //MSG_RECTRACT
-const char MSGIT127[] PROGMEM = { "Rectract" }; //MSG_RECTRACT
-const char MSGES127[] PROGMEM = { "Rectract" }; //MSG_RECTRACT
-const char MSGPL127[] PROGMEM = { "Rectract" }; //MSG_RECTRACT
-const char MSGEN128[] PROGMEM = { "ERROR:" }; //MSG_ERROR
-const char MSGCZ128[] PROGMEM = { "CHYBA:" }; //MSG_ERROR
-const char MSGIT128[] PROGMEM = { "ERROR:" }; //MSG_ERROR
-const char MSGES128[] PROGMEM = { "ERROR:" }; //MSG_ERROR
-const char MSGPL128[] PROGMEM = { "BLAD:" }; //MSG_ERROR
-const char MSGEN129[] PROGMEM = { "Preheat the nozzle!" }; //MSG_PREHEAT_NOZZLE
-const char MSGCZ129[] PROGMEM = { "Predehrejte trysku!" }; //MSG_PREHEAT_NOZZLE
-const char MSGIT129[] PROGMEM = { "Preris. ugello!" }; //MSG_PREHEAT_NOZZLE
-const char MSGES129[] PROGMEM = { "Precal. extrusor!" }; //MSG_PREHEAT_NOZZLE
-const char MSGPL129[] PROGMEM = { "Nagrzej dysze!" }; //MSG_PREHEAT_NOZZLE
-const char MSGEN130[] PROGMEM = { "Support" }; //MSG_SUPPORT
-const char MSGCZ130[] PROGMEM = { "Podpora" }; //MSG_SUPPORT
-const char MSGIT130[] PROGMEM = { "Support" }; //MSG_SUPPORT
-const char MSGES130[] PROGMEM = { "Support" }; //MSG_SUPPORT
-const char MSGPL130[] PROGMEM = { "Pomoc" }; //MSG_SUPPORT
-const char MSGEN131[] PROGMEM = { "Changed correctly?" }; //MSG_CORRECTLY
-const char MSGCZ131[] PROGMEM = { "Vymena ok?" }; //MSG_CORRECTLY
-const char MSGIT131[] PROGMEM = { "Cambiato corr.?" }; //MSG_CORRECTLY
-const char MSGES131[] PROGMEM = { "Cambiado correc.?" }; //MSG_CORRECTLY
-const char MSGPL131[] PROGMEM = { "Wymiana ok?" }; //MSG_CORRECTLY
-const char MSGEN132[] PROGMEM = { "Yes" }; //MSG_YES
-const char MSGCZ132[] PROGMEM = { "Ano" }; //MSG_YES
-const char MSGIT132[] PROGMEM = { "Si" }; //MSG_YES
-const char MSGES132[] PROGMEM = { "Si" }; //MSG_YES
-const char MSGPL132[] PROGMEM = { "Tak" }; //MSG_YES
-const char MSGEN133[] PROGMEM = { "No" }; //MSG_NO
-const char MSGCZ133[] PROGMEM = { "Ne" }; //MSG_NO
-const char MSGIT133[] PROGMEM = { "No" }; //MSG_NO
-const char MSGES133[] PROGMEM = { "No" }; //MSG_NO
-const char MSGPL133[] PROGMEM = { "Nie" }; //MSG_NO
-const char MSGEN134[] PROGMEM = { "Filament not loaded" }; //MSG_NOT_LOADED
-const char MSGCZ134[] PROGMEM = { "Filament nezaveden" }; //MSG_NOT_LOADED
-const char MSGIT134[] PROGMEM = { "Fil. no cargado" }; //MSG_NOT_LOADED
-const char MSGES134[] PROGMEM = { "Fil. no cargado" }; //MSG_NOT_LOADED
-const char MSGPL134[] PROGMEM = { "Brak filamentu" }; //MSG_NOT_LOADED
-const char MSGEN135[] PROGMEM = { "Color not clear" }; //MSG_NOT_COLOR
-const char MSGCZ135[] PROGMEM = { "Barva neni cista" }; //MSG_NOT_COLOR
-const char MSGIT135[] PROGMEM = { "Color no claro" }; //MSG_NOT_COLOR
-const char MSGES135[] PROGMEM = { "Color no claro" }; //MSG_NOT_COLOR
-const char MSGPL135[] PROGMEM = { "Kolor zanieczysz." }; //MSG_NOT_COLOR
-const char MSGEN136[] PROGMEM = { "Loading filament" }; //MSG_LOADING_FILAMENT
-const char MSGCZ136[] PROGMEM = { "Zavadeni filamentu" }; //MSG_LOADING_FILAMENT
-const char MSGIT136[] PROGMEM = { "Cargando fil." }; //MSG_LOADING_FILAMENT
-const char MSGES136[] PROGMEM = { "Cargando fil." }; //MSG_LOADING_FILAMENT
-const char MSGPL136[] PROGMEM = { "Wprow. filamentu" }; //MSG_LOADING_FILAMENT
-const char MSGEN137[] PROGMEM = { "Please wait" }; //MSG_PLEASE_WAIT
-const char MSGCZ137[] PROGMEM = { "Prosim cekejte" }; //MSG_PLEASE_WAIT
-const char MSGIT137[] PROGMEM = { "Aspetta" }; //MSG_PLEASE_WAIT
-const char MSGES137[] PROGMEM = { "Espera" }; //MSG_PLEASE_WAIT
-const char MSGPL137[] PROGMEM = { "Prosze czekac" }; //MSG_PLEASE_WAIT
-const char MSGEN138[] PROGMEM = { "Loading color" }; //MSG_LOADING_COLOR
-const char MSGCZ138[] PROGMEM = { "Cisteni barvy" }; //MSG_LOADING_COLOR
-const char MSGIT138[] PROGMEM = { "Cargando color" }; //MSG_LOADING_COLOR
-const char MSGES138[] PROGMEM = { "Cargando color" }; //MSG_LOADING_COLOR
-const char MSGPL138[] PROGMEM = { "Czyszcz. koloru" }; //MSG_LOADING_COLOR
-const char MSGEN139[] PROGMEM = { "Change success!" }; //MSG_CHANGE_SUCCESS
-const char MSGCZ139[] PROGMEM = { "Zmena uspesna!" }; //MSG_CHANGE_SUCCESS
-const char MSGIT139[] PROGMEM = { "Cambia. riuscito!" }; //MSG_CHANGE_SUCCESS
-const char MSGES139[] PROGMEM = { "Cambiar bien!" }; //MSG_CHANGE_SUCCESS
-const char MSGPL139[] PROGMEM = { "Wymiana ok!" }; //MSG_CHANGE_SUCCESS
-const char MSGEN140[] PROGMEM = { "And press the knob" }; //MSG_PRESS
-const char MSGCZ140[] PROGMEM = { "A stisknete tlacitko" }; //MSG_PRESS
-const char MSGIT140[] PROGMEM = { "Y pulse el mando" }; //MSG_PRESS
-const char MSGES140[] PROGMEM = { "Y pulse el mando" }; //MSG_PRESS
-const char MSGPL140[] PROGMEM = { "Nacisnij przycisk" }; //MSG_PRESS
-const char MSGEN141[] PROGMEM = { "Insert filament" }; //MSG_INSERT_FILAMENT
-const char MSGCZ141[] PROGMEM = { "Vlozte filament" }; //MSG_INSERT_FILAMENT
-const char MSGIT141[] PROGMEM = { "Inserire filamento" }; //MSG_INSERT_FILAMENT
-const char MSGES141[] PROGMEM = { "Inserta filamento" }; //MSG_INSERT_FILAMENT
-const char MSGPL141[] PROGMEM = { "Wprowadz filament" }; //MSG_INSERT_FILAMENT
-const char MSGEN142[] PROGMEM = { "Changing filament!" }; //MSG_CHANGING_FILAMENT
-const char MSGCZ142[] PROGMEM = { "Vymena filamentu!" }; //MSG_CHANGING_FILAMENT
-const char MSGIT142[] PROGMEM = { "Mutevole fil.!" }; //MSG_CHANGING_FILAMENT
-const char MSGES142[] PROGMEM = { "Cambiando fil.!" }; //MSG_CHANGING_FILAMENT
-const char MSGPL142[] PROGMEM = { "Wymiana filamentu" }; //MSG_CHANGING_FILAMENT
-const char MSGEN143[] PROGMEM = { "Mode     [silent]" }; //MSG_SILENT_MODE_ON
-const char MSGCZ143[] PROGMEM = { "Mod       [tichy]" }; //MSG_SILENT_MODE_ON
-const char MSGIT143[] PROGMEM = { "Modo     [silenzioso]" }; //MSG_SILENT_MODE_ON
-const char MSGES143[] PROGMEM = { "Modo     [silencio]" }; //MSG_SILENT_MODE_ON
-const char MSGPL143[] PROGMEM = { "Mod       [cichy]" }; //MSG_SILENT_MODE_ON
-const char MSGEN144[] PROGMEM = { "Mode [high power]" }; //MSG_SILENT_MODE_OFF
-const char MSGCZ144[] PROGMEM = { "Mod  [vys. vykon]" }; //MSG_SILENT_MODE_OFF
-const char MSGIT144[] PROGMEM = { "Modo [piu forza]" }; //MSG_SILENT_MODE_OFF
-const char MSGES144[] PROGMEM = { "Modo [mas fuerza]" }; //MSG_SILENT_MODE_OFF
-const char MSGPL144[] PROGMEM = { "Mod [w wydajnosc]" }; //MSG_SILENT_MODE_OFF
-const char MSGEN145[] PROGMEM = { "Reboot the printer" }; //MSG_REBOOT
-const char MSGCZ145[] PROGMEM = { "Restartujte tiskarnu" }; //MSG_REBOOT
-const char MSGIT145[] PROGMEM = { "Riavvio la stamp." }; //MSG_REBOOT
-const char MSGES145[] PROGMEM = { "Reiniciar la imp." }; //MSG_REBOOT
-const char MSGPL145[] PROGMEM = { "Restart drukarki" }; //MSG_REBOOT
-const char MSGEN146[] PROGMEM = { " for take effect" }; //MSG_TAKE_EFFECT
-const char MSGCZ146[] PROGMEM = { " pro projeveni zmen" }; //MSG_TAKE_EFFECT
-const char MSGIT146[] PROGMEM = { " per mostrare i camb." }; //MSG_TAKE_EFFECT
-const char MSGES146[] PROGMEM = { "para tomar efecto" }; //MSG_TAKE_EFFECT
-const char MSGPL146[] PROGMEM = { "wprow. zmian" }; //MSG_TAKE_EFFECT
-const char MSGEN147[] PROGMEM = { "enqueing \"" }; //MSG_Enqueing
-const char MSGCZ147[] PROGMEM = { "enqueing \"" }; //MSG_Enqueing
-const char MSGIT147[] PROGMEM = { "enqueing \"" }; //MSG_Enqueing
-const char MSGES147[] PROGMEM = { "enqueing \"" }; //MSG_Enqueing
-const char MSGPL147[] PROGMEM = { "enqueing \"" }; //MSG_Enqueing
-const char MSGEN148[] PROGMEM = { "PowerUp" }; //MSG_POWERUP
-const char MSGCZ148[] PROGMEM = { "PowerUp" }; //MSG_POWERUP
-const char MSGIT148[] PROGMEM = { "PowerUp" }; //MSG_POWERUP
-const char MSGES148[] PROGMEM = { "PowerUp" }; //MSG_POWERUP
-const char MSGPL148[] PROGMEM = { "PowerUp" }; //MSG_POWERUP
-const char MSGEN149[] PROGMEM = { " External Reset" }; //MSG_EXTERNAL_RESET
-const char MSGCZ149[] PROGMEM = { " External Reset" }; //MSG_EXTERNAL_RESET
-const char MSGIT149[] PROGMEM = { " External Reset" }; //MSG_EXTERNAL_RESET
-const char MSGES149[] PROGMEM = { " External Reset" }; //MSG_EXTERNAL_RESET
-const char MSGPL149[] PROGMEM = { " External Reset" }; //MSG_EXTERNAL_RESET
-const char MSGEN150[] PROGMEM = { " Brown out Reset" }; //MSG_BROWNOUT_RESET
-const char MSGCZ150[] PROGMEM = { " Brown out Reset" }; //MSG_BROWNOUT_RESET
-const char MSGIT150[] PROGMEM = { " Brown out Reset" }; //MSG_BROWNOUT_RESET
-const char MSGES150[] PROGMEM = { " Brown out Reset" }; //MSG_BROWNOUT_RESET
-const char MSGPL150[] PROGMEM = { " Brown out Reset" }; //MSG_BROWNOUT_RESET
-const char MSGEN151[] PROGMEM = { " Watchdog Reset" }; //MSG_WATCHDOG_RESET
-const char MSGCZ151[] PROGMEM = { " Watchdog Reset" }; //MSG_WATCHDOG_RESET
-const char MSGIT151[] PROGMEM = { " Watchdog Reset" }; //MSG_WATCHDOG_RESET
-const char MSGES151[] PROGMEM = { " Watchdog Reset" }; //MSG_WATCHDOG_RESET
-const char MSGPL151[] PROGMEM = { " Watchdog Reset" }; //MSG_WATCHDOG_RESET
-const char MSGEN152[] PROGMEM = { " Software Reset" }; //MSG_SOFTWARE_RESET
-const char MSGCZ152[] PROGMEM = { " Software Reset" }; //MSG_SOFTWARE_RESET
-const char MSGIT152[] PROGMEM = { " Software Reset" }; //MSG_SOFTWARE_RESET
-const char MSGES152[] PROGMEM = { " Software Reset" }; //MSG_SOFTWARE_RESET
-const char MSGPL152[] PROGMEM = { " Software Reset" }; //MSG_SOFTWARE_RESET
-const char MSGEN153[] PROGMEM = { " | Author: " }; //MSG_AUTHOR
-const char MSGCZ153[] PROGMEM = { " | Author: " }; //MSG_AUTHOR
-const char MSGIT153[] PROGMEM = { " | Author: " }; //MSG_AUTHOR
-const char MSGES153[] PROGMEM = { " | Author: " }; //MSG_AUTHOR
-const char MSGPL153[] PROGMEM = { " | Author: " }; //MSG_AUTHOR
-const char MSGEN154[] PROGMEM = { " Last Updated: " }; //MSG_CONFIGURATION_VER
-const char MSGCZ154[] PROGMEM = { " Last Updated: " }; //MSG_CONFIGURATION_VER
-const char MSGIT154[] PROGMEM = { " Last Updated: " }; //MSG_CONFIGURATION_VER
-const char MSGES154[] PROGMEM = { " Last Updated: " }; //MSG_CONFIGURATION_VER
-const char MSGPL154[] PROGMEM = { " Last Updated: " }; //MSG_CONFIGURATION_VER
-const char MSGEN155[] PROGMEM = { " Free Memory: " }; //MSG_FREE_MEMORY
-const char MSGCZ155[] PROGMEM = { " Free Memory: " }; //MSG_FREE_MEMORY
-const char MSGIT155[] PROGMEM = { " Free Memory: " }; //MSG_FREE_MEMORY
-const char MSGES155[] PROGMEM = { " Free Memory: " }; //MSG_FREE_MEMORY
-const char MSGPL155[] PROGMEM = { " Free Memory: " }; //MSG_FREE_MEMORY
-const char MSGEN156[] PROGMEM = { "  PlannerBufferBytes: " }; //MSG_PLANNER_BUFFER_BYTES
-const char MSGCZ156[] PROGMEM = { "  PlannerBufferBytes: " }; //MSG_PLANNER_BUFFER_BYTES
-const char MSGIT156[] PROGMEM = { "  PlannerBufferBytes: " }; //MSG_PLANNER_BUFFER_BYTES
-const char MSGES156[] PROGMEM = { "  PlannerBufferBytes: " }; //MSG_PLANNER_BUFFER_BYTES
-const char MSGPL156[] PROGMEM = { "  PlannerBufferBytes: " }; //MSG_PLANNER_BUFFER_BYTES
-const char MSGEN157[] PROGMEM = { "ok" }; //MSG_OK
-const char MSGCZ157[] PROGMEM = { "ok" }; //MSG_OK
-const char MSGIT157[] PROGMEM = { "ok" }; //MSG_OK
-const char MSGES157[] PROGMEM = { "ok" }; //MSG_OK
-const char MSGPL157[] PROGMEM = { "ok" }; //MSG_OK
-const char MSGEN158[] PROGMEM = { "Done saving file." }; //MSG_FILE_SAVED
-const char MSGCZ158[] PROGMEM = { "Done saving file." }; //MSG_FILE_SAVED
-const char MSGIT158[] PROGMEM = { "Done saving file." }; //MSG_FILE_SAVED
-const char MSGES158[] PROGMEM = { "Done saving file." }; //MSG_FILE_SAVED
-const char MSGPL158[] PROGMEM = { "Done saving file." }; //MSG_FILE_SAVED
-const char MSGEN159[] PROGMEM = { "Line Number is not Last Line Number+1, Last Line: " }; //MSG_ERR_LINE_NO
-const char MSGCZ159[] PROGMEM = { "Line Number is not Last Line Number+1, Last Line: " }; //MSG_ERR_LINE_NO
-const char MSGIT159[] PROGMEM = { "Line Number is not Last Line Number+1, Last Line: " }; //MSG_ERR_LINE_NO
-const char MSGES159[] PROGMEM = { "Line Number is not Last Line Number+1, Last Line: " }; //MSG_ERR_LINE_NO
-const char MSGPL159[] PROGMEM = { "Line Number is not Last Line Number+1, Last Line: " }; //MSG_ERR_LINE_NO
-const char MSGEN160[] PROGMEM = { "checksum mismatch, Last Line: " }; //MSG_ERR_CHECKSUM_MISMATCH
-const char MSGCZ160[] PROGMEM = { "checksum mismatch, Last Line: " }; //MSG_ERR_CHECKSUM_MISMATCH
-const char MSGIT160[] PROGMEM = { "checksum mismatch, Last Line: " }; //MSG_ERR_CHECKSUM_MISMATCH
-const char MSGES160[] PROGMEM = { "checksum mismatch, Last Line: " }; //MSG_ERR_CHECKSUM_MISMATCH
-const char MSGPL160[] PROGMEM = { "checksum mismatch, Last Line: " }; //MSG_ERR_CHECKSUM_MISMATCH
-const char MSGEN161[] PROGMEM = { "No Checksum with line number, Last Line: " }; //MSG_ERR_NO_CHECKSUM
-const char MSGCZ161[] PROGMEM = { "No Checksum with line number, Last Line: " }; //MSG_ERR_NO_CHECKSUM
-const char MSGIT161[] PROGMEM = { "No Checksum with line number, Last Line: " }; //MSG_ERR_NO_CHECKSUM
-const char MSGES161[] PROGMEM = { "No Checksum with line number, Last Line: " }; //MSG_ERR_NO_CHECKSUM
-const char MSGPL161[] PROGMEM = { "No Checksum with line number, Last Line: " }; //MSG_ERR_NO_CHECKSUM
-const char MSGEN162[] PROGMEM = { "No Line Number with checksum, Last Line: " }; //MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM
-const char MSGCZ162[] PROGMEM = { "No Line Number with checksum, Last Line: " }; //MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM
-const char MSGIT162[] PROGMEM = { "No Line Number with checksum, Last Line: " }; //MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM
-const char MSGES162[] PROGMEM = { "No Line Number with checksum, Last Line: " }; //MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM
-const char MSGPL162[] PROGMEM = { "No Line Number with checksum, Last Line: " }; //MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM
-const char MSGEN163[] PROGMEM = { "Done printing file" }; //MSG_FILE_PRINTED
-const char MSGCZ163[] PROGMEM = { "Done printing file" }; //MSG_FILE_PRINTED
-const char MSGIT163[] PROGMEM = { "Done printing file" }; //MSG_FILE_PRINTED
-const char MSGES163[] PROGMEM = { "Done printing file" }; //MSG_FILE_PRINTED
-const char MSGPL163[] PROGMEM = { "Done printing file" }; //MSG_FILE_PRINTED
-const char MSGEN164[] PROGMEM = { "Begin file list" }; //MSG_BEGIN_FILE_LIST
-const char MSGCZ164[] PROGMEM = { "Begin file list" }; //MSG_BEGIN_FILE_LIST
-const char MSGIT164[] PROGMEM = { "Begin file list" }; //MSG_BEGIN_FILE_LIST
-const char MSGES164[] PROGMEM = { "Begin file list" }; //MSG_BEGIN_FILE_LIST
-const char MSGPL164[] PROGMEM = { "Begin file list" }; //MSG_BEGIN_FILE_LIST
-const char MSGEN165[] PROGMEM = { "End file list" }; //MSG_END_FILE_LIST
-const char MSGCZ165[] PROGMEM = { "End file list" }; //MSG_END_FILE_LIST
-const char MSGIT165[] PROGMEM = { "End file list" }; //MSG_END_FILE_LIST
-const char MSGES165[] PROGMEM = { "End file list" }; //MSG_END_FILE_LIST
-const char MSGPL165[] PROGMEM = { "End file list" }; //MSG_END_FILE_LIST
-const char MSGEN166[] PROGMEM = { "M104 Invalid extruder " }; //MSG_M104_INVALID_EXTRUDER
-const char MSGCZ166[] PROGMEM = { "M104 Invalid extruder " }; //MSG_M104_INVALID_EXTRUDER
-const char MSGIT166[] PROGMEM = { "M104 Invalid extruder " }; //MSG_M104_INVALID_EXTRUDER
-const char MSGES166[] PROGMEM = { "M104 Invalid extruder " }; //MSG_M104_INVALID_EXTRUDER
-const char MSGPL166[] PROGMEM = { "M104 Invalid extruder " }; //MSG_M104_INVALID_EXTRUDER
-const char MSGEN167[] PROGMEM = { "M105 Invalid extruder " }; //MSG_M105_INVALID_EXTRUDER
-const char MSGCZ167[] PROGMEM = { "M105 Invalid extruder " }; //MSG_M105_INVALID_EXTRUDER
-const char MSGIT167[] PROGMEM = { "M105 Invalid extruder " }; //MSG_M105_INVALID_EXTRUDER
-const char MSGES167[] PROGMEM = { "M105 Invalid extruder " }; //MSG_M105_INVALID_EXTRUDER
-const char MSGPL167[] PROGMEM = { "M105 Invalid extruder " }; //MSG_M105_INVALID_EXTRUDER
-const char MSGEN168[] PROGMEM = { "M200 Invalid extruder " }; //MSG_M200_INVALID_EXTRUDER
-const char MSGCZ168[] PROGMEM = { "M200 Invalid extruder " }; //MSG_M200_INVALID_EXTRUDER
-const char MSGIT168[] PROGMEM = { "M200 Invalid extruder " }; //MSG_M200_INVALID_EXTRUDER
-const char MSGES168[] PROGMEM = { "M200 Invalid extruder " }; //MSG_M200_INVALID_EXTRUDER
-const char MSGPL168[] PROGMEM = { "M200 Invalid extruder " }; //MSG_M200_INVALID_EXTRUDER
-const char MSGEN169[] PROGMEM = { "M218 Invalid extruder " }; //MSG_M218_INVALID_EXTRUDER
-const char MSGCZ169[] PROGMEM = { "M218 Invalid extruder " }; //MSG_M218_INVALID_EXTRUDER
-const char MSGIT169[] PROGMEM = { "M218 Invalid extruder " }; //MSG_M218_INVALID_EXTRUDER
-const char MSGES169[] PROGMEM = { "M218 Invalid extruder " }; //MSG_M218_INVALID_EXTRUDER
-const char MSGPL169[] PROGMEM = { "M218 Invalid extruder " }; //MSG_M218_INVALID_EXTRUDER
-const char MSGEN170[] PROGMEM = { "M221 Invalid extruder " }; //MSG_M221_INVALID_EXTRUDER
-const char MSGCZ170[] PROGMEM = { "M221 Invalid extruder " }; //MSG_M221_INVALID_EXTRUDER
-const char MSGIT170[] PROGMEM = { "M221 Invalid extruder " }; //MSG_M221_INVALID_EXTRUDER
-const char MSGES170[] PROGMEM = { "M221 Invalid extruder " }; //MSG_M221_INVALID_EXTRUDER
-const char MSGPL170[] PROGMEM = { "M221 Invalid extruder " }; //MSG_M221_INVALID_EXTRUDER
-const char MSGEN171[] PROGMEM = { "No thermistors - no temperature" }; //MSG_ERR_NO_THERMISTORS
-const char MSGCZ171[] PROGMEM = { "No thermistors - no temperature" }; //MSG_ERR_NO_THERMISTORS
-const char MSGIT171[] PROGMEM = { "No thermistors - no temperature" }; //MSG_ERR_NO_THERMISTORS
-const char MSGES171[] PROGMEM = { "No thermistors - no temperature" }; //MSG_ERR_NO_THERMISTORS
-const char MSGPL171[] PROGMEM = { "No thermistors - no temperature" }; //MSG_ERR_NO_THERMISTORS
-const char MSGEN172[] PROGMEM = { "M109 Invalid extruder " }; //MSG_M109_INVALID_EXTRUDER
-const char MSGCZ172[] PROGMEM = { "M109 Invalid extruder " }; //MSG_M109_INVALID_EXTRUDER
-const char MSGIT172[] PROGMEM = { "M109 Invalid extruder " }; //MSG_M109_INVALID_EXTRUDER
-const char MSGES172[] PROGMEM = { "M109 Invalid extruder " }; //MSG_M109_INVALID_EXTRUDER
-const char MSGPL172[] PROGMEM = { "M109 Invalid extruder " }; //MSG_M109_INVALID_EXTRUDER
-const char MSGEN173[] PROGMEM = { "Heating..." }; //MSG_HEATING
-const char MSGCZ173[] PROGMEM = { "Zahrivani..." }; //MSG_HEATING
-const char MSGIT173[] PROGMEM = { "Riscaldamento..." }; //MSG_HEATING
-const char MSGES173[] PROGMEM = { "Calentando..." }; //MSG_HEATING
-const char MSGPL173[] PROGMEM = { "Grzanie..." }; //MSG_HEATING
-const char MSGEN174[] PROGMEM = { "Heating done." }; //MSG_HEATING_COMPLETE
-const char MSGCZ174[] PROGMEM = { "Zahrivani OK." }; //MSG_HEATING_COMPLETE
-const char MSGIT174[] PROGMEM = { "Riscaldamento fatto." }; //MSG_HEATING_COMPLETE
-const char MSGES174[] PROGMEM = { "Calentando listo." }; //MSG_HEATING_COMPLETE
-const char MSGPL174[] PROGMEM = { "Grzanie OK." }; //MSG_HEATING_COMPLETE
-const char MSGEN175[] PROGMEM = { "Bed Heating." }; //MSG_BED_HEATING
-const char MSGCZ175[] PROGMEM = { "Zahrivani bed..." }; //MSG_BED_HEATING
-const char MSGIT175[] PROGMEM = { "Piatto riscaldam." }; //MSG_BED_HEATING
-const char MSGES175[] PROGMEM = { "Base Calentando" }; //MSG_BED_HEATING
-const char MSGPL175[] PROGMEM = { "Grzanie stolika.." }; //MSG_BED_HEATING
-const char MSGEN176[] PROGMEM = { "Bed done." }; //MSG_BED_DONE
-const char MSGCZ176[] PROGMEM = { "Bed OK." }; //MSG_BED_DONE
-const char MSGIT176[] PROGMEM = { "Piatto fatto." }; //MSG_BED_DONE
-const char MSGES176[] PROGMEM = { "Base listo." }; //MSG_BED_DONE
-const char MSGPL176[] PROGMEM = { "Stolik OK." }; //MSG_BED_DONE
-const char MSGEN177[] PROGMEM = { "FIRMWARE_NAME:Marlin V1.0.2; Sprinter/grbl mashup for gen6 FIRMWARE_URL:https://github.com/prusa3d/Prusa-i3-Plus/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:" "Prusa i3 EXTRUDER_COUNT:1 UUID:00000000-0000-0000-0000-000000000000\n" }; //MSG_M115_REPORT
-const char MSGCZ177[] PROGMEM = { "FIRMWARE_NAME:Marlin V1.0.2; Sprinter/grbl mashup for gen6 FIRMWARE_URL:https://github.com/prusa3d/Prusa-i3-Plus/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:" "Prusa i3 EXTRUDER_COUNT:1 UUID:00000000-0000-0000-0000-000000000000\n" }; //MSG_M115_REPORT
-const char MSGIT177[] PROGMEM = { "FIRMWARE_NAME:Marlin V1.0.2; Sprinter/grbl mashup for gen6 FIRMWARE_URL:https://github.com/prusa3d/Prusa-i3-Plus/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:" "Prusa i3 EXTRUDER_COUNT:1 UUID:00000000-0000-0000-0000-000000000000\n" }; //MSG_M115_REPORT
-const char MSGES177[] PROGMEM = { "FIRMWARE_NAME:Marlin V1.0.2; Sprinter/grbl mashup for gen6 FIRMWARE_URL:https://github.com/prusa3d/Prusa-i3-Plus/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:" "Prusa i3 EXTRUDER_COUNT:1 UUID:00000000-0000-0000-0000-000000000000\n" }; //MSG_M115_REPORT
-const char MSGPL177[] PROGMEM = { "FIRMWARE_NAME:Marlin V1.0.2; Sprinter/grbl mashup for gen6 FIRMWARE_URL:https://github.com/prusa3d/Prusa-i3-Plus/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:" "Prusa i3 EXTRUDER_COUNT:1 UUID:00000000-0000-0000-0000-000000000000\n" }; //MSG_M115_REPORT
-const char MSGEN178[] PROGMEM = { " Count X: " }; //MSG_COUNT_X
-const char MSGCZ178[] PROGMEM = { " Count X: " }; //MSG_COUNT_X
-const char MSGIT178[] PROGMEM = { " Count X: " }; //MSG_COUNT_X
-const char MSGES178[] PROGMEM = { " Count X: " }; //MSG_COUNT_X
-const char MSGPL178[] PROGMEM = { " Count X: " }; //MSG_COUNT_X
-const char MSGEN179[] PROGMEM = { "Printer halted. kill() called!" }; //MSG_ERR_KILLED
-const char MSGCZ179[] PROGMEM = { "Printer halted. kill() called!" }; //MSG_ERR_KILLED
-const char MSGIT179[] PROGMEM = { "Printer halted. kill() called!" }; //MSG_ERR_KILLED
-const char MSGES179[] PROGMEM = { "Printer halted. kill() called!" }; //MSG_ERR_KILLED
-const char MSGPL179[] PROGMEM = { "Printer halted. kill() called!" }; //MSG_ERR_KILLED
-const char MSGEN180[] PROGMEM = { "Printer stopped due to errors. Fix the error and use M999 to restart. (Temperature is reset. Set it after restarting)" }; //MSG_ERR_STOPPED
-const char MSGCZ180[] PROGMEM = { "Printer stopped due to errors. Fix the error and use M999 to restart. (Temperature is reset. Set it after restarting)" }; //MSG_ERR_STOPPED
-const char MSGIT180[] PROGMEM = { "Printer stopped due to errors. Fix the error and use M999 to restart. (Temperature is reset. Set it after restarting)" }; //MSG_ERR_STOPPED
-const char MSGES180[] PROGMEM = { "Printer stopped due to errors. Fix the error and use M999 to restart. (Temperature is reset. Set it after restarting)" }; //MSG_ERR_STOPPED
-const char MSGPL180[] PROGMEM = { "Printer stopped due to errors. Fix the error and use M999 to restart. (Temperature is reset. Set it after restarting)" }; //MSG_ERR_STOPPED
-const char MSGEN181[] PROGMEM = { "Resend: " }; //MSG_RESEND
-const char MSGCZ181[] PROGMEM = { "Resend: " }; //MSG_RESEND
-const char MSGIT181[] PROGMEM = { "Resend: " }; //MSG_RESEND
-const char MSGES181[] PROGMEM = { "Resend: " }; //MSG_RESEND
-const char MSGPL181[] PROGMEM = { "Resend: " }; //MSG_RESEND
-const char MSGEN182[] PROGMEM = { "Unknown command: \"" }; //MSG_UNKNOWN_COMMAND
-const char MSGCZ182[] PROGMEM = { "Unknown command: \"" }; //MSG_UNKNOWN_COMMAND
-const char MSGIT182[] PROGMEM = { "Unknown command: \"" }; //MSG_UNKNOWN_COMMAND
-const char MSGES182[] PROGMEM = { "Unknown command: \"" }; //MSG_UNKNOWN_COMMAND
-const char MSGPL182[] PROGMEM = { "Unknown command: \"" }; //MSG_UNKNOWN_COMMAND
-const char MSGEN183[] PROGMEM = { "Active Extruder: " }; //MSG_ACTIVE_EXTRUDER
-const char MSGCZ183[] PROGMEM = { "Active Extruder: " }; //MSG_ACTIVE_EXTRUDER
-const char MSGIT183[] PROGMEM = { "Active Extruder: " }; //MSG_ACTIVE_EXTRUDER
-const char MSGES183[] PROGMEM = { "Active Extruder: " }; //MSG_ACTIVE_EXTRUDER
-const char MSGPL183[] PROGMEM = { "Active Extruder: " }; //MSG_ACTIVE_EXTRUDER
-const char MSGEN184[] PROGMEM = { "Invalid extruder" }; //MSG_INVALID_EXTRUDER
-const char MSGCZ184[] PROGMEM = { "Invalid extruder" }; //MSG_INVALID_EXTRUDER
-const char MSGIT184[] PROGMEM = { "Invalid extruder" }; //MSG_INVALID_EXTRUDER
-const char MSGES184[] PROGMEM = { "Invalid extruder" }; //MSG_INVALID_EXTRUDER
-const char MSGPL184[] PROGMEM = { "Invalid extruder" }; //MSG_INVALID_EXTRUDER
-const char MSGEN185[] PROGMEM = { "x_min: " }; //MSG_X_MIN
-const char MSGCZ185[] PROGMEM = { "x_min: " }; //MSG_X_MIN
-const char MSGIT185[] PROGMEM = { "x_min: " }; //MSG_X_MIN
-const char MSGES185[] PROGMEM = { "x_min: " }; //MSG_X_MIN
-const char MSGPL185[] PROGMEM = { "x_min: " }; //MSG_X_MIN
-const char MSGEN186[] PROGMEM = { "x_max: " }; //MSG_X_MAX
-const char MSGCZ186[] PROGMEM = { "x_max: " }; //MSG_X_MAX
-const char MSGIT186[] PROGMEM = { "x_max: " }; //MSG_X_MAX
-const char MSGES186[] PROGMEM = { "x_max: " }; //MSG_X_MAX
-const char MSGPL186[] PROGMEM = { "x_max: " }; //MSG_X_MAX
-const char MSGEN187[] PROGMEM = { "y_min: " }; //MSG_Y_MIN
-const char MSGCZ187[] PROGMEM = { "y_min: " }; //MSG_Y_MIN
-const char MSGIT187[] PROGMEM = { "y_min: " }; //MSG_Y_MIN
-const char MSGES187[] PROGMEM = { "y_min: " }; //MSG_Y_MIN
-const char MSGPL187[] PROGMEM = { "y_min: " }; //MSG_Y_MIN
-const char MSGEN188[] PROGMEM = { "y_max: " }; //MSG_Y_MAX
-const char MSGCZ188[] PROGMEM = { "y_max: " }; //MSG_Y_MAX
-const char MSGIT188[] PROGMEM = { "y_max: " }; //MSG_Y_MAX
-const char MSGES188[] PROGMEM = { "y_max: " }; //MSG_Y_MAX
-const char MSGPL188[] PROGMEM = { "y_max: " }; //MSG_Y_MAX
-const char MSGEN189[] PROGMEM = { "z_min: " }; //MSG_Z_MIN
-const char MSGCZ189[] PROGMEM = { "z_min: " }; //MSG_Z_MIN
-const char MSGIT189[] PROGMEM = { "z_min: " }; //MSG_Z_MIN
-const char MSGES189[] PROGMEM = { "z_min: " }; //MSG_Z_MIN
-const char MSGPL189[] PROGMEM = { "z_min: " }; //MSG_Z_MIN
-const char MSGEN190[] PROGMEM = { "z_max: " }; //MSG_Z_MAX
-const char MSGCZ190[] PROGMEM = { "z_max: " }; //MSG_Z_MAX
-const char MSGIT190[] PROGMEM = { "z_max: " }; //MSG_Z_MAX
-const char MSGES190[] PROGMEM = { "z_max: " }; //MSG_Z_MAX
-const char MSGPL190[] PROGMEM = { "z_max: " }; //MSG_Z_MAX
-const char MSGEN191[] PROGMEM = { "Reporting endstop status" }; //MSG_M119_REPORT
-const char MSGCZ191[] PROGMEM = { "Reporting endstop status" }; //MSG_M119_REPORT
-const char MSGIT191[] PROGMEM = { "Reporting endstop status" }; //MSG_M119_REPORT
-const char MSGES191[] PROGMEM = { "Reporting endstop status" }; //MSG_M119_REPORT
-const char MSGPL191[] PROGMEM = { "Reporting endstop status" }; //MSG_M119_REPORT
-const char MSGEN192[] PROGMEM = { "TRIGGERED" }; //MSG_ENDSTOP_HIT
-const char MSGCZ192[] PROGMEM = { "TRIGGERED" }; //MSG_ENDSTOP_HIT
-const char MSGIT192[] PROGMEM = { "TRIGGERED" }; //MSG_ENDSTOP_HIT
-const char MSGES192[] PROGMEM = { "TRIGGERED" }; //MSG_ENDSTOP_HIT
-const char MSGPL192[] PROGMEM = { "TRIGGERED" }; //MSG_ENDSTOP_HIT
-const char MSGEN193[] PROGMEM = { "open" }; //MSG_ENDSTOP_OPEN
-const char MSGCZ193[] PROGMEM = { "open" }; //MSG_ENDSTOP_OPEN
-const char MSGIT193[] PROGMEM = { "open" }; //MSG_ENDSTOP_OPEN
-const char MSGES193[] PROGMEM = { "open" }; //MSG_ENDSTOP_OPEN
-const char MSGPL193[] PROGMEM = { "open" }; //MSG_ENDSTOP_OPEN
-const char MSGEN194[] PROGMEM = { "Hotend offsets:" }; //MSG_HOTEND_OFFSET
-const char MSGCZ194[] PROGMEM = { "Hotend offsets:" }; //MSG_HOTEND_OFFSET
-const char MSGIT194[] PROGMEM = { "Hotend offsets:" }; //MSG_HOTEND_OFFSET
-const char MSGES194[] PROGMEM = { "Hotend offsets:" }; //MSG_HOTEND_OFFSET
-const char MSGPL194[] PROGMEM = { "Hotend offsets:" }; //MSG_HOTEND_OFFSET
-const char MSGEN195[] PROGMEM = { "Cannot open subdir" }; //MSG_SD_CANT_OPEN_SUBDIR
-const char MSGCZ195[] PROGMEM = { "Cannot open subdir" }; //MSG_SD_CANT_OPEN_SUBDIR
-const char MSGIT195[] PROGMEM = { "Cannot open subdir" }; //MSG_SD_CANT_OPEN_SUBDIR
-const char MSGES195[] PROGMEM = { "Cannot open subdir" }; //MSG_SD_CANT_OPEN_SUBDIR
-const char MSGPL195[] PROGMEM = { "Cannot open subdir" }; //MSG_SD_CANT_OPEN_SUBDIR
-const char MSGEN196[] PROGMEM = { "SD init fail" }; //MSG_SD_INIT_FAIL
-const char MSGCZ196[] PROGMEM = { "SD init fail" }; //MSG_SD_INIT_FAIL
-const char MSGIT196[] PROGMEM = { "SD init fail" }; //MSG_SD_INIT_FAIL
-const char MSGES196[] PROGMEM = { "SD init fail" }; //MSG_SD_INIT_FAIL
-const char MSGPL196[] PROGMEM = { "SD init fail" }; //MSG_SD_INIT_FAIL
-const char MSGEN197[] PROGMEM = { "volume.init failed" }; //MSG_SD_VOL_INIT_FAIL
-const char MSGCZ197[] PROGMEM = { "volume.init failed" }; //MSG_SD_VOL_INIT_FAIL
-const char MSGIT197[] PROGMEM = { "volume.init failed" }; //MSG_SD_VOL_INIT_FAIL
-const char MSGES197[] PROGMEM = { "volume.init failed" }; //MSG_SD_VOL_INIT_FAIL
-const char MSGPL197[] PROGMEM = { "volume.init failed" }; //MSG_SD_VOL_INIT_FAIL
-const char MSGEN198[] PROGMEM = { "openRoot failed" }; //MSG_SD_OPENROOT_FAIL
-const char MSGCZ198[] PROGMEM = { "openRoot failed" }; //MSG_SD_OPENROOT_FAIL
-const char MSGIT198[] PROGMEM = { "openRoot failed" }; //MSG_SD_OPENROOT_FAIL
-const char MSGES198[] PROGMEM = { "openRoot failed" }; //MSG_SD_OPENROOT_FAIL
-const char MSGPL198[] PROGMEM = { "openRoot failed" }; //MSG_SD_OPENROOT_FAIL
-const char MSGEN199[] PROGMEM = { "SD card ok" }; //MSG_SD_CARD_OK
-const char MSGCZ199[] PROGMEM = { "SD card ok" }; //MSG_SD_CARD_OK
-const char MSGIT199[] PROGMEM = { "SD card ok" }; //MSG_SD_CARD_OK
-const char MSGES199[] PROGMEM = { "SD card ok" }; //MSG_SD_CARD_OK
-const char MSGPL199[] PROGMEM = { "SD card ok" }; //MSG_SD_CARD_OK
-const char MSGEN200[] PROGMEM = { "workDir open failed" }; //MSG_SD_WORKDIR_FAIL
-const char MSGCZ200[] PROGMEM = { "workDir open failed" }; //MSG_SD_WORKDIR_FAIL
-const char MSGIT200[] PROGMEM = { "workDir open failed" }; //MSG_SD_WORKDIR_FAIL
-const char MSGES200[] PROGMEM = { "workDir open failed" }; //MSG_SD_WORKDIR_FAIL
-const char MSGPL200[] PROGMEM = { "workDir open failed" }; //MSG_SD_WORKDIR_FAIL
-const char MSGEN201[] PROGMEM = { "open failed, File: " }; //MSG_SD_OPEN_FILE_FAIL
-const char MSGCZ201[] PROGMEM = { "open failed, File: " }; //MSG_SD_OPEN_FILE_FAIL
-const char MSGIT201[] PROGMEM = { "open failed, File: " }; //MSG_SD_OPEN_FILE_FAIL
-const char MSGES201[] PROGMEM = { "open failed, File: " }; //MSG_SD_OPEN_FILE_FAIL
-const char MSGPL201[] PROGMEM = { "open failed, File: " }; //MSG_SD_OPEN_FILE_FAIL
-const char MSGEN202[] PROGMEM = { "File opened: " }; //MSG_SD_FILE_OPENED
-const char MSGCZ202[] PROGMEM = { "File opened: " }; //MSG_SD_FILE_OPENED
-const char MSGIT202[] PROGMEM = { "File opened: " }; //MSG_SD_FILE_OPENED
-const char MSGES202[] PROGMEM = { "File opened: " }; //MSG_SD_FILE_OPENED
-const char MSGPL202[] PROGMEM = { "File opened: " }; //MSG_SD_FILE_OPENED
-const char MSGEN203[] PROGMEM = { " Size: " }; //MSG_SD_SIZE
-const char MSGCZ203[] PROGMEM = { " Size: " }; //MSG_SD_SIZE
-const char MSGIT203[] PROGMEM = { " Size: " }; //MSG_SD_SIZE
-const char MSGES203[] PROGMEM = { " Size: " }; //MSG_SD_SIZE
-const char MSGPL203[] PROGMEM = { " Size: " }; //MSG_SD_SIZE
-const char MSGEN204[] PROGMEM = { "File selected" }; //MSG_SD_FILE_SELECTED
-const char MSGCZ204[] PROGMEM = { "File selected" }; //MSG_SD_FILE_SELECTED
-const char MSGIT204[] PROGMEM = { "File selected" }; //MSG_SD_FILE_SELECTED
-const char MSGES204[] PROGMEM = { "File selected" }; //MSG_SD_FILE_SELECTED
-const char MSGPL204[] PROGMEM = { "File selected" }; //MSG_SD_FILE_SELECTED
-const char MSGEN205[] PROGMEM = { "Writing to file: " }; //MSG_SD_WRITE_TO_FILE
-const char MSGCZ205[] PROGMEM = { "Writing to file: " }; //MSG_SD_WRITE_TO_FILE
-const char MSGIT205[] PROGMEM = { "Writing to file: " }; //MSG_SD_WRITE_TO_FILE
-const char MSGES205[] PROGMEM = { "Writing to file: " }; //MSG_SD_WRITE_TO_FILE
-const char MSGPL205[] PROGMEM = { "Writing to file: " }; //MSG_SD_WRITE_TO_FILE
-const char MSGEN206[] PROGMEM = { "SD printing byte " }; //MSG_SD_PRINTING_BYTE
-const char MSGCZ206[] PROGMEM = { "SD printing byte " }; //MSG_SD_PRINTING_BYTE
-const char MSGIT206[] PROGMEM = { "SD printing byte " }; //MSG_SD_PRINTING_BYTE
-const char MSGES206[] PROGMEM = { "SD printing byte " }; //MSG_SD_PRINTING_BYTE
-const char MSGPL206[] PROGMEM = { "SD printing byte " }; //MSG_SD_PRINTING_BYTE
-const char MSGEN207[] PROGMEM = { "Not SD printing" }; //MSG_SD_NOT_PRINTING
-const char MSGCZ207[] PROGMEM = { "Not SD printing" }; //MSG_SD_NOT_PRINTING
-const char MSGIT207[] PROGMEM = { "Not SD printing" }; //MSG_SD_NOT_PRINTING
-const char MSGES207[] PROGMEM = { "Not SD printing" }; //MSG_SD_NOT_PRINTING
-const char MSGPL207[] PROGMEM = { "Not SD printing" }; //MSG_SD_NOT_PRINTING
-const char MSGEN208[] PROGMEM = { "error writing to file" }; //MSG_SD_ERR_WRITE_TO_FILE
-const char MSGCZ208[] PROGMEM = { "error writing to file" }; //MSG_SD_ERR_WRITE_TO_FILE
-const char MSGIT208[] PROGMEM = { "error writing to file" }; //MSG_SD_ERR_WRITE_TO_FILE
-const char MSGES208[] PROGMEM = { "error writing to file" }; //MSG_SD_ERR_WRITE_TO_FILE
-const char MSGPL208[] PROGMEM = { "error writing to file" }; //MSG_SD_ERR_WRITE_TO_FILE
-const char MSGEN209[] PROGMEM = { "Cannot enter subdir: " }; //MSG_SD_CANT_ENTER_SUBDIR
-const char MSGCZ209[] PROGMEM = { "Cannot enter subdir: " }; //MSG_SD_CANT_ENTER_SUBDIR
-const char MSGIT209[] PROGMEM = { "Cannot enter subdir: " }; //MSG_SD_CANT_ENTER_SUBDIR
-const char MSGES209[] PROGMEM = { "Cannot enter subdir: " }; //MSG_SD_CANT_ENTER_SUBDIR
-const char MSGPL209[] PROGMEM = { "Cannot enter subdir: " }; //MSG_SD_CANT_ENTER_SUBDIR
-const char MSGEN210[] PROGMEM = { "Steprate too high: " }; //MSG_STEPPER_TOO_HIGH
-const char MSGCZ210[] PROGMEM = { "Steprate too high: " }; //MSG_STEPPER_TOO_HIGH
-const char MSGIT210[] PROGMEM = { "Steprate too high: " }; //MSG_STEPPER_TOO_HIGH
-const char MSGES210[] PROGMEM = { "Steprate too high: " }; //MSG_STEPPER_TOO_HIGH
-const char MSGPL210[] PROGMEM = { "Steprate too high: " }; //MSG_STEPPER_TOO_HIGH
-const char MSGEN211[] PROGMEM = { "endstops hit: " }; //MSG_ENDSTOPS_HIT
-const char MSGCZ211[] PROGMEM = { "endstops hit: " }; //MSG_ENDSTOPS_HIT
-const char MSGIT211[] PROGMEM = { "endstops hit: " }; //MSG_ENDSTOPS_HIT
-const char MSGES211[] PROGMEM = { "endstops hit: " }; //MSG_ENDSTOPS_HIT
-const char MSGPL211[] PROGMEM = { "endstops hit: " }; //MSG_ENDSTOPS_HIT
-const char MSGEN212[] PROGMEM = { " cold extrusion prevented" }; //MSG_ERR_COLD_EXTRUDE_STOP
-const char MSGCZ212[] PROGMEM = { " cold extrusion prevented" }; //MSG_ERR_COLD_EXTRUDE_STOP
-const char MSGIT212[] PROGMEM = { " cold extrusion prevented" }; //MSG_ERR_COLD_EXTRUDE_STOP
-const char MSGES212[] PROGMEM = { " cold extrusion prevented" }; //MSG_ERR_COLD_EXTRUDE_STOP
-const char MSGPL212[] PROGMEM = { " cold extrusion prevented" }; //MSG_ERR_COLD_EXTRUDE_STOP
-const char MSGEN213[] PROGMEM = { " too long extrusion prevented" }; //MSG_ERR_LONG_EXTRUDE_STOP
-const char MSGCZ213[] PROGMEM = { " too long extrusion prevented" }; //MSG_ERR_LONG_EXTRUDE_STOP
-const char MSGIT213[] PROGMEM = { " too long extrusion prevented" }; //MSG_ERR_LONG_EXTRUDE_STOP
-const char MSGES213[] PROGMEM = { " too long extrusion prevented" }; //MSG_ERR_LONG_EXTRUDE_STOP
-const char MSGPL213[] PROGMEM = { " too long extrusion prevented" }; //MSG_ERR_LONG_EXTRUDE_STOP
-const char MSGEN214[] PROGMEM = { "Babystepping X" }; //MSG_BABYSTEPPING_X
-const char MSGCZ214[] PROGMEM = { "Babystepping X" }; //MSG_BABYSTEPPING_X
-const char MSGIT214[] PROGMEM = { "Babystepping X" }; //MSG_BABYSTEPPING_X
-const char MSGES214[] PROGMEM = { "Babystepping X" }; //MSG_BABYSTEPPING_X
-const char MSGPL214[] PROGMEM = { "Babystepping X" }; //MSG_BABYSTEPPING_X
-const char MSGEN215[] PROGMEM = { "Babystepping Y" }; //MSG_BABYSTEPPING_Y
-const char MSGCZ215[] PROGMEM = { "Babystepping Y" }; //MSG_BABYSTEPPING_Y
-const char MSGIT215[] PROGMEM = { "Babystepping Y" }; //MSG_BABYSTEPPING_Y
-const char MSGES215[] PROGMEM = { "Babystepping Y" }; //MSG_BABYSTEPPING_Y
-const char MSGPL215[] PROGMEM = { "Babystepping Y" }; //MSG_BABYSTEPPING_Y
-const char MSGEN216[] PROGMEM = { "Adjusting Z" }; //MSG_BABYSTEPPING_Z
-const char MSGCZ216[] PROGMEM = { "Dostavovani Z" }; //MSG_BABYSTEPPING_Z
-const char MSGIT216[] PROGMEM = { "Adjusting Z" }; //MSG_BABYSTEPPING_Z
-const char MSGES216[] PROGMEM = { "Adjusting Z" }; //MSG_BABYSTEPPING_Z
-const char MSGPL216[] PROGMEM = { "Dostavovani Z" }; //MSG_BABYSTEPPING_Z
-const char MSGEN217[] PROGMEM = { "Error in menu structure" }; //MSG_SERIAL_ERROR_MENU_STRUCTURE
-const char MSGCZ217[] PROGMEM = { "Error in menu structure" }; //MSG_SERIAL_ERROR_MENU_STRUCTURE
-const char MSGIT217[] PROGMEM = { "Error in menu structure" }; //MSG_SERIAL_ERROR_MENU_STRUCTURE
-const char MSGES217[] PROGMEM = { "Error in menu structure" }; //MSG_SERIAL_ERROR_MENU_STRUCTURE
-const char MSGPL217[] PROGMEM = { "Error in menu structure" }; //MSG_SERIAL_ERROR_MENU_STRUCTURE
-const char MSGEN218[] PROGMEM = { "English" }; //MSG_LANGUAGE_NAME
-const char MSGCZ218[] PROGMEM = { "Cestina" }; //MSG_LANGUAGE_NAME
-const char MSGIT218[] PROGMEM = { "Italiano" }; //MSG_LANGUAGE_NAME
-const char MSGES218[] PROGMEM = { "Espanol" }; //MSG_LANGUAGE_NAME
-const char MSGPL218[] PROGMEM = { "Polski" }; //MSG_LANGUAGE_NAME
-const char MSGEN219[] PROGMEM = { "Select language     " }; //MSG_LANGUAGE_SELECT
-const char MSGCZ219[] PROGMEM = { "Vyber jazyka        " }; //MSG_LANGUAGE_SELECT
-const char MSGIT219[] PROGMEM = { "Selez. la lingua" }; //MSG_LANGUAGE_SELECT
-const char MSGES219[] PROGMEM = { "Cambia la lengua " }; //MSG_LANGUAGE_SELECT
-const char MSGPL219[] PROGMEM = { "Wybor jezyka        " }; //MSG_LANGUAGE_SELECT
-const char MSGEN220[] PROGMEM = { "prusa3d.com" }; //MSG_PRUSA3D
-const char MSGCZ220[] PROGMEM = { "prusa3d.cz" }; //MSG_PRUSA3D
-const char MSGIT220[] PROGMEM = { "prusa3d.com" }; //MSG_PRUSA3D
-const char MSGES220[] PROGMEM = { "prusa3d.com" }; //MSG_PRUSA3D
-const char MSGPL220[] PROGMEM = { "prusa3d.cz" }; //MSG_PRUSA3D
-const char MSGEN221[] PROGMEM = { "forum.prusa3d.com" }; //MSG_PRUSA3D_FORUM
-const char MSGCZ221[] PROGMEM = { "forum.prusa3d.cz" }; //MSG_PRUSA3D_FORUM
-const char MSGIT221[] PROGMEM = { "forum.prusa3d.com" }; //MSG_PRUSA3D_FORUM
-const char MSGES221[] PROGMEM = { "forum.prusa3d.com" }; //MSG_PRUSA3D_FORUM
-const char MSGPL221[] PROGMEM = { "forum.prusa3d.cz" }; //MSG_PRUSA3D_FORUM
-const char MSGEN222[] PROGMEM = { "howto.prusa3d.com" }; //MSG_PRUSA3D_HOWTO
-const char MSGCZ222[] PROGMEM = { "howto.prusa3d.cz" }; //MSG_PRUSA3D_HOWTO
-const char MSGIT222[] PROGMEM = { "howto.prusa3d.com" }; //MSG_PRUSA3D_HOWTO
-const char MSGES222[] PROGMEM = { "howto.prusa3d.com" }; //MSG_PRUSA3D_HOWTO
-const char MSGPL222[] PROGMEM = { "howto.prusa3d.cz" }; //MSG_PRUSA3D_HOWTO
-const char* MSGEN[]  = {MSGEN0, //WELCOME_MSG
-MSGEN1, //MSG_SD_INSERTED
-MSGEN2, //MSG_SD_REMOVED
-MSGEN3, //MSG_MAIN
-MSGEN4, //MSG_AUTOSTART
-MSGEN5, //MSG_DISABLE_STEPPERS
-MSGEN6, //MSG_AUTO_HOME
-MSGEN7, //MSG_SET_HOME_OFFSETS
-MSGEN8, //MSG_SET_ORIGIN
-MSGEN9, //MSG_PREHEAT_PLA
-MSGEN10, //MSG_PREHEAT_PLA0
-MSGEN11, //MSG_PREHEAT_PLA1
-MSGEN12, //MSG_PREHEAT_PLA2
-MSGEN13, //MSG_PREHEAT_PLA012
-MSGEN14, //MSG_PREHEAT_PLA_BEDONLY
-MSGEN15, //MSG_PREHEAT_PLA_SETTINGS
-MSGEN16, //MSG_PREHEAT_ABS
-MSGEN17, //MSG_PREHEAT_ABS0
-MSGEN18, //MSG_PREHEAT_ABS1
-MSGEN19, //MSG_PREHEAT_ABS2
-MSGEN20, //MSG_PREHEAT_ABS012
-MSGEN21, //MSG_PREHEAT_ABS_BEDONLY
-MSGEN22, //MSG_PREHEAT_ABS_SETTINGS
-MSGEN23, //MSG_COOLDOWN
-MSGEN24, //MSG_SWITCH_PS_ON
-MSGEN25, //MSG_SWITCH_PS_OFF
-MSGEN26, //MSG_EXTRUDE
-MSGEN27, //MSG_RETRACT
-MSGEN28, //MSG_MOVE_AXIS
-MSGEN29, //MSG_MOVE_X
-MSGEN30, //MSG_MOVE_Y
-MSGEN31, //MSG_MOVE_Z
-MSGEN32, //MSG_MOVE_E
-MSGEN33, //MSG_MOVE_E1
-MSGEN34, //MSG_MOVE_E2
-MSGEN35, //MSG_MOVE_01MM
-MSGEN36, //MSG_MOVE_1MM
-MSGEN37, //MSG_MOVE_10MM
-MSGEN38, //MSG_SPEED
-MSGEN39, //MSG_NOZZLE
-MSGEN40, //MSG_NOZZLE1
-MSGEN41, //MSG_NOZZLE2
-MSGEN42, //MSG_BED
-MSGEN43, //MSG_FAN_SPEED
-MSGEN44, //MSG_FLOW
-MSGEN45, //MSG_FLOW0
-MSGEN46, //MSG_FLOW1
-MSGEN47, //MSG_FLOW2
-MSGEN48, //MSG_CONTROL
-MSGEN49, //MSG_MIN
-MSGEN50, //MSG_MAX
-MSGEN51, //MSG_FACTOR
-MSGEN52, //MSG_AUTOTEMP
-MSGEN53, //MSG_ON
-MSGEN54, //MSG_OFF
-MSGEN55, //MSG_PID_P
-MSGEN56, //MSG_PID_I
-MSGEN57, //MSG_PID_D
-MSGEN58, //MSG_PID_C
-MSGEN59, //MSG_ACC
-MSGEN60, //MSG_VXY_JERK
-MSGEN61, //MSG_VZ_JERK
-MSGEN62, //MSG_VE_JERK
-MSGEN63, //MSG_VMAX
-MSGEN64, //MSG_X
-MSGEN65, //MSG_Y
-MSGEN66, //MSG_Z
-MSGEN67, //MSG_E
-MSGEN68, //MSG_VMIN
-MSGEN69, //MSG_VTRAV_MIN
-MSGEN70, //MSG_AMAX
-MSGEN71, //MSG_A_RETRACT
-MSGEN72, //MSG_XSTEPS
-MSGEN73, //MSG_YSTEPS
-MSGEN74, //MSG_ZSTEPS
-MSGEN75, //MSG_ESTEPS
-MSGEN76, //MSG_TEMPERATURE
-MSGEN77, //MSG_MOTION
-MSGEN78, //MSG_VOLUMETRIC
-MSGEN79, //MSG_VOLUMETRIC_ENABLED
-MSGEN80, //MSG_FILAMENT_SIZE_EXTRUDER_0
-MSGEN81, //MSG_FILAMENT_SIZE_EXTRUDER_1
-MSGEN82, //MSG_FILAMENT_SIZE_EXTRUDER_2
-MSGEN83, //MSG_CONTRAST
-MSGEN84, //MSG_STORE_EPROM
-MSGEN85, //MSG_LOAD_EPROM
-MSGEN86, //MSG_RESTORE_FAILSAFE
-MSGEN87, //MSG_REFRESH
-MSGEN88, //MSG_WATCH
-MSGEN89, //MSG_PREPARE
-MSGEN90, //MSG_TUNE
-MSGEN91, //MSG_PAUSE_PRINT
-MSGEN92, //MSG_RESUME_PRINT
-MSGEN93, //MSG_STOP_PRINT
-MSGEN94, //MSG_CARD_MENU
-MSGEN95, //MSG_NO_CARD
-MSGEN96, //MSG_DWELL
-MSGEN97, //MSG_USERWAIT
-MSGEN98, //MSG_RESUMING
-MSGEN99, //MSG_PRINT_ABORTED
-MSGEN100, //MSG_NO_MOVE
-MSGEN101, //MSG_KILLED
-MSGEN102, //MSG_STOPPED
-MSGEN103, //MSG_CONTROL_RETRACT
-MSGEN104, //MSG_CONTROL_RETRACT_SWAP
-MSGEN105, //MSG_CONTROL_RETRACTF
-MSGEN106, //MSG_CONTROL_RETRACT_ZLIFT
-MSGEN107, //MSG_CONTROL_RETRACT_RECOVER
-MSGEN108, //MSG_CONTROL_RETRACT_RECOVER_SWAP
-MSGEN109, //MSG_CONTROL_RETRACT_RECOVERF
-MSGEN110, //MSG_AUTORETRACT
-MSGEN111, //MSG_FILAMENTCHANGE
-MSGEN112, //MSG_INIT_SDCARD
-MSGEN113, //MSG_CNG_SDCARD
-MSGEN114, //MSG_ZPROBE_OUT
-MSGEN115, //MSG_POSITION_UNKNOWN
-MSGEN116, //MSG_ZPROBE_ZOFFSET
-MSGEN117, //MSG_BABYSTEP_X
-MSGEN118, //MSG_BABYSTEP_Y
-MSGEN119, //MSG_BABYSTEP_Z
-MSGEN120, //MSG_ENDSTOP_ABORT
-MSGEN121, //MSG_ADJUSTZ
-MSGEN122, //MSG_HOMEYZ
-MSGEN123, //MSG_SETTINGS
-MSGEN124, //MSG_PREHEAT
-MSGEN125, //MSG_UNLOAD_FILAMENT
-MSGEN126, //MSG_LOAD_FILAMENT
-MSGEN127, //MSG_RECTRACT
-MSGEN128, //MSG_ERROR
-MSGEN129, //MSG_PREHEAT_NOZZLE
-MSGEN130, //MSG_SUPPORT
-MSGEN131, //MSG_CORRECTLY
-MSGEN132, //MSG_YES
-MSGEN133, //MSG_NO
-MSGEN134, //MSG_NOT_LOADED
-MSGEN135, //MSG_NOT_COLOR
-MSGEN136, //MSG_LOADING_FILAMENT
-MSGEN137, //MSG_PLEASE_WAIT
-MSGEN138, //MSG_LOADING_COLOR
-MSGEN139, //MSG_CHANGE_SUCCESS
-MSGEN140, //MSG_PRESS
-MSGEN141, //MSG_INSERT_FILAMENT
-MSGEN142, //MSG_CHANGING_FILAMENT
-MSGEN143, //MSG_SILENT_MODE_ON
-MSGEN144, //MSG_SILENT_MODE_OFF
-MSGEN145, //MSG_REBOOT
-MSGEN146, //MSG_TAKE_EFFECT
-MSGEN147, //MSG_Enqueing
-MSGEN148, //MSG_POWERUP
-MSGEN149, //MSG_EXTERNAL_RESET
-MSGEN150, //MSG_BROWNOUT_RESET
-MSGEN151, //MSG_WATCHDOG_RESET
-MSGEN152, //MSG_SOFTWARE_RESET
-MSGEN153, //MSG_AUTHOR
-MSGEN154, //MSG_CONFIGURATION_VER
-MSGEN155, //MSG_FREE_MEMORY
-MSGEN156, //MSG_PLANNER_BUFFER_BYTES
-MSGEN157, //MSG_OK
-MSGEN158, //MSG_FILE_SAVED
-MSGEN159, //MSG_ERR_LINE_NO
-MSGEN160, //MSG_ERR_CHECKSUM_MISMATCH
-MSGEN161, //MSG_ERR_NO_CHECKSUM
-MSGEN162, //MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM
-MSGEN163, //MSG_FILE_PRINTED
-MSGEN164, //MSG_BEGIN_FILE_LIST
-MSGEN165, //MSG_END_FILE_LIST
-MSGEN166, //MSG_M104_INVALID_EXTRUDER
-MSGEN167, //MSG_M105_INVALID_EXTRUDER
-MSGEN168, //MSG_M200_INVALID_EXTRUDER
-MSGEN169, //MSG_M218_INVALID_EXTRUDER
-MSGEN170, //MSG_M221_INVALID_EXTRUDER
-MSGEN171, //MSG_ERR_NO_THERMISTORS
-MSGEN172, //MSG_M109_INVALID_EXTRUDER
-MSGEN173, //MSG_HEATING
-MSGEN174, //MSG_HEATING_COMPLETE
-MSGEN175, //MSG_BED_HEATING
-MSGEN176, //MSG_BED_DONE
-MSGEN177, //MSG_M115_REPORT
-MSGEN178, //MSG_COUNT_X
-MSGEN179, //MSG_ERR_KILLED
-MSGEN180, //MSG_ERR_STOPPED
-MSGEN181, //MSG_RESEND
-MSGEN182, //MSG_UNKNOWN_COMMAND
-MSGEN183, //MSG_ACTIVE_EXTRUDER
-MSGEN184, //MSG_INVALID_EXTRUDER
-MSGEN185, //MSG_X_MIN
-MSGEN186, //MSG_X_MAX
-MSGEN187, //MSG_Y_MIN
-MSGEN188, //MSG_Y_MAX
-MSGEN189, //MSG_Z_MIN
-MSGEN190, //MSG_Z_MAX
-MSGEN191, //MSG_M119_REPORT
-MSGEN192, //MSG_ENDSTOP_HIT
-MSGEN193, //MSG_ENDSTOP_OPEN
-MSGEN194, //MSG_HOTEND_OFFSET
-MSGEN195, //MSG_SD_CANT_OPEN_SUBDIR
-MSGEN196, //MSG_SD_INIT_FAIL
-MSGEN197, //MSG_SD_VOL_INIT_FAIL
-MSGEN198, //MSG_SD_OPENROOT_FAIL
-MSGEN199, //MSG_SD_CARD_OK
-MSGEN200, //MSG_SD_WORKDIR_FAIL
-MSGEN201, //MSG_SD_OPEN_FILE_FAIL
-MSGEN202, //MSG_SD_FILE_OPENED
-MSGEN203, //MSG_SD_SIZE
-MSGEN204, //MSG_SD_FILE_SELECTED
-MSGEN205, //MSG_SD_WRITE_TO_FILE
-MSGEN206, //MSG_SD_PRINTING_BYTE
-MSGEN207, //MSG_SD_NOT_PRINTING
-MSGEN208, //MSG_SD_ERR_WRITE_TO_FILE
-MSGEN209, //MSG_SD_CANT_ENTER_SUBDIR
-MSGEN210, //MSG_STEPPER_TOO_HIGH
-MSGEN211, //MSG_ENDSTOPS_HIT
-MSGEN212, //MSG_ERR_COLD_EXTRUDE_STOP
-MSGEN213, //MSG_ERR_LONG_EXTRUDE_STOP
-MSGEN214, //MSG_BABYSTEPPING_X
-MSGEN215, //MSG_BABYSTEPPING_Y
-MSGEN216, //MSG_BABYSTEPPING_Z
-MSGEN217, //MSG_SERIAL_ERROR_MENU_STRUCTURE
-MSGEN218, //MSG_LANGUAGE_NAME
-MSGEN219, //MSG_LANGUAGE_SELECT
-MSGEN220, //MSG_PRUSA3D
-MSGEN221, //MSG_PRUSA3D_FORUM
-MSGEN222, //MSG_PRUSA3D_HOWTO
+
+const char MSG_ACTIVE_EXTRUDER_EN[] PROGMEM = "Active Extruder: ";
+const char * const MSG_ACTIVE_EXTRUDER_LANG_TABLE[1] PROGMEM = {
+	MSG_ACTIVE_EXTRUDER_EN
 };
-const char* MSGCZ[]  = {MSGCZ0, //WELCOME_MSG
-MSGCZ1, //MSG_SD_INSERTED
-MSGCZ2, //MSG_SD_REMOVED
-MSGCZ3, //MSG_MAIN
-MSGCZ4, //MSG_AUTOSTART
-MSGCZ5, //MSG_DISABLE_STEPPERS
-MSGCZ6, //MSG_AUTO_HOME
-MSGCZ7, //MSG_SET_HOME_OFFSETS
-MSGCZ8, //MSG_SET_ORIGIN
-MSGCZ9, //MSG_PREHEAT_PLA
-MSGCZ10, //MSG_PREHEAT_PLA0
-MSGCZ11, //MSG_PREHEAT_PLA1
-MSGCZ12, //MSG_PREHEAT_PLA2
-MSGCZ13, //MSG_PREHEAT_PLA012
-MSGCZ14, //MSG_PREHEAT_PLA_BEDONLY
-MSGCZ15, //MSG_PREHEAT_PLA_SETTINGS
-MSGCZ16, //MSG_PREHEAT_ABS
-MSGCZ17, //MSG_PREHEAT_ABS0
-MSGCZ18, //MSG_PREHEAT_ABS1
-MSGCZ19, //MSG_PREHEAT_ABS2
-MSGCZ20, //MSG_PREHEAT_ABS012
-MSGCZ21, //MSG_PREHEAT_ABS_BEDONLY
-MSGCZ22, //MSG_PREHEAT_ABS_SETTINGS
-MSGCZ23, //MSG_COOLDOWN
-MSGCZ24, //MSG_SWITCH_PS_ON
-MSGCZ25, //MSG_SWITCH_PS_OFF
-MSGCZ26, //MSG_EXTRUDE
-MSGCZ27, //MSG_RETRACT
-MSGCZ28, //MSG_MOVE_AXIS
-MSGCZ29, //MSG_MOVE_X
-MSGCZ30, //MSG_MOVE_Y
-MSGCZ31, //MSG_MOVE_Z
-MSGCZ32, //MSG_MOVE_E
-MSGCZ33, //MSG_MOVE_E1
-MSGCZ34, //MSG_MOVE_E2
-MSGCZ35, //MSG_MOVE_01MM
-MSGCZ36, //MSG_MOVE_1MM
-MSGCZ37, //MSG_MOVE_10MM
-MSGCZ38, //MSG_SPEED
-MSGCZ39, //MSG_NOZZLE
-MSGCZ40, //MSG_NOZZLE1
-MSGCZ41, //MSG_NOZZLE2
-MSGCZ42, //MSG_BED
-MSGCZ43, //MSG_FAN_SPEED
-MSGCZ44, //MSG_FLOW
-MSGCZ45, //MSG_FLOW0
-MSGCZ46, //MSG_FLOW1
-MSGCZ47, //MSG_FLOW2
-MSGCZ48, //MSG_CONTROL
-MSGCZ49, //MSG_MIN
-MSGCZ50, //MSG_MAX
-MSGCZ51, //MSG_FACTOR
-MSGCZ52, //MSG_AUTOTEMP
-MSGCZ53, //MSG_ON
-MSGCZ54, //MSG_OFF
-MSGCZ55, //MSG_PID_P
-MSGCZ56, //MSG_PID_I
-MSGCZ57, //MSG_PID_D
-MSGCZ58, //MSG_PID_C
-MSGCZ59, //MSG_ACC
-MSGCZ60, //MSG_VXY_JERK
-MSGCZ61, //MSG_VZ_JERK
-MSGCZ62, //MSG_VE_JERK
-MSGCZ63, //MSG_VMAX
-MSGCZ64, //MSG_X
-MSGCZ65, //MSG_Y
-MSGCZ66, //MSG_Z
-MSGCZ67, //MSG_E
-MSGCZ68, //MSG_VMIN
-MSGCZ69, //MSG_VTRAV_MIN
-MSGCZ70, //MSG_AMAX
-MSGCZ71, //MSG_A_RETRACT
-MSGCZ72, //MSG_XSTEPS
-MSGCZ73, //MSG_YSTEPS
-MSGCZ74, //MSG_ZSTEPS
-MSGCZ75, //MSG_ESTEPS
-MSGCZ76, //MSG_TEMPERATURE
-MSGCZ77, //MSG_MOTION
-MSGCZ78, //MSG_VOLUMETRIC
-MSGCZ79, //MSG_VOLUMETRIC_ENABLED
-MSGCZ80, //MSG_FILAMENT_SIZE_EXTRUDER_0
-MSGCZ81, //MSG_FILAMENT_SIZE_EXTRUDER_1
-MSGCZ82, //MSG_FILAMENT_SIZE_EXTRUDER_2
-MSGCZ83, //MSG_CONTRAST
-MSGCZ84, //MSG_STORE_EPROM
-MSGCZ85, //MSG_LOAD_EPROM
-MSGCZ86, //MSG_RESTORE_FAILSAFE
-MSGCZ87, //MSG_REFRESH
-MSGCZ88, //MSG_WATCH
-MSGCZ89, //MSG_PREPARE
-MSGCZ90, //MSG_TUNE
-MSGCZ91, //MSG_PAUSE_PRINT
-MSGCZ92, //MSG_RESUME_PRINT
-MSGCZ93, //MSG_STOP_PRINT
-MSGCZ94, //MSG_CARD_MENU
-MSGCZ95, //MSG_NO_CARD
-MSGCZ96, //MSG_DWELL
-MSGCZ97, //MSG_USERWAIT
-MSGCZ98, //MSG_RESUMING
-MSGCZ99, //MSG_PRINT_ABORTED
-MSGCZ100, //MSG_NO_MOVE
-MSGCZ101, //MSG_KILLED
-MSGCZ102, //MSG_STOPPED
-MSGCZ103, //MSG_CONTROL_RETRACT
-MSGCZ104, //MSG_CONTROL_RETRACT_SWAP
-MSGCZ105, //MSG_CONTROL_RETRACTF
-MSGCZ106, //MSG_CONTROL_RETRACT_ZLIFT
-MSGCZ107, //MSG_CONTROL_RETRACT_RECOVER
-MSGCZ108, //MSG_CONTROL_RETRACT_RECOVER_SWAP
-MSGCZ109, //MSG_CONTROL_RETRACT_RECOVERF
-MSGCZ110, //MSG_AUTORETRACT
-MSGCZ111, //MSG_FILAMENTCHANGE
-MSGCZ112, //MSG_INIT_SDCARD
-MSGCZ113, //MSG_CNG_SDCARD
-MSGCZ114, //MSG_ZPROBE_OUT
-MSGCZ115, //MSG_POSITION_UNKNOWN
-MSGCZ116, //MSG_ZPROBE_ZOFFSET
-MSGCZ117, //MSG_BABYSTEP_X
-MSGCZ118, //MSG_BABYSTEP_Y
-MSGCZ119, //MSG_BABYSTEP_Z
-MSGCZ120, //MSG_ENDSTOP_ABORT
-MSGCZ121, //MSG_ADJUSTZ
-MSGCZ122, //MSG_HOMEYZ
-MSGCZ123, //MSG_SETTINGS
-MSGCZ124, //MSG_PREHEAT
-MSGCZ125, //MSG_UNLOAD_FILAMENT
-MSGCZ126, //MSG_LOAD_FILAMENT
-MSGCZ127, //MSG_RECTRACT
-MSGCZ128, //MSG_ERROR
-MSGCZ129, //MSG_PREHEAT_NOZZLE
-MSGCZ130, //MSG_SUPPORT
-MSGCZ131, //MSG_CORRECTLY
-MSGCZ132, //MSG_YES
-MSGCZ133, //MSG_NO
-MSGCZ134, //MSG_NOT_LOADED
-MSGCZ135, //MSG_NOT_COLOR
-MSGCZ136, //MSG_LOADING_FILAMENT
-MSGCZ137, //MSG_PLEASE_WAIT
-MSGCZ138, //MSG_LOADING_COLOR
-MSGCZ139, //MSG_CHANGE_SUCCESS
-MSGCZ140, //MSG_PRESS
-MSGCZ141, //MSG_INSERT_FILAMENT
-MSGCZ142, //MSG_CHANGING_FILAMENT
-MSGCZ143, //MSG_SILENT_MODE_ON
-MSGCZ144, //MSG_SILENT_MODE_OFF
-MSGCZ145, //MSG_REBOOT
-MSGCZ146, //MSG_TAKE_EFFECT
-MSGCZ147, //MSG_Enqueing
-MSGCZ148, //MSG_POWERUP
-MSGCZ149, //MSG_EXTERNAL_RESET
-MSGCZ150, //MSG_BROWNOUT_RESET
-MSGCZ151, //MSG_WATCHDOG_RESET
-MSGCZ152, //MSG_SOFTWARE_RESET
-MSGCZ153, //MSG_AUTHOR
-MSGCZ154, //MSG_CONFIGURATION_VER
-MSGCZ155, //MSG_FREE_MEMORY
-MSGCZ156, //MSG_PLANNER_BUFFER_BYTES
-MSGCZ157, //MSG_OK
-MSGCZ158, //MSG_FILE_SAVED
-MSGCZ159, //MSG_ERR_LINE_NO
-MSGCZ160, //MSG_ERR_CHECKSUM_MISMATCH
-MSGCZ161, //MSG_ERR_NO_CHECKSUM
-MSGCZ162, //MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM
-MSGCZ163, //MSG_FILE_PRINTED
-MSGCZ164, //MSG_BEGIN_FILE_LIST
-MSGCZ165, //MSG_END_FILE_LIST
-MSGCZ166, //MSG_M104_INVALID_EXTRUDER
-MSGCZ167, //MSG_M105_INVALID_EXTRUDER
-MSGCZ168, //MSG_M200_INVALID_EXTRUDER
-MSGCZ169, //MSG_M218_INVALID_EXTRUDER
-MSGCZ170, //MSG_M221_INVALID_EXTRUDER
-MSGCZ171, //MSG_ERR_NO_THERMISTORS
-MSGCZ172, //MSG_M109_INVALID_EXTRUDER
-MSGCZ173, //MSG_HEATING
-MSGCZ174, //MSG_HEATING_COMPLETE
-MSGCZ175, //MSG_BED_HEATING
-MSGCZ176, //MSG_BED_DONE
-MSGCZ177, //MSG_M115_REPORT
-MSGCZ178, //MSG_COUNT_X
-MSGCZ179, //MSG_ERR_KILLED
-MSGCZ180, //MSG_ERR_STOPPED
-MSGCZ181, //MSG_RESEND
-MSGCZ182, //MSG_UNKNOWN_COMMAND
-MSGCZ183, //MSG_ACTIVE_EXTRUDER
-MSGCZ184, //MSG_INVALID_EXTRUDER
-MSGCZ185, //MSG_X_MIN
-MSGCZ186, //MSG_X_MAX
-MSGCZ187, //MSG_Y_MIN
-MSGCZ188, //MSG_Y_MAX
-MSGCZ189, //MSG_Z_MIN
-MSGCZ190, //MSG_Z_MAX
-MSGCZ191, //MSG_M119_REPORT
-MSGCZ192, //MSG_ENDSTOP_HIT
-MSGCZ193, //MSG_ENDSTOP_OPEN
-MSGCZ194, //MSG_HOTEND_OFFSET
-MSGCZ195, //MSG_SD_CANT_OPEN_SUBDIR
-MSGCZ196, //MSG_SD_INIT_FAIL
-MSGCZ197, //MSG_SD_VOL_INIT_FAIL
-MSGCZ198, //MSG_SD_OPENROOT_FAIL
-MSGCZ199, //MSG_SD_CARD_OK
-MSGCZ200, //MSG_SD_WORKDIR_FAIL
-MSGCZ201, //MSG_SD_OPEN_FILE_FAIL
-MSGCZ202, //MSG_SD_FILE_OPENED
-MSGCZ203, //MSG_SD_SIZE
-MSGCZ204, //MSG_SD_FILE_SELECTED
-MSGCZ205, //MSG_SD_WRITE_TO_FILE
-MSGCZ206, //MSG_SD_PRINTING_BYTE
-MSGCZ207, //MSG_SD_NOT_PRINTING
-MSGCZ208, //MSG_SD_ERR_WRITE_TO_FILE
-MSGCZ209, //MSG_SD_CANT_ENTER_SUBDIR
-MSGCZ210, //MSG_STEPPER_TOO_HIGH
-MSGCZ211, //MSG_ENDSTOPS_HIT
-MSGCZ212, //MSG_ERR_COLD_EXTRUDE_STOP
-MSGCZ213, //MSG_ERR_LONG_EXTRUDE_STOP
-MSGCZ214, //MSG_BABYSTEPPING_X
-MSGCZ215, //MSG_BABYSTEPPING_Y
-MSGCZ216, //MSG_BABYSTEPPING_Z
-MSGCZ217, //MSG_SERIAL_ERROR_MENU_STRUCTURE
-MSGCZ218, //MSG_LANGUAGE_NAME
-MSGCZ219, //MSG_LANGUAGE_SELECT
-MSGCZ220, //MSG_PRUSA3D
-MSGCZ221, //MSG_PRUSA3D_FORUM
-MSGCZ222, //MSG_PRUSA3D_HOWTO
+
+const char MSG_ADJUSTZ_EN[] PROGMEM = "Auto adjust Z?";
+const char MSG_ADJUSTZ_CZ[] PROGMEM = "Auto doladit Z ?";
+const char * const MSG_ADJUSTZ_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_ADJUSTZ_EN,
+	MSG_ADJUSTZ_CZ
 };
-const char* MSGIT[]  = {MSGIT0, //WELCOME_MSG
-MSGIT1, //MSG_SD_INSERTED
-MSGIT2, //MSG_SD_REMOVED
-MSGIT3, //MSG_MAIN
-MSGIT4, //MSG_AUTOSTART
-MSGIT5, //MSG_DISABLE_STEPPERS
-MSGIT6, //MSG_AUTO_HOME
-MSGIT7, //MSG_SET_HOME_OFFSETS
-MSGIT8, //MSG_SET_ORIGIN
-MSGIT9, //MSG_PREHEAT_PLA
-MSGIT10, //MSG_PREHEAT_PLA0
-MSGIT11, //MSG_PREHEAT_PLA1
-MSGIT12, //MSG_PREHEAT_PLA2
-MSGIT13, //MSG_PREHEAT_PLA012
-MSGIT14, //MSG_PREHEAT_PLA_BEDONLY
-MSGIT15, //MSG_PREHEAT_PLA_SETTINGS
-MSGIT16, //MSG_PREHEAT_ABS
-MSGIT17, //MSG_PREHEAT_ABS0
-MSGIT18, //MSG_PREHEAT_ABS1
-MSGIT19, //MSG_PREHEAT_ABS2
-MSGIT20, //MSG_PREHEAT_ABS012
-MSGIT21, //MSG_PREHEAT_ABS_BEDONLY
-MSGIT22, //MSG_PREHEAT_ABS_SETTINGS
-MSGIT23, //MSG_COOLDOWN
-MSGIT24, //MSG_SWITCH_PS_ON
-MSGIT25, //MSG_SWITCH_PS_OFF
-MSGIT26, //MSG_EXTRUDE
-MSGIT27, //MSG_RETRACT
-MSGIT28, //MSG_MOVE_AXIS
-MSGIT29, //MSG_MOVE_X
-MSGIT30, //MSG_MOVE_Y
-MSGIT31, //MSG_MOVE_Z
-MSGIT32, //MSG_MOVE_E
-MSGIT33, //MSG_MOVE_E1
-MSGIT34, //MSG_MOVE_E2
-MSGIT35, //MSG_MOVE_01MM
-MSGIT36, //MSG_MOVE_1MM
-MSGIT37, //MSG_MOVE_10MM
-MSGIT38, //MSG_SPEED
-MSGIT39, //MSG_NOZZLE
-MSGIT40, //MSG_NOZZLE1
-MSGIT41, //MSG_NOZZLE2
-MSGIT42, //MSG_BED
-MSGIT43, //MSG_FAN_SPEED
-MSGIT44, //MSG_FLOW
-MSGIT45, //MSG_FLOW0
-MSGIT46, //MSG_FLOW1
-MSGIT47, //MSG_FLOW2
-MSGIT48, //MSG_CONTROL
-MSGIT49, //MSG_MIN
-MSGIT50, //MSG_MAX
-MSGIT51, //MSG_FACTOR
-MSGIT52, //MSG_AUTOTEMP
-MSGIT53, //MSG_ON
-MSGIT54, //MSG_OFF
-MSGIT55, //MSG_PID_P
-MSGIT56, //MSG_PID_I
-MSGIT57, //MSG_PID_D
-MSGIT58, //MSG_PID_C
-MSGIT59, //MSG_ACC
-MSGIT60, //MSG_VXY_JERK
-MSGIT61, //MSG_VZ_JERK
-MSGIT62, //MSG_VE_JERK
-MSGIT63, //MSG_VMAX
-MSGIT64, //MSG_X
-MSGIT65, //MSG_Y
-MSGIT66, //MSG_Z
-MSGIT67, //MSG_E
-MSGIT68, //MSG_VMIN
-MSGIT69, //MSG_VTRAV_MIN
-MSGIT70, //MSG_AMAX
-MSGIT71, //MSG_A_RETRACT
-MSGIT72, //MSG_XSTEPS
-MSGIT73, //MSG_YSTEPS
-MSGIT74, //MSG_ZSTEPS
-MSGIT75, //MSG_ESTEPS
-MSGIT76, //MSG_TEMPERATURE
-MSGIT77, //MSG_MOTION
-MSGIT78, //MSG_VOLUMETRIC
-MSGIT79, //MSG_VOLUMETRIC_ENABLED
-MSGIT80, //MSG_FILAMENT_SIZE_EXTRUDER_0
-MSGIT81, //MSG_FILAMENT_SIZE_EXTRUDER_1
-MSGIT82, //MSG_FILAMENT_SIZE_EXTRUDER_2
-MSGIT83, //MSG_CONTRAST
-MSGIT84, //MSG_STORE_EPROM
-MSGIT85, //MSG_LOAD_EPROM
-MSGIT86, //MSG_RESTORE_FAILSAFE
-MSGIT87, //MSG_REFRESH
-MSGIT88, //MSG_WATCH
-MSGIT89, //MSG_PREPARE
-MSGIT90, //MSG_TUNE
-MSGIT91, //MSG_PAUSE_PRINT
-MSGIT92, //MSG_RESUME_PRINT
-MSGIT93, //MSG_STOP_PRINT
-MSGIT94, //MSG_CARD_MENU
-MSGIT95, //MSG_NO_CARD
-MSGIT96, //MSG_DWELL
-MSGIT97, //MSG_USERWAIT
-MSGIT98, //MSG_RESUMING
-MSGIT99, //MSG_PRINT_ABORTED
-MSGIT100, //MSG_NO_MOVE
-MSGIT101, //MSG_KILLED
-MSGIT102, //MSG_STOPPED
-MSGIT103, //MSG_CONTROL_RETRACT
-MSGIT104, //MSG_CONTROL_RETRACT_SWAP
-MSGIT105, //MSG_CONTROL_RETRACTF
-MSGIT106, //MSG_CONTROL_RETRACT_ZLIFT
-MSGIT107, //MSG_CONTROL_RETRACT_RECOVER
-MSGIT108, //MSG_CONTROL_RETRACT_RECOVER_SWAP
-MSGIT109, //MSG_CONTROL_RETRACT_RECOVERF
-MSGIT110, //MSG_AUTORETRACT
-MSGIT111, //MSG_FILAMENTCHANGE
-MSGIT112, //MSG_INIT_SDCARD
-MSGIT113, //MSG_CNG_SDCARD
-MSGIT114, //MSG_ZPROBE_OUT
-MSGIT115, //MSG_POSITION_UNKNOWN
-MSGIT116, //MSG_ZPROBE_ZOFFSET
-MSGIT117, //MSG_BABYSTEP_X
-MSGIT118, //MSG_BABYSTEP_Y
-MSGIT119, //MSG_BABYSTEP_Z
-MSGIT120, //MSG_ENDSTOP_ABORT
-MSGIT121, //MSG_ADJUSTZ
-MSGIT122, //MSG_HOMEYZ
-MSGIT123, //MSG_SETTINGS
-MSGIT124, //MSG_PREHEAT
-MSGIT125, //MSG_UNLOAD_FILAMENT
-MSGIT126, //MSG_LOAD_FILAMENT
-MSGIT127, //MSG_RECTRACT
-MSGIT128, //MSG_ERROR
-MSGIT129, //MSG_PREHEAT_NOZZLE
-MSGIT130, //MSG_SUPPORT
-MSGIT131, //MSG_CORRECTLY
-MSGIT132, //MSG_YES
-MSGIT133, //MSG_NO
-MSGIT134, //MSG_NOT_LOADED
-MSGIT135, //MSG_NOT_COLOR
-MSGIT136, //MSG_LOADING_FILAMENT
-MSGIT137, //MSG_PLEASE_WAIT
-MSGIT138, //MSG_LOADING_COLOR
-MSGIT139, //MSG_CHANGE_SUCCESS
-MSGIT140, //MSG_PRESS
-MSGIT141, //MSG_INSERT_FILAMENT
-MSGIT142, //MSG_CHANGING_FILAMENT
-MSGIT143, //MSG_SILENT_MODE_ON
-MSGIT144, //MSG_SILENT_MODE_OFF
-MSGIT145, //MSG_REBOOT
-MSGIT146, //MSG_TAKE_EFFECT
-MSGIT147, //MSG_Enqueing
-MSGIT148, //MSG_POWERUP
-MSGIT149, //MSG_EXTERNAL_RESET
-MSGIT150, //MSG_BROWNOUT_RESET
-MSGIT151, //MSG_WATCHDOG_RESET
-MSGIT152, //MSG_SOFTWARE_RESET
-MSGIT153, //MSG_AUTHOR
-MSGIT154, //MSG_CONFIGURATION_VER
-MSGIT155, //MSG_FREE_MEMORY
-MSGIT156, //MSG_PLANNER_BUFFER_BYTES
-MSGIT157, //MSG_OK
-MSGIT158, //MSG_FILE_SAVED
-MSGIT159, //MSG_ERR_LINE_NO
-MSGIT160, //MSG_ERR_CHECKSUM_MISMATCH
-MSGIT161, //MSG_ERR_NO_CHECKSUM
-MSGIT162, //MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM
-MSGIT163, //MSG_FILE_PRINTED
-MSGIT164, //MSG_BEGIN_FILE_LIST
-MSGIT165, //MSG_END_FILE_LIST
-MSGIT166, //MSG_M104_INVALID_EXTRUDER
-MSGIT167, //MSG_M105_INVALID_EXTRUDER
-MSGIT168, //MSG_M200_INVALID_EXTRUDER
-MSGIT169, //MSG_M218_INVALID_EXTRUDER
-MSGIT170, //MSG_M221_INVALID_EXTRUDER
-MSGIT171, //MSG_ERR_NO_THERMISTORS
-MSGIT172, //MSG_M109_INVALID_EXTRUDER
-MSGIT173, //MSG_HEATING
-MSGIT174, //MSG_HEATING_COMPLETE
-MSGIT175, //MSG_BED_HEATING
-MSGIT176, //MSG_BED_DONE
-MSGIT177, //MSG_M115_REPORT
-MSGIT178, //MSG_COUNT_X
-MSGIT179, //MSG_ERR_KILLED
-MSGIT180, //MSG_ERR_STOPPED
-MSGIT181, //MSG_RESEND
-MSGIT182, //MSG_UNKNOWN_COMMAND
-MSGIT183, //MSG_ACTIVE_EXTRUDER
-MSGIT184, //MSG_INVALID_EXTRUDER
-MSGIT185, //MSG_X_MIN
-MSGIT186, //MSG_X_MAX
-MSGIT187, //MSG_Y_MIN
-MSGIT188, //MSG_Y_MAX
-MSGIT189, //MSG_Z_MIN
-MSGIT190, //MSG_Z_MAX
-MSGIT191, //MSG_M119_REPORT
-MSGIT192, //MSG_ENDSTOP_HIT
-MSGIT193, //MSG_ENDSTOP_OPEN
-MSGIT194, //MSG_HOTEND_OFFSET
-MSGIT195, //MSG_SD_CANT_OPEN_SUBDIR
-MSGIT196, //MSG_SD_INIT_FAIL
-MSGIT197, //MSG_SD_VOL_INIT_FAIL
-MSGIT198, //MSG_SD_OPENROOT_FAIL
-MSGIT199, //MSG_SD_CARD_OK
-MSGIT200, //MSG_SD_WORKDIR_FAIL
-MSGIT201, //MSG_SD_OPEN_FILE_FAIL
-MSGIT202, //MSG_SD_FILE_OPENED
-MSGIT203, //MSG_SD_SIZE
-MSGIT204, //MSG_SD_FILE_SELECTED
-MSGIT205, //MSG_SD_WRITE_TO_FILE
-MSGIT206, //MSG_SD_PRINTING_BYTE
-MSGIT207, //MSG_SD_NOT_PRINTING
-MSGIT208, //MSG_SD_ERR_WRITE_TO_FILE
-MSGIT209, //MSG_SD_CANT_ENTER_SUBDIR
-MSGIT210, //MSG_STEPPER_TOO_HIGH
-MSGIT211, //MSG_ENDSTOPS_HIT
-MSGIT212, //MSG_ERR_COLD_EXTRUDE_STOP
-MSGIT213, //MSG_ERR_LONG_EXTRUDE_STOP
-MSGIT214, //MSG_BABYSTEPPING_X
-MSGIT215, //MSG_BABYSTEPPING_Y
-MSGIT216, //MSG_BABYSTEPPING_Z
-MSGIT217, //MSG_SERIAL_ERROR_MENU_STRUCTURE
-MSGIT218, //MSG_LANGUAGE_NAME
-MSGIT219, //MSG_LANGUAGE_SELECT
-MSGIT220, //MSG_PRUSA3D
-MSGIT221, //MSG_PRUSA3D_FORUM
-MSGIT222, //MSG_PRUSA3D_HOWTO
+
+const char MSG_ALL_EN[] PROGMEM = "All";
+const char MSG_ALL_CZ[] PROGMEM = "Vse";
+const char * const MSG_ALL_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_ALL_EN,
+	MSG_ALL_CZ
 };
-const char* MSGES[]  = {MSGES0, //WELCOME_MSG
-MSGES1, //MSG_SD_INSERTED
-MSGES2, //MSG_SD_REMOVED
-MSGES3, //MSG_MAIN
-MSGES4, //MSG_AUTOSTART
-MSGES5, //MSG_DISABLE_STEPPERS
-MSGES6, //MSG_AUTO_HOME
-MSGES7, //MSG_SET_HOME_OFFSETS
-MSGES8, //MSG_SET_ORIGIN
-MSGES9, //MSG_PREHEAT_PLA
-MSGES10, //MSG_PREHEAT_PLA0
-MSGES11, //MSG_PREHEAT_PLA1
-MSGES12, //MSG_PREHEAT_PLA2
-MSGES13, //MSG_PREHEAT_PLA012
-MSGES14, //MSG_PREHEAT_PLA_BEDONLY
-MSGES15, //MSG_PREHEAT_PLA_SETTINGS
-MSGES16, //MSG_PREHEAT_ABS
-MSGES17, //MSG_PREHEAT_ABS0
-MSGES18, //MSG_PREHEAT_ABS1
-MSGES19, //MSG_PREHEAT_ABS2
-MSGES20, //MSG_PREHEAT_ABS012
-MSGES21, //MSG_PREHEAT_ABS_BEDONLY
-MSGES22, //MSG_PREHEAT_ABS_SETTINGS
-MSGES23, //MSG_COOLDOWN
-MSGES24, //MSG_SWITCH_PS_ON
-MSGES25, //MSG_SWITCH_PS_OFF
-MSGES26, //MSG_EXTRUDE
-MSGES27, //MSG_RETRACT
-MSGES28, //MSG_MOVE_AXIS
-MSGES29, //MSG_MOVE_X
-MSGES30, //MSG_MOVE_Y
-MSGES31, //MSG_MOVE_Z
-MSGES32, //MSG_MOVE_E
-MSGES33, //MSG_MOVE_E1
-MSGES34, //MSG_MOVE_E2
-MSGES35, //MSG_MOVE_01MM
-MSGES36, //MSG_MOVE_1MM
-MSGES37, //MSG_MOVE_10MM
-MSGES38, //MSG_SPEED
-MSGES39, //MSG_NOZZLE
-MSGES40, //MSG_NOZZLE1
-MSGES41, //MSG_NOZZLE2
-MSGES42, //MSG_BED
-MSGES43, //MSG_FAN_SPEED
-MSGES44, //MSG_FLOW
-MSGES45, //MSG_FLOW0
-MSGES46, //MSG_FLOW1
-MSGES47, //MSG_FLOW2
-MSGES48, //MSG_CONTROL
-MSGES49, //MSG_MIN
-MSGES50, //MSG_MAX
-MSGES51, //MSG_FACTOR
-MSGES52, //MSG_AUTOTEMP
-MSGES53, //MSG_ON
-MSGES54, //MSG_OFF
-MSGES55, //MSG_PID_P
-MSGES56, //MSG_PID_I
-MSGES57, //MSG_PID_D
-MSGES58, //MSG_PID_C
-MSGES59, //MSG_ACC
-MSGES60, //MSG_VXY_JERK
-MSGES61, //MSG_VZ_JERK
-MSGES62, //MSG_VE_JERK
-MSGES63, //MSG_VMAX
-MSGES64, //MSG_X
-MSGES65, //MSG_Y
-MSGES66, //MSG_Z
-MSGES67, //MSG_E
-MSGES68, //MSG_VMIN
-MSGES69, //MSG_VTRAV_MIN
-MSGES70, //MSG_AMAX
-MSGES71, //MSG_A_RETRACT
-MSGES72, //MSG_XSTEPS
-MSGES73, //MSG_YSTEPS
-MSGES74, //MSG_ZSTEPS
-MSGES75, //MSG_ESTEPS
-MSGES76, //MSG_TEMPERATURE
-MSGES77, //MSG_MOTION
-MSGES78, //MSG_VOLUMETRIC
-MSGES79, //MSG_VOLUMETRIC_ENABLED
-MSGES80, //MSG_FILAMENT_SIZE_EXTRUDER_0
-MSGES81, //MSG_FILAMENT_SIZE_EXTRUDER_1
-MSGES82, //MSG_FILAMENT_SIZE_EXTRUDER_2
-MSGES83, //MSG_CONTRAST
-MSGES84, //MSG_STORE_EPROM
-MSGES85, //MSG_LOAD_EPROM
-MSGES86, //MSG_RESTORE_FAILSAFE
-MSGES87, //MSG_REFRESH
-MSGES88, //MSG_WATCH
-MSGES89, //MSG_PREPARE
-MSGES90, //MSG_TUNE
-MSGES91, //MSG_PAUSE_PRINT
-MSGES92, //MSG_RESUME_PRINT
-MSGES93, //MSG_STOP_PRINT
-MSGES94, //MSG_CARD_MENU
-MSGES95, //MSG_NO_CARD
-MSGES96, //MSG_DWELL
-MSGES97, //MSG_USERWAIT
-MSGES98, //MSG_RESUMING
-MSGES99, //MSG_PRINT_ABORTED
-MSGES100, //MSG_NO_MOVE
-MSGES101, //MSG_KILLED
-MSGES102, //MSG_STOPPED
-MSGES103, //MSG_CONTROL_RETRACT
-MSGES104, //MSG_CONTROL_RETRACT_SWAP
-MSGES105, //MSG_CONTROL_RETRACTF
-MSGES106, //MSG_CONTROL_RETRACT_ZLIFT
-MSGES107, //MSG_CONTROL_RETRACT_RECOVER
-MSGES108, //MSG_CONTROL_RETRACT_RECOVER_SWAP
-MSGES109, //MSG_CONTROL_RETRACT_RECOVERF
-MSGES110, //MSG_AUTORETRACT
-MSGES111, //MSG_FILAMENTCHANGE
-MSGES112, //MSG_INIT_SDCARD
-MSGES113, //MSG_CNG_SDCARD
-MSGES114, //MSG_ZPROBE_OUT
-MSGES115, //MSG_POSITION_UNKNOWN
-MSGES116, //MSG_ZPROBE_ZOFFSET
-MSGES117, //MSG_BABYSTEP_X
-MSGES118, //MSG_BABYSTEP_Y
-MSGES119, //MSG_BABYSTEP_Z
-MSGES120, //MSG_ENDSTOP_ABORT
-MSGES121, //MSG_ADJUSTZ
-MSGES122, //MSG_HOMEYZ
-MSGES123, //MSG_SETTINGS
-MSGES124, //MSG_PREHEAT
-MSGES125, //MSG_UNLOAD_FILAMENT
-MSGES126, //MSG_LOAD_FILAMENT
-MSGES127, //MSG_RECTRACT
-MSGES128, //MSG_ERROR
-MSGES129, //MSG_PREHEAT_NOZZLE
-MSGES130, //MSG_SUPPORT
-MSGES131, //MSG_CORRECTLY
-MSGES132, //MSG_YES
-MSGES133, //MSG_NO
-MSGES134, //MSG_NOT_LOADED
-MSGES135, //MSG_NOT_COLOR
-MSGES136, //MSG_LOADING_FILAMENT
-MSGES137, //MSG_PLEASE_WAIT
-MSGES138, //MSG_LOADING_COLOR
-MSGES139, //MSG_CHANGE_SUCCESS
-MSGES140, //MSG_PRESS
-MSGES141, //MSG_INSERT_FILAMENT
-MSGES142, //MSG_CHANGING_FILAMENT
-MSGES143, //MSG_SILENT_MODE_ON
-MSGES144, //MSG_SILENT_MODE_OFF
-MSGES145, //MSG_REBOOT
-MSGES146, //MSG_TAKE_EFFECT
-MSGES147, //MSG_Enqueing
-MSGES148, //MSG_POWERUP
-MSGES149, //MSG_EXTERNAL_RESET
-MSGES150, //MSG_BROWNOUT_RESET
-MSGES151, //MSG_WATCHDOG_RESET
-MSGES152, //MSG_SOFTWARE_RESET
-MSGES153, //MSG_AUTHOR
-MSGES154, //MSG_CONFIGURATION_VER
-MSGES155, //MSG_FREE_MEMORY
-MSGES156, //MSG_PLANNER_BUFFER_BYTES
-MSGES157, //MSG_OK
-MSGES158, //MSG_FILE_SAVED
-MSGES159, //MSG_ERR_LINE_NO
-MSGES160, //MSG_ERR_CHECKSUM_MISMATCH
-MSGES161, //MSG_ERR_NO_CHECKSUM
-MSGES162, //MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM
-MSGES163, //MSG_FILE_PRINTED
-MSGES164, //MSG_BEGIN_FILE_LIST
-MSGES165, //MSG_END_FILE_LIST
-MSGES166, //MSG_M104_INVALID_EXTRUDER
-MSGES167, //MSG_M105_INVALID_EXTRUDER
-MSGES168, //MSG_M200_INVALID_EXTRUDER
-MSGES169, //MSG_M218_INVALID_EXTRUDER
-MSGES170, //MSG_M221_INVALID_EXTRUDER
-MSGES171, //MSG_ERR_NO_THERMISTORS
-MSGES172, //MSG_M109_INVALID_EXTRUDER
-MSGES173, //MSG_HEATING
-MSGES174, //MSG_HEATING_COMPLETE
-MSGES175, //MSG_BED_HEATING
-MSGES176, //MSG_BED_DONE
-MSGES177, //MSG_M115_REPORT
-MSGES178, //MSG_COUNT_X
-MSGES179, //MSG_ERR_KILLED
-MSGES180, //MSG_ERR_STOPPED
-MSGES181, //MSG_RESEND
-MSGES182, //MSG_UNKNOWN_COMMAND
-MSGES183, //MSG_ACTIVE_EXTRUDER
-MSGES184, //MSG_INVALID_EXTRUDER
-MSGES185, //MSG_X_MIN
-MSGES186, //MSG_X_MAX
-MSGES187, //MSG_Y_MIN
-MSGES188, //MSG_Y_MAX
-MSGES189, //MSG_Z_MIN
-MSGES190, //MSG_Z_MAX
-MSGES191, //MSG_M119_REPORT
-MSGES192, //MSG_ENDSTOP_HIT
-MSGES193, //MSG_ENDSTOP_OPEN
-MSGES194, //MSG_HOTEND_OFFSET
-MSGES195, //MSG_SD_CANT_OPEN_SUBDIR
-MSGES196, //MSG_SD_INIT_FAIL
-MSGES197, //MSG_SD_VOL_INIT_FAIL
-MSGES198, //MSG_SD_OPENROOT_FAIL
-MSGES199, //MSG_SD_CARD_OK
-MSGES200, //MSG_SD_WORKDIR_FAIL
-MSGES201, //MSG_SD_OPEN_FILE_FAIL
-MSGES202, //MSG_SD_FILE_OPENED
-MSGES203, //MSG_SD_SIZE
-MSGES204, //MSG_SD_FILE_SELECTED
-MSGES205, //MSG_SD_WRITE_TO_FILE
-MSGES206, //MSG_SD_PRINTING_BYTE
-MSGES207, //MSG_SD_NOT_PRINTING
-MSGES208, //MSG_SD_ERR_WRITE_TO_FILE
-MSGES209, //MSG_SD_CANT_ENTER_SUBDIR
-MSGES210, //MSG_STEPPER_TOO_HIGH
-MSGES211, //MSG_ENDSTOPS_HIT
-MSGES212, //MSG_ERR_COLD_EXTRUDE_STOP
-MSGES213, //MSG_ERR_LONG_EXTRUDE_STOP
-MSGES214, //MSG_BABYSTEPPING_X
-MSGES215, //MSG_BABYSTEPPING_Y
-MSGES216, //MSG_BABYSTEPPING_Z
-MSGES217, //MSG_SERIAL_ERROR_MENU_STRUCTURE
-MSGES218, //MSG_LANGUAGE_NAME
-MSGES219, //MSG_LANGUAGE_SELECT
-MSGES220, //MSG_PRUSA3D
-MSGES221, //MSG_PRUSA3D_FORUM
-MSGES222, //MSG_PRUSA3D_HOWTO
+
+const char MSG_AMAX_EN[] PROGMEM = "Amax ";
+const char * const MSG_AMAX_LANG_TABLE[1] PROGMEM = {
+	MSG_AMAX_EN
 };
-const char* MSGPL[]  = {MSGPL0, //WELCOME_MSG
-MSGPL1, //MSG_SD_INSERTED
-MSGPL2, //MSG_SD_REMOVED
-MSGPL3, //MSG_MAIN
-MSGPL4, //MSG_AUTOSTART
-MSGPL5, //MSG_DISABLE_STEPPERS
-MSGPL6, //MSG_AUTO_HOME
-MSGPL7, //MSG_SET_HOME_OFFSETS
-MSGPL8, //MSG_SET_ORIGIN
-MSGPL9, //MSG_PREHEAT_PLA
-MSGPL10, //MSG_PREHEAT_PLA0
-MSGPL11, //MSG_PREHEAT_PLA1
-MSGPL12, //MSG_PREHEAT_PLA2
-MSGPL13, //MSG_PREHEAT_PLA012
-MSGPL14, //MSG_PREHEAT_PLA_BEDONLY
-MSGPL15, //MSG_PREHEAT_PLA_SETTINGS
-MSGPL16, //MSG_PREHEAT_ABS
-MSGPL17, //MSG_PREHEAT_ABS0
-MSGPL18, //MSG_PREHEAT_ABS1
-MSGPL19, //MSG_PREHEAT_ABS2
-MSGPL20, //MSG_PREHEAT_ABS012
-MSGPL21, //MSG_PREHEAT_ABS_BEDONLY
-MSGPL22, //MSG_PREHEAT_ABS_SETTINGS
-MSGPL23, //MSG_COOLDOWN
-MSGPL24, //MSG_SWITCH_PS_ON
-MSGPL25, //MSG_SWITCH_PS_OFF
-MSGPL26, //MSG_EXTRUDE
-MSGPL27, //MSG_RETRACT
-MSGPL28, //MSG_MOVE_AXIS
-MSGPL29, //MSG_MOVE_X
-MSGPL30, //MSG_MOVE_Y
-MSGPL31, //MSG_MOVE_Z
-MSGPL32, //MSG_MOVE_E
-MSGPL33, //MSG_MOVE_E1
-MSGPL34, //MSG_MOVE_E2
-MSGPL35, //MSG_MOVE_01MM
-MSGPL36, //MSG_MOVE_1MM
-MSGPL37, //MSG_MOVE_10MM
-MSGPL38, //MSG_SPEED
-MSGPL39, //MSG_NOZZLE
-MSGPL40, //MSG_NOZZLE1
-MSGPL41, //MSG_NOZZLE2
-MSGPL42, //MSG_BED
-MSGPL43, //MSG_FAN_SPEED
-MSGPL44, //MSG_FLOW
-MSGPL45, //MSG_FLOW0
-MSGPL46, //MSG_FLOW1
-MSGPL47, //MSG_FLOW2
-MSGPL48, //MSG_CONTROL
-MSGPL49, //MSG_MIN
-MSGPL50, //MSG_MAX
-MSGPL51, //MSG_FACTOR
-MSGPL52, //MSG_AUTOTEMP
-MSGPL53, //MSG_ON
-MSGPL54, //MSG_OFF
-MSGPL55, //MSG_PID_P
-MSGPL56, //MSG_PID_I
-MSGPL57, //MSG_PID_D
-MSGPL58, //MSG_PID_C
-MSGPL59, //MSG_ACC
-MSGPL60, //MSG_VXY_JERK
-MSGPL61, //MSG_VZ_JERK
-MSGPL62, //MSG_VE_JERK
-MSGPL63, //MSG_VMAX
-MSGPL64, //MSG_X
-MSGPL65, //MSG_Y
-MSGPL66, //MSG_Z
-MSGPL67, //MSG_E
-MSGPL68, //MSG_VMIN
-MSGPL69, //MSG_VTRAV_MIN
-MSGPL70, //MSG_AMAX
-MSGPL71, //MSG_A_RETRACT
-MSGPL72, //MSG_XSTEPS
-MSGPL73, //MSG_YSTEPS
-MSGPL74, //MSG_ZSTEPS
-MSGPL75, //MSG_ESTEPS
-MSGPL76, //MSG_TEMPERATURE
-MSGPL77, //MSG_MOTION
-MSGPL78, //MSG_VOLUMETRIC
-MSGPL79, //MSG_VOLUMETRIC_ENABLED
-MSGPL80, //MSG_FILAMENT_SIZE_EXTRUDER_0
-MSGPL81, //MSG_FILAMENT_SIZE_EXTRUDER_1
-MSGPL82, //MSG_FILAMENT_SIZE_EXTRUDER_2
-MSGPL83, //MSG_CONTRAST
-MSGPL84, //MSG_STORE_EPROM
-MSGPL85, //MSG_LOAD_EPROM
-MSGPL86, //MSG_RESTORE_FAILSAFE
-MSGPL87, //MSG_REFRESH
-MSGPL88, //MSG_WATCH
-MSGPL89, //MSG_PREPARE
-MSGPL90, //MSG_TUNE
-MSGPL91, //MSG_PAUSE_PRINT
-MSGPL92, //MSG_RESUME_PRINT
-MSGPL93, //MSG_STOP_PRINT
-MSGPL94, //MSG_CARD_MENU
-MSGPL95, //MSG_NO_CARD
-MSGPL96, //MSG_DWELL
-MSGPL97, //MSG_USERWAIT
-MSGPL98, //MSG_RESUMING
-MSGPL99, //MSG_PRINT_ABORTED
-MSGPL100, //MSG_NO_MOVE
-MSGPL101, //MSG_KILLED
-MSGPL102, //MSG_STOPPED
-MSGPL103, //MSG_CONTROL_RETRACT
-MSGPL104, //MSG_CONTROL_RETRACT_SWAP
-MSGPL105, //MSG_CONTROL_RETRACTF
-MSGPL106, //MSG_CONTROL_RETRACT_ZLIFT
-MSGPL107, //MSG_CONTROL_RETRACT_RECOVER
-MSGPL108, //MSG_CONTROL_RETRACT_RECOVER_SWAP
-MSGPL109, //MSG_CONTROL_RETRACT_RECOVERF
-MSGPL110, //MSG_AUTORETRACT
-MSGPL111, //MSG_FILAMENTCHANGE
-MSGPL112, //MSG_INIT_SDCARD
-MSGPL113, //MSG_CNG_SDCARD
-MSGPL114, //MSG_ZPROBE_OUT
-MSGPL115, //MSG_POSITION_UNKNOWN
-MSGPL116, //MSG_ZPROBE_ZOFFSET
-MSGPL117, //MSG_BABYSTEP_X
-MSGPL118, //MSG_BABYSTEP_Y
-MSGPL119, //MSG_BABYSTEP_Z
-MSGPL120, //MSG_ENDSTOP_ABORT
-MSGPL121, //MSG_ADJUSTZ
-MSGPL122, //MSG_HOMEYZ
-MSGPL123, //MSG_SETTINGS
-MSGPL124, //MSG_PREHEAT
-MSGPL125, //MSG_UNLOAD_FILAMENT
-MSGPL126, //MSG_LOAD_FILAMENT
-MSGPL127, //MSG_RECTRACT
-MSGPL128, //MSG_ERROR
-MSGPL129, //MSG_PREHEAT_NOZZLE
-MSGPL130, //MSG_SUPPORT
-MSGPL131, //MSG_CORRECTLY
-MSGPL132, //MSG_YES
-MSGPL133, //MSG_NO
-MSGPL134, //MSG_NOT_LOADED
-MSGPL135, //MSG_NOT_COLOR
-MSGPL136, //MSG_LOADING_FILAMENT
-MSGPL137, //MSG_PLEASE_WAIT
-MSGPL138, //MSG_LOADING_COLOR
-MSGPL139, //MSG_CHANGE_SUCCESS
-MSGPL140, //MSG_PRESS
-MSGPL141, //MSG_INSERT_FILAMENT
-MSGPL142, //MSG_CHANGING_FILAMENT
-MSGPL143, //MSG_SILENT_MODE_ON
-MSGPL144, //MSG_SILENT_MODE_OFF
-MSGPL145, //MSG_REBOOT
-MSGPL146, //MSG_TAKE_EFFECT
-MSGPL147, //MSG_Enqueing
-MSGPL148, //MSG_POWERUP
-MSGPL149, //MSG_EXTERNAL_RESET
-MSGPL150, //MSG_BROWNOUT_RESET
-MSGPL151, //MSG_WATCHDOG_RESET
-MSGPL152, //MSG_SOFTWARE_RESET
-MSGPL153, //MSG_AUTHOR
-MSGPL154, //MSG_CONFIGURATION_VER
-MSGPL155, //MSG_FREE_MEMORY
-MSGPL156, //MSG_PLANNER_BUFFER_BYTES
-MSGPL157, //MSG_OK
-MSGPL158, //MSG_FILE_SAVED
-MSGPL159, //MSG_ERR_LINE_NO
-MSGPL160, //MSG_ERR_CHECKSUM_MISMATCH
-MSGPL161, //MSG_ERR_NO_CHECKSUM
-MSGPL162, //MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM
-MSGPL163, //MSG_FILE_PRINTED
-MSGPL164, //MSG_BEGIN_FILE_LIST
-MSGPL165, //MSG_END_FILE_LIST
-MSGPL166, //MSG_M104_INVALID_EXTRUDER
-MSGPL167, //MSG_M105_INVALID_EXTRUDER
-MSGPL168, //MSG_M200_INVALID_EXTRUDER
-MSGPL169, //MSG_M218_INVALID_EXTRUDER
-MSGPL170, //MSG_M221_INVALID_EXTRUDER
-MSGPL171, //MSG_ERR_NO_THERMISTORS
-MSGPL172, //MSG_M109_INVALID_EXTRUDER
-MSGPL173, //MSG_HEATING
-MSGPL174, //MSG_HEATING_COMPLETE
-MSGPL175, //MSG_BED_HEATING
-MSGPL176, //MSG_BED_DONE
-MSGPL177, //MSG_M115_REPORT
-MSGPL178, //MSG_COUNT_X
-MSGPL179, //MSG_ERR_KILLED
-MSGPL180, //MSG_ERR_STOPPED
-MSGPL181, //MSG_RESEND
-MSGPL182, //MSG_UNKNOWN_COMMAND
-MSGPL183, //MSG_ACTIVE_EXTRUDER
-MSGPL184, //MSG_INVALID_EXTRUDER
-MSGPL185, //MSG_X_MIN
-MSGPL186, //MSG_X_MAX
-MSGPL187, //MSG_Y_MIN
-MSGPL188, //MSG_Y_MAX
-MSGPL189, //MSG_Z_MIN
-MSGPL190, //MSG_Z_MAX
-MSGPL191, //MSG_M119_REPORT
-MSGPL192, //MSG_ENDSTOP_HIT
-MSGPL193, //MSG_ENDSTOP_OPEN
-MSGPL194, //MSG_HOTEND_OFFSET
-MSGPL195, //MSG_SD_CANT_OPEN_SUBDIR
-MSGPL196, //MSG_SD_INIT_FAIL
-MSGPL197, //MSG_SD_VOL_INIT_FAIL
-MSGPL198, //MSG_SD_OPENROOT_FAIL
-MSGPL199, //MSG_SD_CARD_OK
-MSGPL200, //MSG_SD_WORKDIR_FAIL
-MSGPL201, //MSG_SD_OPEN_FILE_FAIL
-MSGPL202, //MSG_SD_FILE_OPENED
-MSGPL203, //MSG_SD_SIZE
-MSGPL204, //MSG_SD_FILE_SELECTED
-MSGPL205, //MSG_SD_WRITE_TO_FILE
-MSGPL206, //MSG_SD_PRINTING_BYTE
-MSGPL207, //MSG_SD_NOT_PRINTING
-MSGPL208, //MSG_SD_ERR_WRITE_TO_FILE
-MSGPL209, //MSG_SD_CANT_ENTER_SUBDIR
-MSGPL210, //MSG_STEPPER_TOO_HIGH
-MSGPL211, //MSG_ENDSTOPS_HIT
-MSGPL212, //MSG_ERR_COLD_EXTRUDE_STOP
-MSGPL213, //MSG_ERR_LONG_EXTRUDE_STOP
-MSGPL214, //MSG_BABYSTEPPING_X
-MSGPL215, //MSG_BABYSTEPPING_Y
-MSGPL216, //MSG_BABYSTEPPING_Z
-MSGPL217, //MSG_SERIAL_ERROR_MENU_STRUCTURE
-MSGPL218, //MSG_LANGUAGE_NAME
-MSGPL219, //MSG_LANGUAGE_SELECT
-MSGPL220, //MSG_PRUSA3D
-MSGPL221, //MSG_PRUSA3D_FORUM
-MSGPL222, //MSG_PRUSA3D_HOWTO
+
+const char MSG_AUTHOR_EN[] PROGMEM = " | Author: ";
+const char * const MSG_AUTHOR_LANG_TABLE[1] PROGMEM = {
+	MSG_AUTHOR_EN
+};
+
+const char MSG_AUTOLOADING_ENABLED_EN[] PROGMEM = "Autoloading filament is active, just press the knob and insert filament...";
+const char MSG_AUTOLOADING_ENABLED_CZ[] PROGMEM = "Automaticke zavadeni filamentu aktivni, stisknete tlacitko a vlozte filament...";
+const char * const MSG_AUTOLOADING_ENABLED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_AUTOLOADING_ENABLED_EN,
+	MSG_AUTOLOADING_ENABLED_CZ
+};
+
+const char MSG_AUTOLOADING_ONLY_IF_FSENS_ON_EN[] PROGMEM = "Autoloading filament available only when filament sensor is turned on...";
+const char MSG_AUTOLOADING_ONLY_IF_FSENS_ON_CZ[] PROGMEM = "Automaticke zavadeni filamentu dostupne pouze pri zapnutem filament senzoru...";
+const char * const MSG_AUTOLOADING_ONLY_IF_FSENS_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_AUTOLOADING_ONLY_IF_FSENS_ON_EN,
+	MSG_AUTOLOADING_ONLY_IF_FSENS_ON_CZ
+};
+
+const char MSG_AUTOLOAD_FILAMENT_EN[] PROGMEM = "AutoLoad filament";
+const char MSG_AUTOLOAD_FILAMENT_CZ[] PROGMEM = "AutoZavedeni fil.";
+const char * const MSG_AUTOLOAD_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_AUTOLOAD_FILAMENT_EN,
+	MSG_AUTOLOAD_FILAMENT_CZ
+};
+
+const char MSG_AUTO_HOME_EN[] PROGMEM = "Auto home";
+const char * const MSG_AUTO_HOME_LANG_TABLE[1] PROGMEM = {
+	MSG_AUTO_HOME_EN
+};
+
+const char MSG_AUTO_MODE_ON_EN[] PROGMEM = "Mode [auto power]";
+const char MSG_AUTO_MODE_ON_CZ[] PROGMEM = "Mod [automaticky]";
+const char * const MSG_AUTO_MODE_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_AUTO_MODE_ON_EN,
+	MSG_AUTO_MODE_ON_CZ
+};
+
+const char MSG_A_RETRACT_EN[] PROGMEM = "A-retract";
+const char * const MSG_A_RETRACT_LANG_TABLE[1] PROGMEM = {
+	MSG_A_RETRACT_EN
+};
+
+const char MSG_BABYSTEPPING_X_EN[] PROGMEM = "Babystepping X";
+const char * const MSG_BABYSTEPPING_X_LANG_TABLE[1] PROGMEM = {
+	MSG_BABYSTEPPING_X_EN
+};
+
+const char MSG_BABYSTEPPING_Y_EN[] PROGMEM = "Babystepping Y";
+const char * const MSG_BABYSTEPPING_Y_LANG_TABLE[1] PROGMEM = {
+	MSG_BABYSTEPPING_Y_EN
+};
+
+const char MSG_BABYSTEPPING_Z_EN[] PROGMEM = "Adjusting Z";
+const char * const MSG_BABYSTEPPING_Z_LANG_TABLE[1] PROGMEM = {
+	MSG_BABYSTEPPING_Z_EN
+};
+
+const char MSG_BABYSTEP_X_EN[] PROGMEM = "Babystep X";
+const char * const MSG_BABYSTEP_X_LANG_TABLE[1] PROGMEM = {
+	MSG_BABYSTEP_X_EN
+};
+
+const char MSG_BABYSTEP_Y_EN[] PROGMEM = "Babystep Y";
+const char * const MSG_BABYSTEP_Y_LANG_TABLE[1] PROGMEM = {
+	MSG_BABYSTEP_Y_EN
+};
+
+const char MSG_BABYSTEP_Z_EN[] PROGMEM = "Live adjust Z";
+const char MSG_BABYSTEP_Z_CZ[] PROGMEM = "Doladeni osy Z";
+const char * const MSG_BABYSTEP_Z_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BABYSTEP_Z_EN,
+	MSG_BABYSTEP_Z_CZ
+};
+
+const char MSG_BABYSTEP_Z_NOT_SET_EN[] PROGMEM = "Distance between tip of the nozzle and the bed surface has not been set yet. Please follow the manual, chapter First steps, section First layer calibration.";
+const char MSG_BABYSTEP_Z_NOT_SET_CZ[] PROGMEM = "Neni zkalibrovana vzdalenost trysky od tiskove podlozky. Postupujte prosim podle manualu, kapitola Zaciname, odstavec Nastaveni prvni vrstvy.";
+const char * const MSG_BABYSTEP_Z_NOT_SET_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BABYSTEP_Z_NOT_SET_EN,
+	MSG_BABYSTEP_Z_NOT_SET_CZ
+};
+
+const char MSG_BED_EN[] PROGMEM = "Bed";
+const char * const MSG_BED_LANG_TABLE[1] PROGMEM = {
+	MSG_BED_EN
+};
+
+const char MSG_BED_CORRECTION_FRONT_EN[] PROGMEM = "Front side[um]";
+const char MSG_BED_CORRECTION_FRONT_CZ[] PROGMEM = "Vpredu [um]";
+const char * const MSG_BED_CORRECTION_FRONT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_CORRECTION_FRONT_EN,
+	MSG_BED_CORRECTION_FRONT_CZ
+};
+
+const char MSG_BED_CORRECTION_LEFT_EN[] PROGMEM = "Left side [um]";
+const char MSG_BED_CORRECTION_LEFT_CZ[] PROGMEM = "Vlevo  [um]";
+const char * const MSG_BED_CORRECTION_LEFT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_CORRECTION_LEFT_EN,
+	MSG_BED_CORRECTION_LEFT_CZ
+};
+
+const char MSG_BED_CORRECTION_MENU_EN[] PROGMEM = "Bed level correct";
+const char MSG_BED_CORRECTION_MENU_CZ[] PROGMEM = "Korekce podlozky";
+const char * const MSG_BED_CORRECTION_MENU_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_CORRECTION_MENU_EN,
+	MSG_BED_CORRECTION_MENU_CZ
+};
+
+const char MSG_BED_CORRECTION_REAR_EN[] PROGMEM = "Rear side [um]";
+const char MSG_BED_CORRECTION_REAR_CZ[] PROGMEM = "Vzadu  [um]";
+const char * const MSG_BED_CORRECTION_REAR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_CORRECTION_REAR_EN,
+	MSG_BED_CORRECTION_REAR_CZ
+};
+
+const char MSG_BED_CORRECTION_RESET_EN[] PROGMEM = "Reset";
+const char * const MSG_BED_CORRECTION_RESET_LANG_TABLE[1] PROGMEM = {
+	MSG_BED_CORRECTION_RESET_EN
+};
+
+const char MSG_BED_CORRECTION_RIGHT_EN[] PROGMEM = "Right side[um]";
+const char MSG_BED_CORRECTION_RIGHT_CZ[] PROGMEM = "Vpravo [um]";
+const char * const MSG_BED_CORRECTION_RIGHT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_CORRECTION_RIGHT_EN,
+	MSG_BED_CORRECTION_RIGHT_CZ
+};
+
+const char MSG_BED_DONE_EN[] PROGMEM = "Bed done";
+const char MSG_BED_DONE_CZ[] PROGMEM = "Bed OK.";
+const char * const MSG_BED_DONE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_DONE_EN,
+	MSG_BED_DONE_CZ
+};
+
+const char MSG_BED_HEATING_EN[] PROGMEM = "Bed Heating";
+const char MSG_BED_HEATING_CZ[] PROGMEM = "Zahrivani bed";
+const char * const MSG_BED_HEATING_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_HEATING_EN,
+	MSG_BED_HEATING_CZ
+};
+
+const char MSG_BED_LEVELING_FAILED_POINT_HIGH_EN[] PROGMEM = "Bed leveling failed. Sensor triggered too high. Waiting for reset.";
+const char MSG_BED_LEVELING_FAILED_POINT_HIGH_CZ[] PROGMEM = "Kalibrace Z selhala. Sensor sepnul prilis vysoko. Cekam na reset.";
+const char * const MSG_BED_LEVELING_FAILED_POINT_HIGH_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_LEVELING_FAILED_POINT_HIGH_EN,
+	MSG_BED_LEVELING_FAILED_POINT_HIGH_CZ
+};
+
+const char MSG_BED_LEVELING_FAILED_POINT_LOW_EN[] PROGMEM = "Bed leveling failed. Sensor didnt trigger. Debris on nozzle? Waiting for reset.";
+const char MSG_BED_LEVELING_FAILED_POINT_LOW_CZ[] PROGMEM = "Kalibrace Z selhala. Sensor nesepnul. Znecistena tryska? Cekam na reset.";
+const char * const MSG_BED_LEVELING_FAILED_POINT_LOW_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_LEVELING_FAILED_POINT_LOW_EN,
+	MSG_BED_LEVELING_FAILED_POINT_LOW_CZ
+};
+
+const char MSG_BED_LEVELING_FAILED_PROBE_DISCONNECTED_EN[] PROGMEM = "Bed leveling failed. Sensor disconnected or cable broken. Waiting for reset.";
+const char MSG_BED_LEVELING_FAILED_PROBE_DISCONNECTED_CZ[] PROGMEM = "Kalibrace Z selhala. Sensor je odpojeny nebo preruseny kabel. Cekam na reset.";
+const char * const MSG_BED_LEVELING_FAILED_PROBE_DISCONNECTED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_LEVELING_FAILED_PROBE_DISCONNECTED_EN,
+	MSG_BED_LEVELING_FAILED_PROBE_DISCONNECTED_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_BOTH_FAR_EN[] PROGMEM = "XYZ calibration failed. Front calibration points not reachable.";
+const char MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_BOTH_FAR_CZ[] PROGMEM = "Kalibrace XYZ selhala. Predni kalibracni body moc vpredu. Srovnejte tiskarnu.";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_BOTH_FAR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_BOTH_FAR_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_BOTH_FAR_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_LEFT_FAR_EN[] PROGMEM = "XYZ calibration failed. Left front calibration point not reachable.";
+const char MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_LEFT_FAR_CZ[] PROGMEM = "Kalibrace XYZ selhala. Levy predni bod moc vpredu. Srovnejte tiskarnu.";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_LEFT_FAR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_LEFT_FAR_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_LEFT_FAR_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_RIGHT_FAR_EN[] PROGMEM = "XYZ calibration failed. Right front calibration point not reachable.";
+const char MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_RIGHT_FAR_CZ[] PROGMEM = "Kalibrace XYZ selhala. Pravy predni bod moc vpredu. Srovnejte tiskarnu.";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_RIGHT_FAR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_RIGHT_FAR_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_FAILED_FRONT_RIGHT_FAR_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_FITTING_FAILED_EN[] PROGMEM = "XYZ calibration failed. Please consult the manual.";
+const char MSG_BED_SKEW_OFFSET_DETECTION_FITTING_FAILED_CZ[] PROGMEM = "Kalibrace XYZ selhala. Nahlednete do manualu.";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_FITTING_FAILED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_FITTING_FAILED_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_FITTING_FAILED_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_PERFECT_EN[] PROGMEM = "XYZ calibration ok. X/Y axes are perpendicular. Congratulations!";
+const char MSG_BED_SKEW_OFFSET_DETECTION_PERFECT_CZ[] PROGMEM = "Kalibrace XYZ v poradku. X/Y osy jsou kolme. Gratuluji!";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_PERFECT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_PERFECT_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_PERFECT_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_POINT_NOT_FOUND_EN[] PROGMEM = "XYZ calibration failed. Bed calibration point was not found.";
+const char MSG_BED_SKEW_OFFSET_DETECTION_POINT_NOT_FOUND_CZ[] PROGMEM = "Kalibrace XYZ selhala. Kalibracni bod podlozky nenalezen.";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_POINT_NOT_FOUND_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_POINT_NOT_FOUND_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_POINT_NOT_FOUND_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_SKEW_EXTREME_EN[] PROGMEM = "XYZ calibration all right. Skew will be corrected automatically.";
+const char MSG_BED_SKEW_OFFSET_DETECTION_SKEW_EXTREME_CZ[] PROGMEM = "Kalibrace XYZ v poradku. Zkoseni bude automaticky vyrovnano pri tisku.";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_SKEW_EXTREME_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_SKEW_EXTREME_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_SKEW_EXTREME_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_SKEW_MILD_EN[] PROGMEM = "XYZ calibration all right. X/Y axes are slightly skewed. Good job!";
+const char MSG_BED_SKEW_OFFSET_DETECTION_SKEW_MILD_CZ[] PROGMEM = "Kalibrace XYZ v poradku. X/Y osy mirne zkosene. Dobra prace!";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_SKEW_MILD_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_SKEW_MILD_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_SKEW_MILD_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_BOTH_FAR_EN[] PROGMEM = "XYZ calibration compromised. Front calibration points not reachable.";
+const char MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_BOTH_FAR_CZ[] PROGMEM = "Kalibrace XYZ nepresna. Predni kalibracni body moc vpredu.";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_BOTH_FAR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_BOTH_FAR_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_BOTH_FAR_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_LEFT_FAR_EN[] PROGMEM = "XYZ calibration compromised. Left front calibration point not reachable.";
+const char MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_LEFT_FAR_CZ[] PROGMEM = "Kalibrace XYZ nepresna. Levy predni bod moc vpredu.";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_LEFT_FAR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_LEFT_FAR_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_LEFT_FAR_CZ
+};
+
+const char MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_RIGHT_FAR_EN[] PROGMEM = "XYZ calibration compromised. Right front calibration point not reachable.";
+const char MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_RIGHT_FAR_CZ[] PROGMEM = "Kalibrace XYZ nepresna. Pravy predni bod moc vpredu.";
+const char * const MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_RIGHT_FAR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_RIGHT_FAR_EN,
+	MSG_BED_SKEW_OFFSET_DETECTION_WARNING_FRONT_RIGHT_FAR_CZ
+};
+
+const char MSG_BEGIN_FILE_LIST_EN[] PROGMEM = "Begin file list";
+const char * const MSG_BEGIN_FILE_LIST_LANG_TABLE[1] PROGMEM = {
+	MSG_BEGIN_FILE_LIST_EN
+};
+
+const char MSG_BROWNOUT_RESET_EN[] PROGMEM = " Brown out Reset";
+const char * const MSG_BROWNOUT_RESET_LANG_TABLE[1] PROGMEM = {
+	MSG_BROWNOUT_RESET_EN
+};
+
+const char MSG_CALIBRATE_BED_EN[] PROGMEM = "Calibrate XYZ";
+const char MSG_CALIBRATE_BED_CZ[] PROGMEM = "Kalibrace XYZ";
+const char * const MSG_CALIBRATE_BED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CALIBRATE_BED_EN,
+	MSG_CALIBRATE_BED_CZ
+};
+
+const char MSG_CALIBRATE_BED_RESET_EN[] PROGMEM = "Reset XYZ calibr.";
+const char MSG_CALIBRATE_BED_RESET_CZ[] PROGMEM = "Reset XYZ kalibr.";
+const char * const MSG_CALIBRATE_BED_RESET_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CALIBRATE_BED_RESET_EN,
+	MSG_CALIBRATE_BED_RESET_CZ
+};
+
+const char MSG_CALIBRATE_E_EN[] PROGMEM = "Calibrate E";
+const char MSG_CALIBRATE_E_CZ[] PROGMEM = "Kalibrovat E";
+const char * const MSG_CALIBRATE_E_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CALIBRATE_E_EN,
+	MSG_CALIBRATE_E_CZ
+};
+
+const char MSG_CALIBRATE_PINDA_EN[] PROGMEM = "Calibrate";
+const char MSG_CALIBRATE_PINDA_CZ[] PROGMEM = "Zkalibrovat";
+const char * const MSG_CALIBRATE_PINDA_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CALIBRATE_PINDA_EN,
+	MSG_CALIBRATE_PINDA_CZ
+};
+
+const char MSG_CALIBRATE_Z_AUTO_EN[] PROGMEM = "Calibrating Z";
+const char MSG_CALIBRATE_Z_AUTO_CZ[] PROGMEM = "Kalibruji Z";
+const char * const MSG_CALIBRATE_Z_AUTO_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CALIBRATE_Z_AUTO_EN,
+	MSG_CALIBRATE_Z_AUTO_CZ
+};
+
+const char MSG_CALIBRATION_PINDA_MENU_EN[] PROGMEM = "Temp. calibration";
+const char MSG_CALIBRATION_PINDA_MENU_CZ[] PROGMEM = "Teplot. kalibrace";
+const char * const MSG_CALIBRATION_PINDA_MENU_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CALIBRATION_PINDA_MENU_EN,
+	MSG_CALIBRATION_PINDA_MENU_CZ
+};
+
+const char MSG_CARD_MENU_EN[] PROGMEM = "Print from SD";
+const char MSG_CARD_MENU_CZ[] PROGMEM = "Tisk z SD";
+const char * const MSG_CARD_MENU_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CARD_MENU_EN,
+	MSG_CARD_MENU_CZ
+};
+
+const char MSG_CHANGED_BOTH_EN[] PROGMEM = "Warning: both printer type and motherboard type changed.";
+const char MSG_CHANGED_BOTH_CZ[] PROGMEM = "Varovani: doslo ke zmene typu tiskarny a motherboardu.";
+const char * const MSG_CHANGED_BOTH_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CHANGED_BOTH_EN,
+	MSG_CHANGED_BOTH_CZ
+};
+
+const char MSG_CHANGED_MOTHERBOARD_EN[] PROGMEM = "Warning: motherboard type changed.";
+const char MSG_CHANGED_MOTHERBOARD_CZ[] PROGMEM = "Varovani: doslo ke zmene typu motherboardu.";
+const char * const MSG_CHANGED_MOTHERBOARD_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CHANGED_MOTHERBOARD_EN,
+	MSG_CHANGED_MOTHERBOARD_CZ
+};
+
+const char MSG_CHANGED_PRINTER_EN[] PROGMEM = "Warning: printer type changed.";
+const char MSG_CHANGED_PRINTER_CZ[] PROGMEM = "Varovani: doslo ke zmene typu tiskarny.";
+const char * const MSG_CHANGED_PRINTER_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CHANGED_PRINTER_EN,
+	MSG_CHANGED_PRINTER_CZ
+};
+
+const char MSG_CHANGE_EXTR_EN[] PROGMEM = "Change extruder";
+const char MSG_CHANGE_EXTR_CZ[] PROGMEM = "Zmenit extruder";
+const char * const MSG_CHANGE_EXTR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CHANGE_EXTR_EN,
+	MSG_CHANGE_EXTR_CZ
+};
+
+const char MSG_CHANGE_SUCCESS_EN[] PROGMEM = "Change success!";
+const char MSG_CHANGE_SUCCESS_CZ[] PROGMEM = "Zmena uspesna!";
+const char * const MSG_CHANGE_SUCCESS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CHANGE_SUCCESS_EN,
+	MSG_CHANGE_SUCCESS_CZ
+};
+
+const char MSG_CHANGING_FILAMENT_EN[] PROGMEM = "Changing filament!";
+const char MSG_CHANGING_FILAMENT_CZ[] PROGMEM = "Vymena filamentu!";
+const char * const MSG_CHANGING_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CHANGING_FILAMENT_EN,
+	MSG_CHANGING_FILAMENT_CZ
+};
+
+const char MSG_CHECK_IDLER_EN[] PROGMEM = "Please open idler and remove filament manually.";
+const char MSG_CHECK_IDLER_CZ[] PROGMEM = "Prosim otevrete idler a manualne odstrante filament.";
+const char * const MSG_CHECK_IDLER_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CHECK_IDLER_EN,
+	MSG_CHECK_IDLER_CZ
+};
+
+const char MSG_CHOOSE_EXTRUDER_EN[] PROGMEM = "Choose extruder:";
+const char MSG_CHOOSE_EXTRUDER_CZ[] PROGMEM = "Vyberte extruder:";
+const char * const MSG_CHOOSE_EXTRUDER_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CHOOSE_EXTRUDER_EN,
+	MSG_CHOOSE_EXTRUDER_CZ
+};
+
+const char MSG_CLEAN_NOZZLE_E_EN[] PROGMEM = "E calibration finished. Please clean the nozzle. Click when done.";
+const char MSG_CLEAN_NOZZLE_E_CZ[] PROGMEM = "E kalibrace ukoncena. Prosim ocistete trysku. Po te potvrdte tlacitkem.";
+const char * const MSG_CLEAN_NOZZLE_E_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CLEAN_NOZZLE_E_EN,
+	MSG_CLEAN_NOZZLE_E_CZ
+};
+
+const char MSG_CNG_SDCARD_EN[] PROGMEM = "Change SD card";
+const char * const MSG_CNG_SDCARD_LANG_TABLE[1] PROGMEM = {
+	MSG_CNG_SDCARD_EN
+};
+
+const char MSG_CONFIGURATION_VER_EN[] PROGMEM = " Last Updated: ";
+const char * const MSG_CONFIGURATION_VER_LANG_TABLE[1] PROGMEM = {
+	MSG_CONFIGURATION_VER_EN
+};
+
+const char MSG_CONFIRM_CARRIAGE_AT_THE_TOP_EN[] PROGMEM = "Are left and right Z~carriages all up?";
+const char MSG_CONFIRM_CARRIAGE_AT_THE_TOP_CZ[] PROGMEM = "Dojely oba Z voziky k~hornimu dorazu?";
+const char * const MSG_CONFIRM_CARRIAGE_AT_THE_TOP_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CONFIRM_CARRIAGE_AT_THE_TOP_EN,
+	MSG_CONFIRM_CARRIAGE_AT_THE_TOP_CZ
+};
+
+const char MSG_CONFIRM_NOZZLE_CLEAN_EN[] PROGMEM = "Please clean the nozzle for calibration. Click when done.";
+const char MSG_CONFIRM_NOZZLE_CLEAN_CZ[] PROGMEM = "Pro uspesnou kalibraci ocistete prosim tiskovou trysku. Potvrdte tlacitkem.";
+const char * const MSG_CONFIRM_NOZZLE_CLEAN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CONFIRM_NOZZLE_CLEAN_EN,
+	MSG_CONFIRM_NOZZLE_CLEAN_CZ
+};
+
+const char MSG_CONFIRM_NOZZLE_CLEAN_FIL_ADJ_EN[] PROGMEM = "Filaments are now adjusted. Please clean the nozzle for calibration. Click when done.";
+const char MSG_CONFIRM_NOZZLE_CLEAN_FIL_ADJ_CZ[] PROGMEM = "Filamenty jsou srovnany. Pro uspesnou kalibraci prosim ocistete trysku. Po te potvrdte tlacitkem.";
+const char * const MSG_CONFIRM_NOZZLE_CLEAN_FIL_ADJ_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CONFIRM_NOZZLE_CLEAN_FIL_ADJ_EN,
+	MSG_CONFIRM_NOZZLE_CLEAN_FIL_ADJ_CZ
+};
+
+const char MSG_CONTROL_EN[] PROGMEM = "Control";
+const char * const MSG_CONTROL_LANG_TABLE[1] PROGMEM = {
+	MSG_CONTROL_EN
+};
+
+const char MSG_COOLDOWN_EN[] PROGMEM = "Cooldown";
+const char MSG_COOLDOWN_CZ[] PROGMEM = "Zchladit";
+const char * const MSG_COOLDOWN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_COOLDOWN_EN,
+	MSG_COOLDOWN_CZ
+};
+
+const char MSG_CORRECTLY_EN[] PROGMEM = "Changed correctly?";
+const char MSG_CORRECTLY_CZ[] PROGMEM = "Vymena ok?";
+const char * const MSG_CORRECTLY_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CORRECTLY_EN,
+	MSG_CORRECTLY_CZ
+};
+
+const char MSG_COUNT_X_EN[] PROGMEM = " Count X: ";
+const char * const MSG_COUNT_X_LANG_TABLE[1] PROGMEM = {
+	MSG_COUNT_X_EN
+};
+
+const char MSG_CRASHDETECT_NA_EN[] PROGMEM = "Crash det.  [N/A]";
+const char * const MSG_CRASHDETECT_NA_LANG_TABLE[1] PROGMEM = {
+	MSG_CRASHDETECT_NA_EN
+};
+
+const char MSG_CRASHDETECT_OFF_EN[] PROGMEM = "Crash det.  [off]";
+const char MSG_CRASHDETECT_OFF_CZ[] PROGMEM = "Crash det.  [vyp]";
+const char * const MSG_CRASHDETECT_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CRASHDETECT_OFF_EN,
+	MSG_CRASHDETECT_OFF_CZ
+};
+
+const char MSG_CRASHDETECT_ON_EN[] PROGMEM = "Crash det.   [on]";
+const char MSG_CRASHDETECT_ON_CZ[] PROGMEM = "Crash det.  [zap]";
+const char * const MSG_CRASHDETECT_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CRASHDETECT_ON_EN,
+	MSG_CRASHDETECT_ON_CZ
+};
+
+const char MSG_CRASH_DETECTED_EN[] PROGMEM = "Crash detected.";
+const char MSG_CRASH_DETECTED_CZ[] PROGMEM = "Detekovan naraz.";
+const char * const MSG_CRASH_DETECTED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CRASH_DETECTED_EN,
+	MSG_CRASH_DETECTED_CZ
+};
+
+const char MSG_CRASH_DETECTED2_EN[] PROGMEM = "Crash detected. Continue printing?";
+const char MSG_CRASH_DETECTED2_CZ[] PROGMEM = "Naraz detekovan, pokracovat v tisku?";
+const char * const MSG_CRASH_DETECTED2_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CRASH_DETECTED2_EN,
+	MSG_CRASH_DETECTED2_CZ
+};
+
+const char MSG_CRASH_DET_ONLY_IN_NORMAL_EN[] PROGMEM = "\x1b[2JCrash detection can\x1b[1;0Hbe turned on only in\x1b[2;0HNormal mode";
+const char MSG_CRASH_DET_ONLY_IN_NORMAL_CZ[] PROGMEM = "\x1b[2JCrash detekce muze\x1b[1;0Hbyt zapnuta pouze v\x1b[2;0HNormal modu";
+const char * const MSG_CRASH_DET_ONLY_IN_NORMAL_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CRASH_DET_ONLY_IN_NORMAL_EN,
+	MSG_CRASH_DET_ONLY_IN_NORMAL_CZ
+};
+
+const char MSG_CRASH_DET_STEALTH_FORCE_OFF_EN[] PROGMEM = "\x1b[2JWARNING:\x1b[1;0HCrash detection\x1b[2;0Hdisabled in\x1b[3;0HStealth mode";
+const char MSG_CRASH_DET_STEALTH_FORCE_OFF_CZ[] PROGMEM = "\x1b[2JPOZOR:\x1b[1;0HCrash detekce\x1b[2;0Hdeaktivovana ve\x1b[3;0HStealth modu";
+const char * const MSG_CRASH_DET_STEALTH_FORCE_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CRASH_DET_STEALTH_FORCE_OFF_EN,
+	MSG_CRASH_DET_STEALTH_FORCE_OFF_CZ
+};
+
+const char MSG_CURRENT_EN[] PROGMEM = "Current";
+const char MSG_CURRENT_CZ[] PROGMEM = "Pouze aktualni";
+const char * const MSG_CURRENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_CURRENT_EN,
+	MSG_CURRENT_CZ
+};
+
+const char MSG_DATE_EN[] PROGMEM = "Date:";
+const char MSG_DATE_CZ[] PROGMEM = "Datum:";
+const char * const MSG_DATE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_DATE_EN,
+	MSG_DATE_CZ
+};
+
+const char MSG_DEFAULT_SETTINGS_LOADED_EN[] PROGMEM = "Old settings found. Default PID, Esteps etc. will be set.";
+const char MSG_DEFAULT_SETTINGS_LOADED_CZ[] PROGMEM = "Neplatne hodnoty nastaveni. Bude pouzito vychozi PID, Esteps atd.";
+const char * const MSG_DEFAULT_SETTINGS_LOADED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_DEFAULT_SETTINGS_LOADED_EN,
+	MSG_DEFAULT_SETTINGS_LOADED_CZ
+};
+
+const char MSG_DISABLE_STEPPERS_EN[] PROGMEM = "Disable steppers";
+const char MSG_DISABLE_STEPPERS_CZ[] PROGMEM = "Vypnout motory";
+const char * const MSG_DISABLE_STEPPERS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_DISABLE_STEPPERS_EN,
+	MSG_DISABLE_STEPPERS_CZ
+};
+
+const char MSG_DWELL_EN[] PROGMEM = "Sleep...";
+const char * const MSG_DWELL_LANG_TABLE[1] PROGMEM = {
+	MSG_DWELL_EN
+};
+
+const char MSG_ENDSTOPS_HIT_EN[] PROGMEM = "endstops hit: ";
+const char * const MSG_ENDSTOPS_HIT_LANG_TABLE[1] PROGMEM = {
+	MSG_ENDSTOPS_HIT_EN
+};
+
+const char MSG_ENDSTOP_HIT_EN[] PROGMEM = "TRIGGERED";
+const char * const MSG_ENDSTOP_HIT_LANG_TABLE[1] PROGMEM = {
+	MSG_ENDSTOP_HIT_EN
+};
+
+const char MSG_ENDSTOP_OPEN_EN[] PROGMEM = "open";
+const char * const MSG_ENDSTOP_OPEN_LANG_TABLE[1] PROGMEM = {
+	MSG_ENDSTOP_OPEN_EN
+};
+
+const char MSG_END_FILE_LIST_EN[] PROGMEM = "End file list";
+const char * const MSG_END_FILE_LIST_LANG_TABLE[1] PROGMEM = {
+	MSG_END_FILE_LIST_EN
+};
+
+const char MSG_ERROR_EN[] PROGMEM = "ERROR:";
+const char MSG_ERROR_CZ[] PROGMEM = "CHYBA:";
+const char * const MSG_ERROR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_ERROR_EN,
+	MSG_ERROR_CZ
+};
+
+const char MSG_ERR_CHECKSUM_MISMATCH_EN[] PROGMEM = "checksum mismatch, Last Line: ";
+const char * const MSG_ERR_CHECKSUM_MISMATCH_LANG_TABLE[1] PROGMEM = {
+	MSG_ERR_CHECKSUM_MISMATCH_EN
+};
+
+const char MSG_ERR_COLD_EXTRUDE_STOP_EN[] PROGMEM = " cold extrusion prevented";
+const char * const MSG_ERR_COLD_EXTRUDE_STOP_LANG_TABLE[1] PROGMEM = {
+	MSG_ERR_COLD_EXTRUDE_STOP_EN
+};
+
+const char MSG_ERR_KILLED_EN[] PROGMEM = "Printer halted. kill() called!";
+const char * const MSG_ERR_KILLED_LANG_TABLE[1] PROGMEM = {
+	MSG_ERR_KILLED_EN
+};
+
+const char MSG_ERR_LINE_NO_EN[] PROGMEM = "Line Number is not Last Line Number+1, Last Line: ";
+const char * const MSG_ERR_LINE_NO_LANG_TABLE[1] PROGMEM = {
+	MSG_ERR_LINE_NO_EN
+};
+
+const char MSG_ERR_LONG_EXTRUDE_STOP_EN[] PROGMEM = " too long extrusion prevented";
+const char * const MSG_ERR_LONG_EXTRUDE_STOP_LANG_TABLE[1] PROGMEM = {
+	MSG_ERR_LONG_EXTRUDE_STOP_EN
+};
+
+const char MSG_ERR_NO_CHECKSUM_EN[] PROGMEM = "No Checksum with line number, Last Line: ";
+const char * const MSG_ERR_NO_CHECKSUM_LANG_TABLE[1] PROGMEM = {
+	MSG_ERR_NO_CHECKSUM_EN
+};
+
+const char MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM_EN[] PROGMEM = "No Line Number with checksum, Last Line: ";
+const char * const MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM_LANG_TABLE[1] PROGMEM = {
+	MSG_ERR_NO_LINENUMBER_WITH_CHECKSUM_EN
+};
+
+const char MSG_ERR_NO_THERMISTORS_EN[] PROGMEM = "No thermistors - no temperature";
+const char * const MSG_ERR_NO_THERMISTORS_LANG_TABLE[1] PROGMEM = {
+	MSG_ERR_NO_THERMISTORS_EN
+};
+
+const char MSG_ERR_STOPPED_EN[] PROGMEM = "Printer stopped due to errors. Fix the error and use M999 to restart. (Temperature is reset. Set it after restarting)";
+const char * const MSG_ERR_STOPPED_LANG_TABLE[1] PROGMEM = {
+	MSG_ERR_STOPPED_EN
+};
+
+const char MSG_EXTERNAL_RESET_EN[] PROGMEM = " External Reset";
+const char * const MSG_EXTERNAL_RESET_LANG_TABLE[1] PROGMEM = {
+	MSG_EXTERNAL_RESET_EN
+};
+
+const char MSG_EXTRUDER_EN[] PROGMEM = "Extruder";
+const char * const MSG_EXTRUDER_LANG_TABLE[1] PROGMEM = {
+	MSG_EXTRUDER_EN
+};
+
+const char MSG_EXTRUDER_1_EN[] PROGMEM = "Extruder 1";
+const char * const MSG_EXTRUDER_1_LANG_TABLE[1] PROGMEM = {
+	MSG_EXTRUDER_1_EN
+};
+
+const char MSG_EXTRUDER_2_EN[] PROGMEM = "Extruder 2";
+const char * const MSG_EXTRUDER_2_LANG_TABLE[1] PROGMEM = {
+	MSG_EXTRUDER_2_EN
+};
+
+const char MSG_EXTRUDER_3_EN[] PROGMEM = "Extruder 3";
+const char * const MSG_EXTRUDER_3_LANG_TABLE[1] PROGMEM = {
+	MSG_EXTRUDER_3_EN
+};
+
+const char MSG_EXTRUDER_4_EN[] PROGMEM = "Extruder 4";
+const char * const MSG_EXTRUDER_4_LANG_TABLE[1] PROGMEM = {
+	MSG_EXTRUDER_4_EN
+};
+
+const char MSG_E_CAL_KNOB_EN[] PROGMEM = "Rotate knob until mark reaches extruder body. Click when done.";
+const char MSG_E_CAL_KNOB_CZ[] PROGMEM = "Otacejte tlacitkem dokud znacka nedosahne tela extruderu. Potvrdte tlacitkem.";
+const char * const MSG_E_CAL_KNOB_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_E_CAL_KNOB_EN,
+	MSG_E_CAL_KNOB_CZ
+};
+
+const char MSG_Enqueing_EN[] PROGMEM = "enqueing \"";
+const char * const MSG_Enqueing_LANG_TABLE[1] PROGMEM = {
+	MSG_Enqueing_EN
+};
+
+const char MSG_FACTOR_EN[] PROGMEM = " \002 Fact";
+const char * const MSG_FACTOR_LANG_TABLE[1] PROGMEM = {
+	MSG_FACTOR_EN
+};
+
+const char MSG_FANS_CHECK_OFF_EN[] PROGMEM = "Fans check  [off]";
+const char MSG_FANS_CHECK_OFF_CZ[] PROGMEM = "Kontr. vent.[vyp]";
+const char * const MSG_FANS_CHECK_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FANS_CHECK_OFF_EN,
+	MSG_FANS_CHECK_OFF_CZ
+};
+
+const char MSG_FANS_CHECK_ON_EN[] PROGMEM = "Fans check   [on]";
+const char MSG_FANS_CHECK_ON_CZ[] PROGMEM = "Kontr. vent.[zap]";
+const char * const MSG_FANS_CHECK_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FANS_CHECK_ON_EN,
+	MSG_FANS_CHECK_ON_CZ
+};
+
+const char MSG_FAN_SPEED_EN[] PROGMEM = "Fan speed";
+const char MSG_FAN_SPEED_CZ[] PROGMEM = "Rychlost vent.";
+const char * const MSG_FAN_SPEED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FAN_SPEED_EN,
+	MSG_FAN_SPEED_CZ
+};
+
+const char MSG_FARM_CARD_MENU_EN[] PROGMEM = "Farm mode print";
+const char * const MSG_FARM_CARD_MENU_LANG_TABLE[1] PROGMEM = {
+	MSG_FARM_CARD_MENU_EN
+};
+
+const char MSG_FILAMENTCHANGE_EN[] PROGMEM = "Change filament";
+const char MSG_FILAMENTCHANGE_CZ[] PROGMEM = "Vymenit filament";
+const char * const MSG_FILAMENTCHANGE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FILAMENTCHANGE_EN,
+	MSG_FILAMENTCHANGE_CZ
+};
+
+const char MSG_FILAMENT_CLEAN_EN[] PROGMEM = "Filament extruding & with correct color?";
+const char MSG_FILAMENT_CLEAN_CZ[] PROGMEM = "Filament vytlacen a spravne barvy?";
+const char * const MSG_FILAMENT_CLEAN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FILAMENT_CLEAN_EN,
+	MSG_FILAMENT_CLEAN_CZ
+};
+
+const char MSG_FILAMENT_LOADING_T0_EN[] PROGMEM = "Insert filament into extruder 1. Click when done.";
+const char MSG_FILAMENT_LOADING_T0_CZ[] PROGMEM = "Vlozte filament do extruderu 1. Potvrdte tlacitkem.";
+const char * const MSG_FILAMENT_LOADING_T0_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FILAMENT_LOADING_T0_EN,
+	MSG_FILAMENT_LOADING_T0_CZ
+};
+
+const char MSG_FILAMENT_LOADING_T1_EN[] PROGMEM = "Insert filament into extruder 2. Click when done.";
+const char MSG_FILAMENT_LOADING_T1_CZ[] PROGMEM = "Vlozte filament do extruderu 2. Potvrdte tlacitkem.";
+const char * const MSG_FILAMENT_LOADING_T1_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FILAMENT_LOADING_T1_EN,
+	MSG_FILAMENT_LOADING_T1_CZ
+};
+
+const char MSG_FILAMENT_LOADING_T2_EN[] PROGMEM = "Insert filament into extruder 3. Click when done.";
+const char MSG_FILAMENT_LOADING_T2_CZ[] PROGMEM = "Vlozte filament do extruderu 3. Potvrdte tlacitkem.";
+const char * const MSG_FILAMENT_LOADING_T2_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FILAMENT_LOADING_T2_EN,
+	MSG_FILAMENT_LOADING_T2_CZ
+};
+
+const char MSG_FILAMENT_LOADING_T3_EN[] PROGMEM = "Insert filament into extruder 4. Click when done.";
+const char MSG_FILAMENT_LOADING_T3_CZ[] PROGMEM = "Vlozte filament do extruderu 4. Potvrdte tlacitkem.";
+const char * const MSG_FILAMENT_LOADING_T3_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FILAMENT_LOADING_T3_EN,
+	MSG_FILAMENT_LOADING_T3_CZ
+};
+
+const char MSG_FILAMENT_SENSOR_EN[] PROGMEM = "Filament sensor";
+const char MSG_FILAMENT_SENSOR_CZ[] PROGMEM = "Senzor filamentu";
+const char * const MSG_FILAMENT_SENSOR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FILAMENT_SENSOR_EN,
+	MSG_FILAMENT_SENSOR_CZ
+};
+
+const char MSG_FILE_CNT_EN[] PROGMEM = "Some files will not be sorted. Max. No. of files in 1 folder for sorting is 100.";
+const char MSG_FILE_CNT_CZ[] PROGMEM = "Nektere soubory nebudou setrideny. Maximalni pocet souboru pro setrideni je 100.";
+const char * const MSG_FILE_CNT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FILE_CNT_EN,
+	MSG_FILE_CNT_CZ
+};
+
+const char MSG_FILE_INCOMPLETE_EN[] PROGMEM = "File incomplete. Continue anyway?";
+const char MSG_FILE_INCOMPLETE_CZ[] PROGMEM = "Soubor nekompletni. Pokracovat?";
+const char * const MSG_FILE_INCOMPLETE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FILE_INCOMPLETE_EN,
+	MSG_FILE_INCOMPLETE_CZ
+};
+
+const char MSG_FILE_PRINTED_EN[] PROGMEM = "Done printing file";
+const char * const MSG_FILE_PRINTED_LANG_TABLE[1] PROGMEM = {
+	MSG_FILE_PRINTED_EN
+};
+
+const char MSG_FILE_SAVED_EN[] PROGMEM = "Done saving file.";
+const char * const MSG_FILE_SAVED_LANG_TABLE[1] PROGMEM = {
+	MSG_FILE_SAVED_EN
+};
+
+const char MSG_FIL_ADJUSTING_EN[] PROGMEM = "Adjusting filaments. Please wait.";
+const char MSG_FIL_ADJUSTING_CZ[] PROGMEM = "Probiha srovnani filamentu. Prosim cekejte.";
+const char * const MSG_FIL_ADJUSTING_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FIL_ADJUSTING_EN,
+	MSG_FIL_ADJUSTING_CZ
+};
+
+const char MSG_FIND_BED_OFFSET_AND_SKEW_ITERATION_EN[] PROGMEM = "Iteration ";
+const char MSG_FIND_BED_OFFSET_AND_SKEW_ITERATION_CZ[] PROGMEM = "Iterace ";
+const char * const MSG_FIND_BED_OFFSET_AND_SKEW_ITERATION_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FIND_BED_OFFSET_AND_SKEW_ITERATION_EN,
+	MSG_FIND_BED_OFFSET_AND_SKEW_ITERATION_CZ
+};
+
+const char MSG_FIND_BED_OFFSET_AND_SKEW_LINE1_EN[] PROGMEM = "Searching bed calibration point";
+const char MSG_FIND_BED_OFFSET_AND_SKEW_LINE1_CZ[] PROGMEM = "Hledam kalibracni bod podlozky";
+const char * const MSG_FIND_BED_OFFSET_AND_SKEW_LINE1_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FIND_BED_OFFSET_AND_SKEW_LINE1_EN,
+	MSG_FIND_BED_OFFSET_AND_SKEW_LINE1_CZ
+};
+
+const char MSG_FIND_BED_OFFSET_AND_SKEW_LINE2_EN[] PROGMEM = " of 4";
+const char MSG_FIND_BED_OFFSET_AND_SKEW_LINE2_CZ[] PROGMEM = " z 4";
+const char * const MSG_FIND_BED_OFFSET_AND_SKEW_LINE2_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FIND_BED_OFFSET_AND_SKEW_LINE2_EN,
+	MSG_FIND_BED_OFFSET_AND_SKEW_LINE2_CZ
+};
+
+const char MSG_FINISHING_MOVEMENTS_EN[] PROGMEM = "Finishing movements";
+const char MSG_FINISHING_MOVEMENTS_CZ[] PROGMEM = "Dokoncovani pohybu";
+const char * const MSG_FINISHING_MOVEMENTS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FINISHING_MOVEMENTS_EN,
+	MSG_FINISHING_MOVEMENTS_CZ
+};
+
+const char MSG_FLOW_EN[] PROGMEM = "Flow";
+const char MSG_FLOW_CZ[] PROGMEM = "Prutok";
+const char * const MSG_FLOW_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FLOW_EN,
+	MSG_FLOW_CZ
+};
+
+const char MSG_FLOW0_EN[] PROGMEM = "Flow 0";
+const char * const MSG_FLOW0_LANG_TABLE[1] PROGMEM = {
+	MSG_FLOW0_EN
+};
+
+const char MSG_FLOW1_EN[] PROGMEM = "Flow 1";
+const char * const MSG_FLOW1_LANG_TABLE[1] PROGMEM = {
+	MSG_FLOW1_EN
+};
+
+const char MSG_FLOW2_EN[] PROGMEM = "Flow 2";
+const char * const MSG_FLOW2_LANG_TABLE[1] PROGMEM = {
+	MSG_FLOW2_EN
+};
+
+const char MSG_FOLLOW_CALIBRATION_FLOW_EN[] PROGMEM = "Printer has not been calibrated yet. Please follow the manual, chapter First steps, section Calibration flow.";
+const char MSG_FOLLOW_CALIBRATION_FLOW_CZ[] PROGMEM = "Tiskarna nebyla jeste zkalibrovana. Postupujte prosim podle manualu, kapitola Zaciname, odstavec Postup kalibrace.";
+const char * const MSG_FOLLOW_CALIBRATION_FLOW_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FOLLOW_CALIBRATION_FLOW_EN,
+	MSG_FOLLOW_CALIBRATION_FLOW_CZ
+};
+
+const char MSG_FREE_MEMORY_EN[] PROGMEM = " Free Memory: ";
+const char * const MSG_FREE_MEMORY_LANG_TABLE[1] PROGMEM = {
+	MSG_FREE_MEMORY_EN
+};
+
+const char MSG_FSENSOR_NA_EN[] PROGMEM = "Fil. sensor [N/A]";
+const char MSG_FSENSOR_NA_CZ[] PROGMEM = "Fil. senzor [N/A]";
+const char * const MSG_FSENSOR_NA_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FSENSOR_NA_EN,
+	MSG_FSENSOR_NA_CZ
+};
+
+const char MSG_FSENSOR_OFF_EN[] PROGMEM = "Fil. sensor [off]";
+const char MSG_FSENSOR_OFF_CZ[] PROGMEM = "Fil. senzor [vyp]";
+const char * const MSG_FSENSOR_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FSENSOR_OFF_EN,
+	MSG_FSENSOR_OFF_CZ
+};
+
+const char MSG_FSENSOR_ON_EN[] PROGMEM = "Fil. sensor  [on]";
+const char MSG_FSENSOR_ON_CZ[] PROGMEM = "Fil. senzor [zap]";
+const char * const MSG_FSENSOR_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FSENSOR_ON_EN,
+	MSG_FSENSOR_ON_CZ
+};
+
+const char MSG_FSENS_AUTOLOAD_NA_EN[] PROGMEM = "F. autoload [N/A]";
+const char MSG_FSENS_AUTOLOAD_NA_CZ[] PROGMEM = "F. autozav. [N/A]";
+const char * const MSG_FSENS_AUTOLOAD_NA_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FSENS_AUTOLOAD_NA_EN,
+	MSG_FSENS_AUTOLOAD_NA_CZ
+};
+
+const char MSG_FSENS_AUTOLOAD_OFF_EN[] PROGMEM = "F. autoload [off]";
+const char MSG_FSENS_AUTOLOAD_OFF_CZ[] PROGMEM = "F. autozav. [vyp]";
+const char * const MSG_FSENS_AUTOLOAD_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FSENS_AUTOLOAD_OFF_EN,
+	MSG_FSENS_AUTOLOAD_OFF_CZ
+};
+
+const char MSG_FSENS_AUTOLOAD_ON_EN[] PROGMEM = "F. autoload  [on]";
+const char MSG_FSENS_AUTOLOAD_ON_CZ[] PROGMEM = "F. autozav. [zap]";
+const char * const MSG_FSENS_AUTOLOAD_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FSENS_AUTOLOAD_ON_EN,
+	MSG_FSENS_AUTOLOAD_ON_CZ
+};
+
+const char MSG_FSENS_NOT_RESPONDING_EN[] PROGMEM = "ERROR: Filament sensor is not responding, please check connection.";
+const char MSG_FSENS_NOT_RESPONDING_CZ[] PROGMEM = "CHYBA: Filament senzor nereaguje, zkontrolujte zapojeni.";
+const char * const MSG_FSENS_NOT_RESPONDING_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FSENS_NOT_RESPONDING_EN,
+	MSG_FSENS_NOT_RESPONDING_CZ
+};
+
+const char MSG_FW_VERSION_ALPHA_EN[] PROGMEM = "You are using firmware alpha version. This is development version. Using this version is not recommended and may cause printer damage.";
+const char MSG_FW_VERSION_ALPHA_CZ[] PROGMEM = "Pouzivate alpha verzi firmwaru. Jedna se o vyvojovou verzi. Pouzivani teto verze firmware neni doporuceno a muze zpusobit poskozeni tiskarny.";
+const char * const MSG_FW_VERSION_ALPHA_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FW_VERSION_ALPHA_EN,
+	MSG_FW_VERSION_ALPHA_CZ
+};
+
+const char MSG_FW_VERSION_BETA_EN[] PROGMEM = "You are using firmware beta version. This is development version. Using this version is not recommended and may cause printer damage.";
+const char MSG_FW_VERSION_BETA_CZ[] PROGMEM = "Pouzivate beta verzi firmwaru. Jedna se o vyvojovou verzi. Pouzivani teto verze firmware neni doporuceno a muze zpusobit poskozeni tiskarny.";
+const char * const MSG_FW_VERSION_BETA_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FW_VERSION_BETA_EN,
+	MSG_FW_VERSION_BETA_CZ
+};
+
+const char MSG_FW_VERSION_RC_EN[] PROGMEM = "This firmware version is release candidate. Some of the features may not work properly.";
+const char MSG_FW_VERSION_RC_CZ[] PROGMEM = "Tato verze firmware je release candidate. Nektere z funkci nemusi pracovat spolehlive.";
+const char * const MSG_FW_VERSION_RC_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FW_VERSION_RC_EN,
+	MSG_FW_VERSION_RC_CZ
+};
+
+const char MSG_FW_VERSION_UNKNOWN_EN[] PROGMEM = "WARNING: This is an unofficial, unsupported build. Use at your own risk!";
+const char MSG_FW_VERSION_UNKNOWN_CZ[] PROGMEM = "VAROVANI: Neznama, nepodporovana verze firmware. Pouziti na vlastni nebezpeci!";
+const char * const MSG_FW_VERSION_UNKNOWN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_FW_VERSION_UNKNOWN_EN,
+	MSG_FW_VERSION_UNKNOWN_CZ
+};
+
+const char MSG_HEATING_EN[] PROGMEM = "Heating";
+const char MSG_HEATING_CZ[] PROGMEM = "Zahrivani";
+const char * const MSG_HEATING_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_HEATING_EN,
+	MSG_HEATING_CZ
+};
+
+const char MSG_HEATING_COMPLETE_EN[] PROGMEM = "Heating done.";
+const char MSG_HEATING_COMPLETE_CZ[] PROGMEM = "Zahrivani OK.";
+const char * const MSG_HEATING_COMPLETE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_HEATING_COMPLETE_EN,
+	MSG_HEATING_COMPLETE_CZ
+};
+
+const char MSG_HOMEYZ_EN[] PROGMEM = "Calibrate Z";
+const char MSG_HOMEYZ_CZ[] PROGMEM = "Kalibrovat Z";
+const char * const MSG_HOMEYZ_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_HOMEYZ_EN,
+	MSG_HOMEYZ_CZ
+};
+
+const char MSG_HOMEYZ_DONE_EN[] PROGMEM = "Calibration done";
+const char MSG_HOMEYZ_DONE_CZ[] PROGMEM = "Kalibrace OK";
+const char * const MSG_HOMEYZ_DONE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_HOMEYZ_DONE_EN,
+	MSG_HOMEYZ_DONE_CZ
+};
+
+const char MSG_HOMEYZ_PROGRESS_EN[] PROGMEM = "Calibrating Z";
+const char MSG_HOMEYZ_PROGRESS_CZ[] PROGMEM = "Kalibruji Z";
+const char * const MSG_HOMEYZ_PROGRESS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_HOMEYZ_PROGRESS_EN,
+	MSG_HOMEYZ_PROGRESS_CZ
+};
+
+const char MSG_HOTEND_OFFSET_EN[] PROGMEM = "Hotend offsets:";
+const char * const MSG_HOTEND_OFFSET_LANG_TABLE[1] PROGMEM = {
+	MSG_HOTEND_OFFSET_EN
+};
+
+const char MSG_IMPROVE_BED_OFFSET_AND_SKEW_LINE1_EN[] PROGMEM = "Improving bed calibration point";
+const char MSG_IMPROVE_BED_OFFSET_AND_SKEW_LINE1_CZ[] PROGMEM = "Zlepsuji presnost kalibracniho bodu";
+const char * const MSG_IMPROVE_BED_OFFSET_AND_SKEW_LINE1_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_IMPROVE_BED_OFFSET_AND_SKEW_LINE1_EN,
+	MSG_IMPROVE_BED_OFFSET_AND_SKEW_LINE1_CZ
+};
+
+const char MSG_IMPROVE_BED_OFFSET_AND_SKEW_LINE2_EN[] PROGMEM = " of 4";
+const char MSG_IMPROVE_BED_OFFSET_AND_SKEW_LINE2_CZ[] PROGMEM = " z 4";
+const char * const MSG_IMPROVE_BED_OFFSET_AND_SKEW_LINE2_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_IMPROVE_BED_OFFSET_AND_SKEW_LINE2_EN,
+	MSG_IMPROVE_BED_OFFSET_AND_SKEW_LINE2_CZ
+};
+
+const char MSG_INFO_EXTRUDER_EN[] PROGMEM = "Extruder info";
+const char * const MSG_INFO_EXTRUDER_LANG_TABLE[1] PROGMEM = {
+	MSG_INFO_EXTRUDER_EN
+};
+
+const char MSG_INFO_FILAMENT_XDIFF_EN[] PROGMEM = "Fil. Xd:";
+const char * const MSG_INFO_FILAMENT_XDIFF_LANG_TABLE[1] PROGMEM = {
+	MSG_INFO_FILAMENT_XDIFF_EN
+};
+
+const char MSG_INFO_FILAMENT_YDIFF_EN[] PROGMEM = "Fil. Ydiff:";
+const char * const MSG_INFO_FILAMENT_YDIFF_LANG_TABLE[1] PROGMEM = {
+	MSG_INFO_FILAMENT_YDIFF_EN
+};
+
+const char MSG_INFO_NOZZLE_FAN_EN[] PROGMEM = "Nozzle FAN:";
+const char MSG_INFO_NOZZLE_FAN_CZ[] PROGMEM = "Trysk. vent:";
+const char * const MSG_INFO_NOZZLE_FAN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_INFO_NOZZLE_FAN_EN,
+	MSG_INFO_NOZZLE_FAN_CZ
+};
+
+const char MSG_INFO_PRINT_FAN_EN[] PROGMEM = "Print FAN: ";
+const char MSG_INFO_PRINT_FAN_CZ[] PROGMEM = "Tisk. vent:";
+const char * const MSG_INFO_PRINT_FAN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_INFO_PRINT_FAN_EN,
+	MSG_INFO_PRINT_FAN_CZ
+};
+
+const char MSG_INIT_SDCARD_EN[] PROGMEM = "Init. SD card";
+const char * const MSG_INIT_SDCARD_LANG_TABLE[1] PROGMEM = {
+	MSG_INIT_SDCARD_EN
+};
+
+const char MSG_INSERT_FILAMENT_EN[] PROGMEM = "Insert filament";
+const char MSG_INSERT_FILAMENT_CZ[] PROGMEM = "Vlozte filament";
+const char * const MSG_INSERT_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_INSERT_FILAMENT_EN,
+	MSG_INSERT_FILAMENT_CZ
+};
+
+const char MSG_INVALID_EXTRUDER_EN[] PROGMEM = "Invalid extruder";
+const char * const MSG_INVALID_EXTRUDER_LANG_TABLE[1] PROGMEM = {
+	MSG_INVALID_EXTRUDER_EN
+};
+
+const char MSG_KILLED_EN[] PROGMEM = "KILLED. ";
+const char * const MSG_KILLED_LANG_TABLE[1] PROGMEM = {
+	MSG_KILLED_EN
+};
+
+const char MSG_LANGUAGE_NAME_EN[] PROGMEM = "English";
+const char MSG_LANGUAGE_NAME_CZ[] PROGMEM = "Cestina";
+const char * const MSG_LANGUAGE_NAME_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LANGUAGE_NAME_EN,
+	MSG_LANGUAGE_NAME_CZ
+};
+
+const char MSG_LANGUAGE_SELECT_EN[] PROGMEM = "Select language";
+const char MSG_LANGUAGE_SELECT_CZ[] PROGMEM = "Vyber jazyka";
+const char * const MSG_LANGUAGE_SELECT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LANGUAGE_SELECT_EN,
+	MSG_LANGUAGE_SELECT_CZ
+};
+
+const char MSG_LEFT_EN[] PROGMEM = "Left:";
+const char MSG_LEFT_CZ[] PROGMEM = "Levy:";
+const char * const MSG_LEFT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LEFT_EN,
+	MSG_LEFT_CZ
+};
+
+const char MSG_LOADING_COLOR_EN[] PROGMEM = "Loading color";
+const char MSG_LOADING_COLOR_CZ[] PROGMEM = "Cisteni barvy";
+const char * const MSG_LOADING_COLOR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LOADING_COLOR_EN,
+	MSG_LOADING_COLOR_CZ
+};
+
+const char MSG_LOADING_FILAMENT_EN[] PROGMEM = "Loading filament";
+const char MSG_LOADING_FILAMENT_CZ[] PROGMEM = "Zavadeni filamentu";
+const char * const MSG_LOADING_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LOADING_FILAMENT_EN,
+	MSG_LOADING_FILAMENT_CZ
+};
+
+const char MSG_LOAD_ALL_EN[] PROGMEM = "Load all";
+const char MSG_LOAD_ALL_CZ[] PROGMEM = "Zavest vse";
+const char * const MSG_LOAD_ALL_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LOAD_ALL_EN,
+	MSG_LOAD_ALL_CZ
+};
+
+const char MSG_LOAD_EPROM_EN[] PROGMEM = "Load memory";
+const char * const MSG_LOAD_EPROM_LANG_TABLE[1] PROGMEM = {
+	MSG_LOAD_EPROM_EN
+};
+
+const char MSG_LOAD_FILAMENT_EN[] PROGMEM = "Load filament";
+const char MSG_LOAD_FILAMENT_CZ[] PROGMEM = "Zavest filament";
+const char * const MSG_LOAD_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LOAD_FILAMENT_EN,
+	MSG_LOAD_FILAMENT_CZ
+};
+
+const char MSG_LOAD_FILAMENT_1_EN[] PROGMEM = "Load filament 1";
+const char MSG_LOAD_FILAMENT_1_CZ[] PROGMEM = "Zavest filament 1";
+const char * const MSG_LOAD_FILAMENT_1_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LOAD_FILAMENT_1_EN,
+	MSG_LOAD_FILAMENT_1_CZ
+};
+
+const char MSG_LOAD_FILAMENT_2_EN[] PROGMEM = "Load filament 2";
+const char MSG_LOAD_FILAMENT_2_CZ[] PROGMEM = "Zavest filament 2";
+const char * const MSG_LOAD_FILAMENT_2_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LOAD_FILAMENT_2_EN,
+	MSG_LOAD_FILAMENT_2_CZ
+};
+
+const char MSG_LOAD_FILAMENT_3_EN[] PROGMEM = "Load filament 3";
+const char MSG_LOAD_FILAMENT_3_CZ[] PROGMEM = "Zavest filament 3";
+const char * const MSG_LOAD_FILAMENT_3_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LOAD_FILAMENT_3_EN,
+	MSG_LOAD_FILAMENT_3_CZ
+};
+
+const char MSG_LOAD_FILAMENT_4_EN[] PROGMEM = "Load filament 4";
+const char MSG_LOAD_FILAMENT_4_CZ[] PROGMEM = "Zavest filament 4";
+const char * const MSG_LOAD_FILAMENT_4_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LOAD_FILAMENT_4_EN,
+	MSG_LOAD_FILAMENT_4_CZ
+};
+
+const char MSG_LOOSE_PULLEY_EN[] PROGMEM = "Loose pulley";
+const char MSG_LOOSE_PULLEY_CZ[] PROGMEM = "Uvolnena remenicka";
+const char * const MSG_LOOSE_PULLEY_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_LOOSE_PULLEY_EN,
+	MSG_LOOSE_PULLEY_CZ
+};
+
+const char MSG_M104_INVALID_EXTRUDER_EN[] PROGMEM = "M104 Invalid extruder ";
+const char * const MSG_M104_INVALID_EXTRUDER_LANG_TABLE[1] PROGMEM = {
+	MSG_M104_INVALID_EXTRUDER_EN
+};
+
+const char MSG_M105_INVALID_EXTRUDER_EN[] PROGMEM = "M105 Invalid extruder ";
+const char * const MSG_M105_INVALID_EXTRUDER_LANG_TABLE[1] PROGMEM = {
+	MSG_M105_INVALID_EXTRUDER_EN
+};
+
+const char MSG_M109_INVALID_EXTRUDER_EN[] PROGMEM = "M109 Invalid extruder ";
+const char * const MSG_M109_INVALID_EXTRUDER_LANG_TABLE[1] PROGMEM = {
+	MSG_M109_INVALID_EXTRUDER_EN
+};
+
+const char MSG_M115_REPORT_EN[] PROGMEM = "FIRMWARE_NAME:Marlin V1.0.2; Sprinter/grbl mashup for gen6 FIRMWARE_URL:https://github.com/prusa3d/Prusa-i3-Plus/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:" CUSTOM_MENDEL_NAME " EXTRUDER_COUNT:1 UUID:00000000-0000-0000-0000-000000000000\n";
+const char * const MSG_M115_REPORT_LANG_TABLE[1] PROGMEM = {
+	MSG_M115_REPORT_EN
+};
+
+const char MSG_M117_V2_CALIBRATION_EN[] PROGMEM = "M117 First layer cal.";
+const char MSG_M117_V2_CALIBRATION_CZ[] PROGMEM = "M117 Kal. prvni vrstvy";
+const char * const MSG_M117_V2_CALIBRATION_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_M117_V2_CALIBRATION_EN,
+	MSG_M117_V2_CALIBRATION_CZ
+};
+
+const char MSG_M119_REPORT_EN[] PROGMEM = "Reporting endstop status";
+const char * const MSG_M119_REPORT_LANG_TABLE[1] PROGMEM = {
+	MSG_M119_REPORT_EN
+};
+
+const char MSG_M200_INVALID_EXTRUDER_EN[] PROGMEM = "M200 Invalid extruder ";
+const char * const MSG_M200_INVALID_EXTRUDER_LANG_TABLE[1] PROGMEM = {
+	MSG_M200_INVALID_EXTRUDER_EN
+};
+
+const char MSG_M218_INVALID_EXTRUDER_EN[] PROGMEM = "M218 Invalid extruder ";
+const char * const MSG_M218_INVALID_EXTRUDER_LANG_TABLE[1] PROGMEM = {
+	MSG_M218_INVALID_EXTRUDER_EN
+};
+
+const char MSG_M221_INVALID_EXTRUDER_EN[] PROGMEM = "M221 Invalid extruder ";
+const char * const MSG_M221_INVALID_EXTRUDER_LANG_TABLE[1] PROGMEM = {
+	MSG_M221_INVALID_EXTRUDER_EN
+};
+
+const char MSG_MAIN_EN[] PROGMEM = "Main";
+const char MSG_MAIN_CZ[] PROGMEM = "Hlavni nabidka";
+const char * const MSG_MAIN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MAIN_EN,
+	MSG_MAIN_CZ
+};
+
+const char MSG_MARK_FIL_EN[] PROGMEM = "Mark filament 100mm from extruder body. Click when done.";
+const char MSG_MARK_FIL_CZ[] PROGMEM = "Oznacte filament 100 mm od tela extruderu a po te potvrdte tlacitkem.";
+const char * const MSG_MARK_FIL_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MARK_FIL_EN,
+	MSG_MARK_FIL_CZ
+};
+
+const char MSG_MAX_EN[] PROGMEM = " \002 Max";
+const char * const MSG_MAX_LANG_TABLE[1] PROGMEM = {
+	MSG_MAX_EN
+};
+
+const char MSG_MEASURED_SKEW_EN[] PROGMEM = "Measured skew:";
+const char MSG_MEASURED_SKEW_CZ[] PROGMEM = "Merene zkoseni:";
+const char * const MSG_MEASURED_SKEW_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MEASURED_SKEW_EN,
+	MSG_MEASURED_SKEW_CZ
+};
+
+const char MSG_MEASURE_BED_REFERENCE_HEIGHT_LINE1_EN[] PROGMEM = "Measuring reference height of calibration point";
+const char MSG_MEASURE_BED_REFERENCE_HEIGHT_LINE1_CZ[] PROGMEM = "Merim referencni vysku kalibracniho bodu";
+const char * const MSG_MEASURE_BED_REFERENCE_HEIGHT_LINE1_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MEASURE_BED_REFERENCE_HEIGHT_LINE1_EN,
+	MSG_MEASURE_BED_REFERENCE_HEIGHT_LINE1_CZ
+};
+
+const char MSG_MEASURE_BED_REFERENCE_HEIGHT_LINE2_EN[] PROGMEM = " of 9";
+const char MSG_MEASURE_BED_REFERENCE_HEIGHT_LINE2_CZ[] PROGMEM = " z 9";
+const char * const MSG_MEASURE_BED_REFERENCE_HEIGHT_LINE2_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MEASURE_BED_REFERENCE_HEIGHT_LINE2_EN,
+	MSG_MEASURE_BED_REFERENCE_HEIGHT_LINE2_CZ
+};
+
+const char MSG_MENU_BELT_STATUS_EN[] PROGMEM = "Belt status";
+const char MSG_MENU_BELT_STATUS_CZ[] PROGMEM = "Stav remenu";
+const char * const MSG_MENU_BELT_STATUS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MENU_BELT_STATUS_EN,
+	MSG_MENU_BELT_STATUS_CZ
+};
+
+const char MSG_MENU_CALIBRATION_EN[] PROGMEM = "Calibration";
+const char MSG_MENU_CALIBRATION_CZ[] PROGMEM = "Kalibrace";
+const char * const MSG_MENU_CALIBRATION_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MENU_CALIBRATION_EN,
+	MSG_MENU_CALIBRATION_CZ
+};
+
+const char MSG_MENU_TEMPERATURES_EN[] PROGMEM = "Temperatures";
+const char MSG_MENU_TEMPERATURES_CZ[] PROGMEM = "Teploty";
+const char * const MSG_MENU_TEMPERATURES_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MENU_TEMPERATURES_EN,
+	MSG_MENU_TEMPERATURES_CZ
+};
+
+const char MSG_MENU_VOLTAGES_EN[] PROGMEM = "Voltages";
+const char MSG_MENU_VOLTAGES_CZ[] PROGMEM = "Napeti";
+const char * const MSG_MENU_VOLTAGES_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MENU_VOLTAGES_EN,
+	MSG_MENU_VOLTAGES_CZ
+};
+
+const char MSG_MESH_BED_LEVELING_EN[] PROGMEM = "Mesh Bed Leveling";
+const char * const MSG_MESH_BED_LEVELING_LANG_TABLE[1] PROGMEM = {
+	MSG_MESH_BED_LEVELING_EN
+};
+
+const char MSG_MIN_EN[] PROGMEM = " \002 Min";
+const char * const MSG_MIN_LANG_TABLE[1] PROGMEM = {
+	MSG_MIN_EN
+};
+
+const char MSG_MOTION_EN[] PROGMEM = "Motion";
+const char * const MSG_MOTION_LANG_TABLE[1] PROGMEM = {
+	MSG_MOTION_EN
+};
+
+const char MSG_MOVE_01MM_EN[] PROGMEM = "Move 0.1mm";
+const char * const MSG_MOVE_01MM_LANG_TABLE[1] PROGMEM = {
+	MSG_MOVE_01MM_EN
+};
+
+const char MSG_MOVE_10MM_EN[] PROGMEM = "Move 10mm";
+const char * const MSG_MOVE_10MM_LANG_TABLE[1] PROGMEM = {
+	MSG_MOVE_10MM_EN
+};
+
+const char MSG_MOVE_1MM_EN[] PROGMEM = "Move 1mm";
+const char * const MSG_MOVE_1MM_LANG_TABLE[1] PROGMEM = {
+	MSG_MOVE_1MM_EN
+};
+
+const char MSG_MOVE_AXIS_EN[] PROGMEM = "Move axis";
+const char MSG_MOVE_AXIS_CZ[] PROGMEM = "Posunout osu";
+const char * const MSG_MOVE_AXIS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MOVE_AXIS_EN,
+	MSG_MOVE_AXIS_CZ
+};
+
+const char MSG_MOVE_CARRIAGE_TO_THE_TOP_EN[] PROGMEM = "Calibrating XYZ. Rotate the knob to move the Z carriage up to the end stoppers. Click when done.";
+const char MSG_MOVE_CARRIAGE_TO_THE_TOP_CZ[] PROGMEM = "Kalibrace XYZ. Otacenim tlacitka posunte Z osu az k~hornimu dorazu. Potvrdte tlacitkem.";
+const char * const MSG_MOVE_CARRIAGE_TO_THE_TOP_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MOVE_CARRIAGE_TO_THE_TOP_EN,
+	MSG_MOVE_CARRIAGE_TO_THE_TOP_CZ
+};
+
+const char MSG_MOVE_CARRIAGE_TO_THE_TOP_Z_EN[] PROGMEM = "Calibrating Z. Rotate the knob to move the Z carriage up to the end stoppers. Click when done.";
+const char MSG_MOVE_CARRIAGE_TO_THE_TOP_Z_CZ[] PROGMEM = "Kalibrace Z. Otacenim tlacitka posunte Z osu az k~hornimu dorazu. Potvrdte tlacitkem.";
+const char * const MSG_MOVE_CARRIAGE_TO_THE_TOP_Z_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MOVE_CARRIAGE_TO_THE_TOP_Z_EN,
+	MSG_MOVE_CARRIAGE_TO_THE_TOP_Z_CZ
+};
+
+const char MSG_MOVE_E_EN[] PROGMEM = "Extruder";
+const char * const MSG_MOVE_E_LANG_TABLE[1] PROGMEM = {
+	MSG_MOVE_E_EN
+};
+
+const char MSG_MOVE_X_EN[] PROGMEM = "Move X";
+const char MSG_MOVE_X_CZ[] PROGMEM = "Posunout X";
+const char * const MSG_MOVE_X_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MOVE_X_EN,
+	MSG_MOVE_X_CZ
+};
+
+const char MSG_MOVE_Y_EN[] PROGMEM = "Move Y";
+const char MSG_MOVE_Y_CZ[] PROGMEM = "Posunout Y";
+const char * const MSG_MOVE_Y_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MOVE_Y_EN,
+	MSG_MOVE_Y_CZ
+};
+
+const char MSG_MOVE_Z_EN[] PROGMEM = "Move Z";
+const char MSG_MOVE_Z_CZ[] PROGMEM = "Posunout Z";
+const char * const MSG_MOVE_Z_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_MOVE_Z_EN,
+	MSG_MOVE_Z_CZ
+};
+
+const char MSG_NEW_FIRMWARE_AVAILABLE_EN[] PROGMEM = "New firmware version available:";
+const char MSG_NEW_FIRMWARE_AVAILABLE_CZ[] PROGMEM = "Vysla nova verze firmware:";
+const char * const MSG_NEW_FIRMWARE_AVAILABLE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_NEW_FIRMWARE_AVAILABLE_EN,
+	MSG_NEW_FIRMWARE_AVAILABLE_CZ
+};
+
+const char MSG_NEW_FIRMWARE_PLEASE_UPGRADE_EN[] PROGMEM = "Please upgrade.";
+const char MSG_NEW_FIRMWARE_PLEASE_UPGRADE_CZ[] PROGMEM = "Prosim aktualizujte.";
+const char * const MSG_NEW_FIRMWARE_PLEASE_UPGRADE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_NEW_FIRMWARE_PLEASE_UPGRADE_EN,
+	MSG_NEW_FIRMWARE_PLEASE_UPGRADE_CZ
+};
+
+const char MSG_NO_EN[] PROGMEM = "No";
+const char MSG_NO_CZ[] PROGMEM = "Ne";
+const char * const MSG_NO_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_NO_EN,
+	MSG_NO_CZ
+};
+
+const char MSG_NOT_COLOR_EN[] PROGMEM = "Color not correct";
+const char MSG_NOT_COLOR_CZ[] PROGMEM = "Barva neni cista";
+const char * const MSG_NOT_COLOR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_NOT_COLOR_EN,
+	MSG_NOT_COLOR_CZ
+};
+
+const char MSG_NOT_LOADED_EN[] PROGMEM = "Filament not loaded";
+const char MSG_NOT_LOADED_CZ[] PROGMEM = "Filament nezaveden";
+const char * const MSG_NOT_LOADED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_NOT_LOADED_EN,
+	MSG_NOT_LOADED_CZ
+};
+
+const char MSG_NOZZLE_EN[] PROGMEM = "Nozzle";
+const char MSG_NOZZLE_CZ[] PROGMEM = "Tryska";
+const char * const MSG_NOZZLE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_NOZZLE_EN,
+	MSG_NOZZLE_CZ
+};
+
+const char MSG_NOZZLE1_EN[] PROGMEM = "Nozzle2";
+const char * const MSG_NOZZLE1_LANG_TABLE[1] PROGMEM = {
+	MSG_NOZZLE1_EN
+};
+
+const char MSG_NOZZLE2_EN[] PROGMEM = "Nozzle3";
+const char * const MSG_NOZZLE2_LANG_TABLE[1] PROGMEM = {
+	MSG_NOZZLE2_EN
+};
+
+const char MSG_NO_CARD_EN[] PROGMEM = "No SD card";
+const char MSG_NO_CARD_CZ[] PROGMEM = "Zadna SD karta";
+const char * const MSG_NO_CARD_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_NO_CARD_EN,
+	MSG_NO_CARD_CZ
+};
+
+const char MSG_NO_MOVE_EN[] PROGMEM = "No move.";
+const char * const MSG_NO_MOVE_LANG_TABLE[1] PROGMEM = {
+	MSG_NO_MOVE_EN
+};
+
+const char MSG_OFF_EN[] PROGMEM = "Off";
+const char * const MSG_OFF_LANG_TABLE[1] PROGMEM = {
+	MSG_OFF_EN
+};
+
+const char MSG_OK_EN[] PROGMEM = "ok";
+const char * const MSG_OK_LANG_TABLE[1] PROGMEM = {
+	MSG_OK_EN
+};
+
+const char MSG_ON_EN[] PROGMEM = "On ";
+const char * const MSG_ON_LANG_TABLE[1] PROGMEM = {
+	MSG_ON_EN
+};
+
+const char MSG_PAPER_EN[] PROGMEM = "Place a sheet of paper under the nozzle during the calibration of first 4 points. If the nozzle catches the paper, power off the printer immediately.";
+const char MSG_PAPER_CZ[] PROGMEM = "Umistete list papiru na podlozku a udrzujte jej pod tryskou behem mereni prvnich 4 bodu. Pokud tryska zachyti papir, vypnete tiskarnu.";
+const char * const MSG_PAPER_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PAPER_EN,
+	MSG_PAPER_CZ
+};
+
+const char MSG_PAUSE_PRINT_EN[] PROGMEM = "Pause print";
+const char MSG_PAUSE_PRINT_CZ[] PROGMEM = "Pozastavit tisk";
+const char * const MSG_PAUSE_PRINT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PAUSE_PRINT_EN,
+	MSG_PAUSE_PRINT_CZ
+};
+
+const char MSG_PICK_Z_EN[] PROGMEM = "Pick print";
+const char MSG_PICK_Z_CZ[] PROGMEM = "Vyberte vytisk";
+const char * const MSG_PICK_Z_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PICK_Z_EN,
+	MSG_PICK_Z_CZ
+};
+
+const char MSG_PID_EXTRUDER_EN[] PROGMEM = "PID calibration";
+const char MSG_PID_EXTRUDER_CZ[] PROGMEM = "PID kalibrace";
+const char * const MSG_PID_EXTRUDER_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PID_EXTRUDER_EN,
+	MSG_PID_EXTRUDER_CZ
+};
+
+const char MSG_PID_FINISHED_EN[] PROGMEM = "PID cal. finished";
+const char MSG_PID_FINISHED_CZ[] PROGMEM = "PID kal. ukoncena";
+const char * const MSG_PID_FINISHED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PID_FINISHED_EN,
+	MSG_PID_FINISHED_CZ
+};
+
+const char MSG_PID_RUNNING_EN[] PROGMEM = "PID cal.           ";
+const char MSG_PID_RUNNING_CZ[] PROGMEM = "PID kal.           ";
+const char * const MSG_PID_RUNNING_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PID_RUNNING_EN,
+	MSG_PID_RUNNING_CZ
+};
+
+const char MSG_PINDA_NOT_CALIBRATED_EN[] PROGMEM = "Temperature calibration has not been run yet";
+const char MSG_PINDA_NOT_CALIBRATED_CZ[] PROGMEM = "Tiskarna nebyla teplotne zkalibrovana";
+const char * const MSG_PINDA_NOT_CALIBRATED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PINDA_NOT_CALIBRATED_EN,
+	MSG_PINDA_NOT_CALIBRATED_CZ
+};
+
+const char MSG_PINDA_PREHEAT_EN[] PROGMEM = "PINDA Heating";
+const char MSG_PINDA_PREHEAT_CZ[] PROGMEM = "Nahrivani PINDA";
+const char * const MSG_PINDA_PREHEAT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PINDA_PREHEAT_EN,
+	MSG_PINDA_PREHEAT_CZ
+};
+
+const char MSG_PLACE_STEEL_SHEET_EN[] PROGMEM = "Please place steel sheet on heatbed.";
+const char MSG_PLACE_STEEL_SHEET_CZ[] PROGMEM = "Umistete prosim tiskovy plat na heatbed";
+const char * const MSG_PLACE_STEEL_SHEET_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PLACE_STEEL_SHEET_EN,
+	MSG_PLACE_STEEL_SHEET_CZ
+};
+
+const char MSG_PLANNER_BUFFER_BYTES_EN[] PROGMEM = "  PlannerBufferBytes: ";
+const char * const MSG_PLANNER_BUFFER_BYTES_LANG_TABLE[1] PROGMEM = {
+	MSG_PLANNER_BUFFER_BYTES_EN
+};
+
+const char MSG_PLA_FILAMENT_LOADED_EN[] PROGMEM = "Is PLA filament loaded?";
+const char MSG_PLA_FILAMENT_LOADED_CZ[] PROGMEM = "Je PLA filament zaveden?";
+const char * const MSG_PLA_FILAMENT_LOADED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PLA_FILAMENT_LOADED_EN,
+	MSG_PLA_FILAMENT_LOADED_CZ
+};
+
+const char MSG_PLEASE_LOAD_PLA_EN[] PROGMEM = "Please load PLA filament first.";
+const char MSG_PLEASE_LOAD_PLA_CZ[] PROGMEM = "Nejdrive zavedte PLA filament prosim.";
+const char * const MSG_PLEASE_LOAD_PLA_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PLEASE_LOAD_PLA_EN,
+	MSG_PLEASE_LOAD_PLA_CZ
+};
+
+const char MSG_PLEASE_WAIT_EN[] PROGMEM = "Please wait";
+const char MSG_PLEASE_WAIT_CZ[] PROGMEM = "Prosim cekejte";
+const char * const MSG_PLEASE_WAIT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PLEASE_WAIT_EN,
+	MSG_PLEASE_WAIT_CZ
+};
+
+const char MSG_POSITION_UNKNOWN_EN[] PROGMEM = "Home X/Y before Z";
+const char * const MSG_POSITION_UNKNOWN_LANG_TABLE[1] PROGMEM = {
+	MSG_POSITION_UNKNOWN_EN
+};
+
+const char MSG_POWERUP_EN[] PROGMEM = "PowerUp";
+const char * const MSG_POWERUP_LANG_TABLE[1] PROGMEM = {
+	MSG_POWERUP_EN
+};
+
+const char MSG_PREHEAT_EN[] PROGMEM = "Preheat";
+const char MSG_PREHEAT_CZ[] PROGMEM = "Predehrev";
+const char * const MSG_PREHEAT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PREHEAT_EN,
+	MSG_PREHEAT_CZ
+};
+
+const char MSG_PREHEAT_NOZZLE_EN[] PROGMEM = "Preheat the nozzle!";
+const char MSG_PREHEAT_NOZZLE_CZ[] PROGMEM = "Predehrejte trysku!";
+const char * const MSG_PREHEAT_NOZZLE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PREHEAT_NOZZLE_EN,
+	MSG_PREHEAT_NOZZLE_CZ
+};
+
+const char MSG_PREPARE_FILAMENT_EN[] PROGMEM = "Prepare new filament";
+const char MSG_PREPARE_FILAMENT_CZ[] PROGMEM = "Pripravte filament";
+const char * const MSG_PREPARE_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PREPARE_FILAMENT_EN,
+	MSG_PREPARE_FILAMENT_CZ
+};
+
+const char MSG_PRESS_EN[] PROGMEM = "and press the knob";
+const char MSG_PRESS_CZ[] PROGMEM = "a stisknete tlacitko";
+const char * const MSG_PRESS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PRESS_EN,
+	MSG_PRESS_CZ
+};
+
+const char MSG_PRESS_TO_PREHEAT_EN[] PROGMEM = "Press knob to preheat nozzle and continue.";
+const char MSG_PRESS_TO_PREHEAT_CZ[] PROGMEM = "Pro nahrati trysky a pokracovani stisknete tlacitko.";
+const char * const MSG_PRESS_TO_PREHEAT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PRESS_TO_PREHEAT_EN,
+	MSG_PRESS_TO_PREHEAT_CZ
+};
+
+const char MSG_PRESS_TO_UNLOAD_EN[] PROGMEM = "Please press the knob to unload filament";
+const char MSG_PRESS_TO_UNLOAD_CZ[] PROGMEM = "Pro vysunuti filamentu stisknete prosim tlacitko";
+const char * const MSG_PRESS_TO_UNLOAD_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PRESS_TO_UNLOAD_EN,
+	MSG_PRESS_TO_UNLOAD_CZ
+};
+
+const char MSG_PRINTER_DISCONNECTED_EN[] PROGMEM = "Printer disconnected";
+const char * const MSG_PRINTER_DISCONNECTED_LANG_TABLE[1] PROGMEM = {
+	MSG_PRINTER_DISCONNECTED_EN
+};
+
+const char MSG_PRINT_ABORTED_EN[] PROGMEM = "Print aborted";
+const char MSG_PRINT_ABORTED_CZ[] PROGMEM = "Tisk prerusen";
+const char * const MSG_PRINT_ABORTED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PRINT_ABORTED_EN,
+	MSG_PRINT_ABORTED_CZ
+};
+
+const char MSG_PRINT_PAUSED_EN[] PROGMEM = "Print paused";
+const char MSG_PRINT_PAUSED_CZ[] PROGMEM = "Tisk pozastaven";
+const char * const MSG_PRINT_PAUSED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PRINT_PAUSED_EN,
+	MSG_PRINT_PAUSED_CZ
+};
+
+const char MSG_PRUSA3D_EN[] PROGMEM = "prusa3d.com";
+const char MSG_PRUSA3D_CZ[] PROGMEM = "prusa3d.cz";
+const char * const MSG_PRUSA3D_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PRUSA3D_EN,
+	MSG_PRUSA3D_CZ
+};
+
+const char MSG_PRUSA3D_FORUM_EN[] PROGMEM = "forum.prusa3d.com";
+const char MSG_PRUSA3D_FORUM_CZ[] PROGMEM = "forum.prusa3d.cz";
+const char * const MSG_PRUSA3D_FORUM_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PRUSA3D_FORUM_EN,
+	MSG_PRUSA3D_FORUM_CZ
+};
+
+const char MSG_PRUSA3D_HOWTO_EN[] PROGMEM = "howto.prusa3d.com";
+const char MSG_PRUSA3D_HOWTO_CZ[] PROGMEM = "howto.prusa3d.cz";
+const char * const MSG_PRUSA3D_HOWTO_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PRUSA3D_HOWTO_EN,
+	MSG_PRUSA3D_HOWTO_CZ
+};
+
+const char MSG_PULL_OUT_FILAMENT_EN[] PROGMEM = "Please pull out filament immediately";
+const char MSG_PULL_OUT_FILAMENT_CZ[] PROGMEM = "Prosim vyjmete urychlene filament";
+const char * const MSG_PULL_OUT_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_PULL_OUT_FILAMENT_EN,
+	MSG_PULL_OUT_FILAMENT_CZ
+};
+
+const char MSG_REBOOT_EN[] PROGMEM = "Reboot the printer";
+const char MSG_REBOOT_CZ[] PROGMEM = "Restartujte tiskarnu";
+const char * const MSG_REBOOT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_REBOOT_EN,
+	MSG_REBOOT_CZ
+};
+
+const char MSG_RECOVERING_PRINT_EN[] PROGMEM = "Recovering print    ";
+const char MSG_RECOVERING_PRINT_CZ[] PROGMEM = "Obnovovani tisku    ";
+const char * const MSG_RECOVERING_PRINT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_RECOVERING_PRINT_EN,
+	MSG_RECOVERING_PRINT_CZ
+};
+
+const char MSG_RECOVER_PRINT_EN[] PROGMEM = "Blackout occurred. Recover print?";
+const char MSG_RECOVER_PRINT_CZ[] PROGMEM = "Detekovan vypadek proudu.Obnovit tisk?";
+const char * const MSG_RECOVER_PRINT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_RECOVER_PRINT_EN,
+	MSG_RECOVER_PRINT_CZ
+};
+
+const char MSG_RECTRACT_EN[] PROGMEM = "Rectract";
+const char * const MSG_RECTRACT_LANG_TABLE[1] PROGMEM = {
+	MSG_RECTRACT_EN
+};
+
+const char MSG_REFRESH_EN[] PROGMEM = "\xF8" "Refresh";
+const char * const MSG_REFRESH_LANG_TABLE[1] PROGMEM = {
+	MSG_REFRESH_EN
+};
+
+const char MSG_REMOVE_STEEL_SHEET_EN[] PROGMEM = "Please remove steel sheet from heatbed.";
+const char MSG_REMOVE_STEEL_SHEET_CZ[] PROGMEM = "Odstrante tiskovy plat z heatbed prosim.";
+const char * const MSG_REMOVE_STEEL_SHEET_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_REMOVE_STEEL_SHEET_EN,
+	MSG_REMOVE_STEEL_SHEET_CZ
+};
+
+const char MSG_RESEND_EN[] PROGMEM = "Resend: ";
+const char * const MSG_RESEND_LANG_TABLE[1] PROGMEM = {
+	MSG_RESEND_EN
+};
+
+const char MSG_RESET_CALIBRATE_E_EN[] PROGMEM = "Reset E Cal.";
+const char * const MSG_RESET_CALIBRATE_E_LANG_TABLE[1] PROGMEM = {
+	MSG_RESET_CALIBRATE_E_EN
+};
+
+const char MSG_RESTORE_FAILSAFE_EN[] PROGMEM = "Restore failsafe";
+const char * const MSG_RESTORE_FAILSAFE_LANG_TABLE[1] PROGMEM = {
+	MSG_RESTORE_FAILSAFE_EN
+};
+
+const char MSG_RESUME_PRINT_EN[] PROGMEM = "Resume print";
+const char MSG_RESUME_PRINT_CZ[] PROGMEM = "Pokracovat";
+const char * const MSG_RESUME_PRINT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_RESUME_PRINT_EN,
+	MSG_RESUME_PRINT_CZ
+};
+
+const char MSG_RESUMING_EN[] PROGMEM = "Resuming print";
+const char MSG_RESUMING_CZ[] PROGMEM = "Obnoveni tisku";
+const char * const MSG_RESUMING_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_RESUMING_EN,
+	MSG_RESUMING_CZ
+};
+
+const char MSG_RESUMING_PRINT_EN[] PROGMEM = "Resuming print";
+const char MSG_RESUMING_PRINT_CZ[] PROGMEM = "Obnovovani tisku";
+const char * const MSG_RESUMING_PRINT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_RESUMING_PRINT_EN,
+	MSG_RESUMING_PRINT_CZ
+};
+
+const char MSG_RIGHT_EN[] PROGMEM = "Right:";
+const char MSG_RIGHT_CZ[] PROGMEM = "Pravy:";
+const char * const MSG_RIGHT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_RIGHT_EN,
+	MSG_RIGHT_CZ
+};
+
+const char MSG_SD_CANT_ENTER_SUBDIR_EN[] PROGMEM = "Cannot enter subdir: ";
+const char * const MSG_SD_CANT_ENTER_SUBDIR_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_CANT_ENTER_SUBDIR_EN
+};
+
+const char MSG_SD_CANT_OPEN_SUBDIR_EN[] PROGMEM = "Cannot open subdir";
+const char * const MSG_SD_CANT_OPEN_SUBDIR_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_CANT_OPEN_SUBDIR_EN
+};
+
+const char MSG_SD_CARD_OK_EN[] PROGMEM = "SD card ok";
+const char * const MSG_SD_CARD_OK_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_CARD_OK_EN
+};
+
+const char MSG_SD_ERR_WRITE_TO_FILE_EN[] PROGMEM = "error writing to file";
+const char * const MSG_SD_ERR_WRITE_TO_FILE_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_ERR_WRITE_TO_FILE_EN
+};
+
+const char MSG_SD_FILE_OPENED_EN[] PROGMEM = "File opened: ";
+const char * const MSG_SD_FILE_OPENED_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_FILE_OPENED_EN
+};
+
+const char MSG_SD_FILE_SELECTED_EN[] PROGMEM = "File selected";
+const char * const MSG_SD_FILE_SELECTED_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_FILE_SELECTED_EN
+};
+
+const char MSG_SD_INIT_FAIL_EN[] PROGMEM = "SD init fail";
+const char * const MSG_SD_INIT_FAIL_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_INIT_FAIL_EN
+};
+
+const char MSG_SD_INSERTED_EN[] PROGMEM = "Card inserted";
+const char MSG_SD_INSERTED_CZ[] PROGMEM = "Karta vlozena";
+const char * const MSG_SD_INSERTED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SD_INSERTED_EN,
+	MSG_SD_INSERTED_CZ
+};
+
+const char MSG_SD_NOT_PRINTING_EN[] PROGMEM = "Not SD printing";
+const char * const MSG_SD_NOT_PRINTING_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_NOT_PRINTING_EN
+};
+
+const char MSG_SD_OPENROOT_FAIL_EN[] PROGMEM = "openRoot failed";
+const char * const MSG_SD_OPENROOT_FAIL_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_OPENROOT_FAIL_EN
+};
+
+const char MSG_SD_OPEN_FILE_FAIL_EN[] PROGMEM = "open failed, File: ";
+const char * const MSG_SD_OPEN_FILE_FAIL_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_OPEN_FILE_FAIL_EN
+};
+
+const char MSG_SD_PRINTING_BYTE_EN[] PROGMEM = "SD printing byte ";
+const char * const MSG_SD_PRINTING_BYTE_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_PRINTING_BYTE_EN
+};
+
+const char MSG_SD_REMOVED_EN[] PROGMEM = "Card removed";
+const char MSG_SD_REMOVED_CZ[] PROGMEM = "Karta vyjmuta";
+const char * const MSG_SD_REMOVED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SD_REMOVED_EN,
+	MSG_SD_REMOVED_CZ
+};
+
+const char MSG_SD_SIZE_EN[] PROGMEM = " Size: ";
+const char * const MSG_SD_SIZE_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_SIZE_EN
+};
+
+const char MSG_SD_VOL_INIT_FAIL_EN[] PROGMEM = "volume.init failed";
+const char * const MSG_SD_VOL_INIT_FAIL_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_VOL_INIT_FAIL_EN
+};
+
+const char MSG_SD_WORKDIR_FAIL_EN[] PROGMEM = "workDir open failed";
+const char * const MSG_SD_WORKDIR_FAIL_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_WORKDIR_FAIL_EN
+};
+
+const char MSG_SD_WRITE_TO_FILE_EN[] PROGMEM = "Writing to file: ";
+const char * const MSG_SD_WRITE_TO_FILE_LANG_TABLE[1] PROGMEM = {
+	MSG_SD_WRITE_TO_FILE_EN
+};
+
+const char MSG_SECOND_SERIAL_OFF_EN[] PROGMEM = "RPi port    [off]";
+const char MSG_SECOND_SERIAL_OFF_CZ[] PROGMEM = "RPi port    [vyp]";
+const char * const MSG_SECOND_SERIAL_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SECOND_SERIAL_OFF_EN,
+	MSG_SECOND_SERIAL_OFF_CZ
+};
+
+const char MSG_SECOND_SERIAL_ON_EN[] PROGMEM = "RPi port     [on]";
+const char MSG_SECOND_SERIAL_ON_CZ[] PROGMEM = "RPi port    [zap]";
+const char * const MSG_SECOND_SERIAL_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SECOND_SERIAL_ON_EN,
+	MSG_SECOND_SERIAL_ON_CZ
+};
+
+const char MSG_SELFTEST_EN[] PROGMEM = "Selftest         ";
+const char * const MSG_SELFTEST_LANG_TABLE[1] PROGMEM = {
+	MSG_SELFTEST_EN
+};
+
+const char MSG_SELFTEST_AXIS_EN[] PROGMEM = "Axis";
+const char MSG_SELFTEST_AXIS_CZ[] PROGMEM = "Osa";
+const char * const MSG_SELFTEST_AXIS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_AXIS_EN,
+	MSG_SELFTEST_AXIS_CZ
+};
+
+const char MSG_SELFTEST_AXIS_LENGTH_EN[] PROGMEM = "Axis length";
+const char MSG_SELFTEST_AXIS_LENGTH_CZ[] PROGMEM = "Delka osy";
+const char * const MSG_SELFTEST_AXIS_LENGTH_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_AXIS_LENGTH_EN,
+	MSG_SELFTEST_AXIS_LENGTH_CZ
+};
+
+const char MSG_SELFTEST_BEDHEATER_EN[] PROGMEM = "Bed / Heater";
+const char * const MSG_SELFTEST_BEDHEATER_LANG_TABLE[1] PROGMEM = {
+	MSG_SELFTEST_BEDHEATER_EN
+};
+
+const char MSG_SELFTEST_CHECK_ALLCORRECT_EN[] PROGMEM = "All correct      ";
+const char MSG_SELFTEST_CHECK_ALLCORRECT_CZ[] PROGMEM = "Vse OK           ";
+const char * const MSG_SELFTEST_CHECK_ALLCORRECT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_CHECK_ALLCORRECT_EN,
+	MSG_SELFTEST_CHECK_ALLCORRECT_CZ
+};
+
+const char MSG_SELFTEST_CHECK_BED_EN[] PROGMEM = "Checking bed     ";
+const char MSG_SELFTEST_CHECK_BED_CZ[] PROGMEM = "Kontrola bed     ";
+const char * const MSG_SELFTEST_CHECK_BED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_CHECK_BED_EN,
+	MSG_SELFTEST_CHECK_BED_CZ
+};
+
+const char MSG_SELFTEST_CHECK_ENDSTOPS_EN[] PROGMEM = "Checking endstops";
+const char MSG_SELFTEST_CHECK_ENDSTOPS_CZ[] PROGMEM = "Kontrola endstops";
+const char * const MSG_SELFTEST_CHECK_ENDSTOPS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_CHECK_ENDSTOPS_EN,
+	MSG_SELFTEST_CHECK_ENDSTOPS_CZ
+};
+
+const char MSG_SELFTEST_CHECK_FSENSOR_EN[] PROGMEM = "Checking sensors ";
+const char MSG_SELFTEST_CHECK_FSENSOR_CZ[] PROGMEM = "Kontrola senzoru";
+const char * const MSG_SELFTEST_CHECK_FSENSOR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_CHECK_FSENSOR_EN,
+	MSG_SELFTEST_CHECK_FSENSOR_CZ
+};
+
+const char MSG_SELFTEST_CHECK_HOTEND_EN[] PROGMEM = "Checking hotend  ";
+const char MSG_SELFTEST_CHECK_HOTEND_CZ[] PROGMEM = "Kontrola hotend  ";
+const char * const MSG_SELFTEST_CHECK_HOTEND_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_CHECK_HOTEND_EN,
+	MSG_SELFTEST_CHECK_HOTEND_CZ
+};
+
+const char MSG_SELFTEST_CHECK_X_EN[] PROGMEM = "Checking X axis  ";
+const char MSG_SELFTEST_CHECK_X_CZ[] PROGMEM = "Kontrola X axis  ";
+const char * const MSG_SELFTEST_CHECK_X_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_CHECK_X_EN,
+	MSG_SELFTEST_CHECK_X_CZ
+};
+
+const char MSG_SELFTEST_CHECK_Y_EN[] PROGMEM = "Checking Y axis  ";
+const char MSG_SELFTEST_CHECK_Y_CZ[] PROGMEM = "Kontrola Y axis  ";
+const char * const MSG_SELFTEST_CHECK_Y_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_CHECK_Y_EN,
+	MSG_SELFTEST_CHECK_Y_CZ
+};
+
+const char MSG_SELFTEST_CHECK_Z_EN[] PROGMEM = "Checking Z axis  ";
+const char MSG_SELFTEST_CHECK_Z_CZ[] PROGMEM = "Kontrola Z axis  ";
+const char * const MSG_SELFTEST_CHECK_Z_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_CHECK_Z_EN,
+	MSG_SELFTEST_CHECK_Z_CZ
+};
+
+const char MSG_SELFTEST_COOLING_FAN_EN[] PROGMEM = "Front print fan?";
+const char MSG_SELFTEST_COOLING_FAN_CZ[] PROGMEM = "Predni tiskovy vent?";
+const char * const MSG_SELFTEST_COOLING_FAN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_COOLING_FAN_EN,
+	MSG_SELFTEST_COOLING_FAN_CZ
+};
+
+const char MSG_SELFTEST_ENDSTOP_EN[] PROGMEM = "Endstop";
+const char * const MSG_SELFTEST_ENDSTOP_LANG_TABLE[1] PROGMEM = {
+	MSG_SELFTEST_ENDSTOP_EN
+};
+
+const char MSG_SELFTEST_ENDSTOPS_EN[] PROGMEM = "Endstops";
+const char * const MSG_SELFTEST_ENDSTOPS_LANG_TABLE[1] PROGMEM = {
+	MSG_SELFTEST_ENDSTOPS_EN
+};
+
+const char MSG_SELFTEST_ENDSTOP_NOTHIT_EN[] PROGMEM = "Endstop not hit";
+const char * const MSG_SELFTEST_ENDSTOP_NOTHIT_LANG_TABLE[1] PROGMEM = {
+	MSG_SELFTEST_ENDSTOP_NOTHIT_EN
+};
+
+const char MSG_SELFTEST_ERROR_EN[] PROGMEM = "Selftest error !";
+const char * const MSG_SELFTEST_ERROR_LANG_TABLE[1] PROGMEM = {
+	MSG_SELFTEST_ERROR_EN
+};
+
+const char MSG_SELFTEST_EXTRUDER_FAN_EN[] PROGMEM = "Left hotend fan?";
+const char MSG_SELFTEST_EXTRUDER_FAN_CZ[] PROGMEM = "Levy vent na trysce?";
+const char * const MSG_SELFTEST_EXTRUDER_FAN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_EXTRUDER_FAN_EN,
+	MSG_SELFTEST_EXTRUDER_FAN_CZ
+};
+
+const char MSG_SELFTEST_EXTRUDER_FAN_SPEED_EN[] PROGMEM = "Extruder fan:";
+const char MSG_SELFTEST_EXTRUDER_FAN_SPEED_CZ[] PROGMEM = "Levy vent.:";
+const char * const MSG_SELFTEST_EXTRUDER_FAN_SPEED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_EXTRUDER_FAN_SPEED_EN,
+	MSG_SELFTEST_EXTRUDER_FAN_SPEED_CZ
+};
+
+const char MSG_SELFTEST_FAILED_EN[] PROGMEM = "Selftest failed  ";
+const char MSG_SELFTEST_FAILED_CZ[] PROGMEM = "Selftest selhal  ";
+const char * const MSG_SELFTEST_FAILED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_FAILED_EN,
+	MSG_SELFTEST_FAILED_CZ
+};
+
+const char MSG_SELFTEST_FAN_EN[] PROGMEM = "Fan test";
+const char MSG_SELFTEST_FAN_CZ[] PROGMEM = "Test ventilatoru";
+const char * const MSG_SELFTEST_FAN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_FAN_EN,
+	MSG_SELFTEST_FAN_CZ
+};
+
+const char MSG_SELFTEST_FANS_EN[] PROGMEM = "Front/left fans";
+const char MSG_SELFTEST_FANS_CZ[] PROGMEM = "Predni/levy vent.";
+const char * const MSG_SELFTEST_FANS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_FANS_EN,
+	MSG_SELFTEST_FANS_CZ
+};
+
+const char MSG_SELFTEST_FAN_NO_EN[] PROGMEM = "Not spinning";
+const char MSG_SELFTEST_FAN_NO_CZ[] PROGMEM = "Netoci se";
+const char * const MSG_SELFTEST_FAN_NO_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_FAN_NO_EN,
+	MSG_SELFTEST_FAN_NO_CZ
+};
+
+const char MSG_SELFTEST_FAN_YES_EN[] PROGMEM = "Spinning";
+const char MSG_SELFTEST_FAN_YES_CZ[] PROGMEM = "Toci se";
+const char * const MSG_SELFTEST_FAN_YES_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_FAN_YES_EN,
+	MSG_SELFTEST_FAN_YES_CZ
+};
+
+const char MSG_SELFTEST_FILAMENT_SENSOR_EN[] PROGMEM = "Filament sensor:";
+const char MSG_SELFTEST_FILAMENT_SENSOR_CZ[] PROGMEM = "Senzor filamentu:";
+const char * const MSG_SELFTEST_FILAMENT_SENSOR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_FILAMENT_SENSOR_EN,
+	MSG_SELFTEST_FILAMENT_SENSOR_CZ
+};
+
+const char MSG_SELFTEST_HEATERTHERMISTOR_EN[] PROGMEM = "Heater/Thermistor";
+const char * const MSG_SELFTEST_HEATERTHERMISTOR_LANG_TABLE[1] PROGMEM = {
+	MSG_SELFTEST_HEATERTHERMISTOR_EN
+};
+
+const char MSG_SELFTEST_MOTOR_EN[] PROGMEM = "Motor";
+const char * const MSG_SELFTEST_MOTOR_LANG_TABLE[1] PROGMEM = {
+	MSG_SELFTEST_MOTOR_EN
+};
+
+const char MSG_SELFTEST_NOTCONNECTED_EN[] PROGMEM = "Not connected";
+const char MSG_SELFTEST_NOTCONNECTED_CZ[] PROGMEM = "Nezapojeno    ";
+const char * const MSG_SELFTEST_NOTCONNECTED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_NOTCONNECTED_EN,
+	MSG_SELFTEST_NOTCONNECTED_CZ
+};
+
+const char MSG_SELFTEST_OK_EN[] PROGMEM = "Self test OK";
+const char * const MSG_SELFTEST_OK_LANG_TABLE[1] PROGMEM = {
+	MSG_SELFTEST_OK_EN
+};
+
+const char MSG_SELFTEST_PLEASECHECK_EN[] PROGMEM = "Please check :";
+const char MSG_SELFTEST_PLEASECHECK_CZ[] PROGMEM = "Zkontrolujte :";
+const char * const MSG_SELFTEST_PLEASECHECK_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_PLEASECHECK_EN,
+	MSG_SELFTEST_PLEASECHECK_CZ
+};
+
+const char MSG_SELFTEST_PRINT_FAN_SPEED_EN[] PROGMEM = "Print fan:";
+const char MSG_SELFTEST_PRINT_FAN_SPEED_CZ[] PROGMEM = "Tiskovy vent.:";
+const char * const MSG_SELFTEST_PRINT_FAN_SPEED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_PRINT_FAN_SPEED_EN,
+	MSG_SELFTEST_PRINT_FAN_SPEED_CZ
+};
+
+const char MSG_SELFTEST_START_EN[] PROGMEM = "Self test start  ";
+const char * const MSG_SELFTEST_START_LANG_TABLE[1] PROGMEM = {
+	MSG_SELFTEST_START_EN
+};
+
+const char MSG_SELFTEST_SWAPPED_EN[] PROGMEM = "Swapped";
+const char MSG_SELFTEST_SWAPPED_CZ[] PROGMEM = "Prohozene";
+const char * const MSG_SELFTEST_SWAPPED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_SWAPPED_EN,
+	MSG_SELFTEST_SWAPPED_CZ
+};
+
+const char MSG_SELFTEST_WIRINGERROR_EN[] PROGMEM = "Wiring error";
+const char MSG_SELFTEST_WIRINGERROR_CZ[] PROGMEM = "Chyba zapojeni";
+const char * const MSG_SELFTEST_WIRINGERROR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SELFTEST_WIRINGERROR_EN,
+	MSG_SELFTEST_WIRINGERROR_CZ
+};
+
+const char MSG_SERIAL_ERROR_MENU_STRUCTURE_EN[] PROGMEM = "Error in menu structure";
+const char * const MSG_SERIAL_ERROR_MENU_STRUCTURE_LANG_TABLE[1] PROGMEM = {
+	MSG_SERIAL_ERROR_MENU_STRUCTURE_EN
+};
+
+const char MSG_SETTINGS_EN[] PROGMEM = "Settings";
+const char MSG_SETTINGS_CZ[] PROGMEM = "Nastaveni";
+const char * const MSG_SETTINGS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SETTINGS_EN,
+	MSG_SETTINGS_CZ
+};
+
+const char MSG_SET_HOME_OFFSETS_EN[] PROGMEM = "Set home offsets";
+const char * const MSG_SET_HOME_OFFSETS_LANG_TABLE[1] PROGMEM = {
+	MSG_SET_HOME_OFFSETS_EN
+};
+
+const char MSG_SET_ORIGIN_EN[] PROGMEM = "Set origin";
+const char * const MSG_SET_ORIGIN_LANG_TABLE[1] PROGMEM = {
+	MSG_SET_ORIGIN_EN
+};
+
+const char MSG_SET_TEMPERATURE_EN[] PROGMEM = "Set temperature:";
+const char MSG_SET_TEMPERATURE_CZ[] PROGMEM = "Nastavte teplotu:";
+const char * const MSG_SET_TEMPERATURE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SET_TEMPERATURE_EN,
+	MSG_SET_TEMPERATURE_CZ
+};
+
+const char MSG_SEVERE_SKEW_EN[] PROGMEM = "Severe skew:";
+const char MSG_SEVERE_SKEW_CZ[] PROGMEM = "Tezke zkoseni:";
+const char * const MSG_SEVERE_SKEW_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SEVERE_SKEW_EN,
+	MSG_SEVERE_SKEW_CZ
+};
+
+const char MSG_SHOW_END_STOPS_EN[] PROGMEM = "Show end stops";
+const char MSG_SHOW_END_STOPS_CZ[] PROGMEM = "Stav konc. spin.";
+const char * const MSG_SHOW_END_STOPS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SHOW_END_STOPS_EN,
+	MSG_SHOW_END_STOPS_CZ
+};
+
+const char MSG_SILENT_MODE_OFF_EN[] PROGMEM = "Mode [high power]";
+const char MSG_SILENT_MODE_OFF_CZ[] PROGMEM = "Mod  [vys. vykon]";
+const char * const MSG_SILENT_MODE_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SILENT_MODE_OFF_EN,
+	MSG_SILENT_MODE_OFF_CZ
+};
+
+const char MSG_SILENT_MODE_ON_EN[] PROGMEM = "Mode     [silent]";
+const char MSG_SILENT_MODE_ON_CZ[] PROGMEM = "Mod       [tichy]";
+const char * const MSG_SILENT_MODE_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SILENT_MODE_ON_EN,
+	MSG_SILENT_MODE_ON_CZ
+};
+
+const char MSG_SLIGHT_SKEW_EN[] PROGMEM = "Slight skew:";
+const char MSG_SLIGHT_SKEW_CZ[] PROGMEM = "Lehke zkoseni:";
+const char * const MSG_SLIGHT_SKEW_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SLIGHT_SKEW_EN,
+	MSG_SLIGHT_SKEW_CZ
+};
+
+const char MSG_SOFTWARE_RESET_EN[] PROGMEM = " Software Reset";
+const char * const MSG_SOFTWARE_RESET_LANG_TABLE[1] PROGMEM = {
+	MSG_SOFTWARE_RESET_EN
+};
+
+const char MSG_SORTING_EN[] PROGMEM = "Sorting files";
+const char MSG_SORTING_CZ[] PROGMEM = "Trideni souboru";
+const char * const MSG_SORTING_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SORTING_EN,
+	MSG_SORTING_CZ
+};
+
+const char MSG_SORT_ALPHA_EN[] PROGMEM = "Sort:  [Alphabet]";
+const char MSG_SORT_ALPHA_CZ[] PROGMEM = "Trideni [Abeceda]";
+const char * const MSG_SORT_ALPHA_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SORT_ALPHA_EN,
+	MSG_SORT_ALPHA_CZ
+};
+
+const char MSG_SORT_NONE_EN[] PROGMEM = "Sort:      [None]";
+const char MSG_SORT_NONE_CZ[] PROGMEM = "Trideni   [Zadne]";
+const char * const MSG_SORT_NONE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SORT_NONE_EN,
+	MSG_SORT_NONE_CZ
+};
+
+const char MSG_SORT_TIME_EN[] PROGMEM = "Sort:      [Time]";
+const char MSG_SORT_TIME_CZ[] PROGMEM = "Trideni     [Cas]";
+const char * const MSG_SORT_TIME_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SORT_TIME_EN,
+	MSG_SORT_TIME_CZ
+};
+
+const char MSG_SPEED_EN[] PROGMEM = "Speed";
+const char MSG_SPEED_CZ[] PROGMEM = "Rychlost";
+const char * const MSG_SPEED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SPEED_EN,
+	MSG_SPEED_CZ
+};
+
+const char MSG_STACK_ERROR_EN[] PROGMEM = "Error - static memory has been overwritten";
+const char MSG_STACK_ERROR_CZ[] PROGMEM = "Chyba - Doslo k prepisu staticke pameti!";
+const char * const MSG_STACK_ERROR_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_STACK_ERROR_EN,
+	MSG_STACK_ERROR_CZ
+};
+
+const char MSG_STATISTICS_EN[] PROGMEM = "Statistics  ";
+const char MSG_STATISTICS_CZ[] PROGMEM = "Statistika  ";
+const char * const MSG_STATISTICS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_STATISTICS_EN,
+	MSG_STATISTICS_CZ
+};
+
+const char MSG_STATS_FILAMENTUSED_EN[] PROGMEM = "Filament used:  ";
+const char MSG_STATS_FILAMENTUSED_CZ[] PROGMEM = "Filament :  ";
+const char * const MSG_STATS_FILAMENTUSED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_STATS_FILAMENTUSED_EN,
+	MSG_STATS_FILAMENTUSED_CZ
+};
+
+const char MSG_STATS_PRINTTIME_EN[] PROGMEM = "Print time:  ";
+const char MSG_STATS_PRINTTIME_CZ[] PROGMEM = "Cas tisku :  ";
+const char * const MSG_STATS_PRINTTIME_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_STATS_PRINTTIME_EN,
+	MSG_STATS_PRINTTIME_CZ
+};
+
+const char MSG_STATS_TOTALFILAMENT_EN[] PROGMEM = "Total filament :";
+const char MSG_STATS_TOTALFILAMENT_CZ[] PROGMEM = "Filament celkem :";
+const char * const MSG_STATS_TOTALFILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_STATS_TOTALFILAMENT_EN,
+	MSG_STATS_TOTALFILAMENT_CZ
+};
+
+const char MSG_STATS_TOTALPRINTTIME_EN[] PROGMEM = "Total print time :";
+const char MSG_STATS_TOTALPRINTTIME_CZ[] PROGMEM = "Celkovy cas :";
+const char * const MSG_STATS_TOTALPRINTTIME_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_STATS_TOTALPRINTTIME_EN,
+	MSG_STATS_TOTALPRINTTIME_CZ
+};
+
+const char MSG_STEEL_SHEET_CHECK_EN[] PROGMEM = "Is steel sheet on heatbed?";
+const char MSG_STEEL_SHEET_CHECK_CZ[] PROGMEM = "Je tiskovy plat na heatbed?";
+const char * const MSG_STEEL_SHEET_CHECK_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_STEEL_SHEET_CHECK_EN,
+	MSG_STEEL_SHEET_CHECK_CZ
+};
+
+const char MSG_STEPPER_TIMER_OVERFLOW_ERROR_EN[] PROGMEM = "Error - stepper timer overflow";
+const char * const MSG_STEPPER_TIMER_OVERFLOW_ERROR_LANG_TABLE[1] PROGMEM = {
+	MSG_STEPPER_TIMER_OVERFLOW_ERROR_EN
+};
+
+const char MSG_STEPPER_TOO_HIGH_EN[] PROGMEM = "Steprate too high: ";
+const char * const MSG_STEPPER_TOO_HIGH_LANG_TABLE[1] PROGMEM = {
+	MSG_STEPPER_TOO_HIGH_EN
+};
+
+const char MSG_STOPPED_EN[] PROGMEM = "STOPPED. ";
+const char * const MSG_STOPPED_LANG_TABLE[1] PROGMEM = {
+	MSG_STOPPED_EN
+};
+
+const char MSG_STOP_PRINT_EN[] PROGMEM = "Stop print";
+const char MSG_STOP_PRINT_CZ[] PROGMEM = "Zastavit tisk";
+const char * const MSG_STOP_PRINT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_STOP_PRINT_EN,
+	MSG_STOP_PRINT_CZ
+};
+
+const char MSG_STORE_EPROM_EN[] PROGMEM = "Store memory";
+const char * const MSG_STORE_EPROM_LANG_TABLE[1] PROGMEM = {
+	MSG_STORE_EPROM_EN
+};
+
+const char MSG_SUPPORT_EN[] PROGMEM = "Support";
+const char MSG_SUPPORT_CZ[] PROGMEM = "Podpora";
+const char * const MSG_SUPPORT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SUPPORT_EN,
+	MSG_SUPPORT_CZ
+};
+
+const char MSG_SWITCH_PS_OFF_EN[] PROGMEM = "Switch power off";
+const char MSG_SWITCH_PS_OFF_CZ[] PROGMEM = "Zapnout zdroj";
+const char * const MSG_SWITCH_PS_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SWITCH_PS_OFF_EN,
+	MSG_SWITCH_PS_OFF_CZ
+};
+
+const char MSG_SWITCH_PS_ON_EN[] PROGMEM = "Switch power on";
+const char MSG_SWITCH_PS_ON_CZ[] PROGMEM = "Vypnout zdroj";
+const char * const MSG_SWITCH_PS_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_SWITCH_PS_ON_EN,
+	MSG_SWITCH_PS_ON_CZ
+};
+
+const char MSG_TAKE_EFFECT_EN[] PROGMEM = " for take effect";
+const char MSG_TAKE_EFFECT_CZ[] PROGMEM = " pro projeveni zmen";
+const char * const MSG_TAKE_EFFECT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_TAKE_EFFECT_EN,
+	MSG_TAKE_EFFECT_CZ
+};
+
+const char MSG_TEMPERATURE_EN[] PROGMEM = "Temperature";
+const char MSG_TEMPERATURE_CZ[] PROGMEM = "Teplota";
+const char * const MSG_TEMPERATURE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_TEMPERATURE_EN,
+	MSG_TEMPERATURE_CZ
+};
+
+const char MSG_TEMP_CALIBRATION_EN[] PROGMEM = "Temp. cal.          ";
+const char MSG_TEMP_CALIBRATION_CZ[] PROGMEM = "Tepl. kal.          ";
+const char * const MSG_TEMP_CALIBRATION_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_TEMP_CALIBRATION_EN,
+	MSG_TEMP_CALIBRATION_CZ
+};
+
+const char MSG_TEMP_CALIBRATION_DONE_EN[] PROGMEM = "Temperature calibration is finished. Click to continue.";
+const char MSG_TEMP_CALIBRATION_DONE_CZ[] PROGMEM = "Teplotni kalibrace dokoncena. Pokracujte stiskem tlacitka.";
+const char * const MSG_TEMP_CALIBRATION_DONE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_TEMP_CALIBRATION_DONE_EN,
+	MSG_TEMP_CALIBRATION_DONE_CZ
+};
+
+const char MSG_TEMP_CALIBRATION_OFF_EN[] PROGMEM = "Temp. cal.  [off]";
+const char MSG_TEMP_CALIBRATION_OFF_CZ[] PROGMEM = "Tepl. kal.  [vyp]";
+const char * const MSG_TEMP_CALIBRATION_OFF_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_TEMP_CALIBRATION_OFF_EN,
+	MSG_TEMP_CALIBRATION_OFF_CZ
+};
+
+const char MSG_TEMP_CALIBRATION_ON_EN[] PROGMEM = "Temp. cal.   [on]";
+const char MSG_TEMP_CALIBRATION_ON_CZ[] PROGMEM = "Tepl. kal.  [zap]";
+const char * const MSG_TEMP_CALIBRATION_ON_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_TEMP_CALIBRATION_ON_EN,
+	MSG_TEMP_CALIBRATION_ON_CZ
+};
+
+const char MSG_TEMP_CAL_WARNING_EN[] PROGMEM = "Stable ambient temperature 21-26C is needed a rigid stand is required.";
+const char * const MSG_TEMP_CAL_WARNING_LANG_TABLE[1] PROGMEM = {
+	MSG_TEMP_CAL_WARNING_EN
+};
+
+const char MSG_TOSHIBA_FLASH_AIR_COMPATIBILITY_OFF_EN[] PROGMEM = "SD card  [normal]";
+const char * const MSG_TOSHIBA_FLASH_AIR_COMPATIBILITY_OFF_LANG_TABLE[1] PROGMEM = {
+	MSG_TOSHIBA_FLASH_AIR_COMPATIBILITY_OFF_EN
+};
+
+const char MSG_TOSHIBA_FLASH_AIR_COMPATIBILITY_ON_EN[] PROGMEM = "SD card [FlshAir]";
+const char * const MSG_TOSHIBA_FLASH_AIR_COMPATIBILITY_ON_LANG_TABLE[1] PROGMEM = {
+	MSG_TOSHIBA_FLASH_AIR_COMPATIBILITY_ON_EN
+};
+
+const char MSG_TUNE_EN[] PROGMEM = "Tune";
+const char MSG_TUNE_CZ[] PROGMEM = "Ladit";
+const char * const MSG_TUNE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_TUNE_EN,
+	MSG_TUNE_CZ
+};
+
+const char MSG_UNKNOWN_COMMAND_EN[] PROGMEM = "Unknown command: \"";
+const char * const MSG_UNKNOWN_COMMAND_LANG_TABLE[1] PROGMEM = {
+	MSG_UNKNOWN_COMMAND_EN
+};
+
+const char MSG_UNLOADING_FILAMENT_EN[] PROGMEM = "Unloading filament";
+const char MSG_UNLOADING_FILAMENT_CZ[] PROGMEM = "Vysouvam filament";
+const char * const MSG_UNLOADING_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_UNLOADING_FILAMENT_EN,
+	MSG_UNLOADING_FILAMENT_CZ
+};
+
+const char MSG_UNLOAD_ALL_EN[] PROGMEM = "Unload all";
+const char MSG_UNLOAD_ALL_CZ[] PROGMEM = "Vyjmout vse";
+const char * const MSG_UNLOAD_ALL_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_UNLOAD_ALL_EN,
+	MSG_UNLOAD_ALL_CZ
+};
+
+const char MSG_UNLOAD_FILAMENT_EN[] PROGMEM = "Unload filament";
+const char MSG_UNLOAD_FILAMENT_CZ[] PROGMEM = "Vyjmout filament";
+const char * const MSG_UNLOAD_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_UNLOAD_FILAMENT_EN,
+	MSG_UNLOAD_FILAMENT_CZ
+};
+
+const char MSG_UNLOAD_FILAMENT_1_EN[] PROGMEM = "Unload filament 1";
+const char MSG_UNLOAD_FILAMENT_1_CZ[] PROGMEM = "Vyjmout filam. 1";
+const char * const MSG_UNLOAD_FILAMENT_1_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_UNLOAD_FILAMENT_1_EN,
+	MSG_UNLOAD_FILAMENT_1_CZ
+};
+
+const char MSG_UNLOAD_FILAMENT_2_EN[] PROGMEM = "Unload filament 2";
+const char MSG_UNLOAD_FILAMENT_2_CZ[] PROGMEM = "Vyjmout filam. 2";
+const char * const MSG_UNLOAD_FILAMENT_2_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_UNLOAD_FILAMENT_2_EN,
+	MSG_UNLOAD_FILAMENT_2_CZ
+};
+
+const char MSG_UNLOAD_FILAMENT_3_EN[] PROGMEM = "Unload filament 3";
+const char MSG_UNLOAD_FILAMENT_3_CZ[] PROGMEM = "Vyjmout filam. 3";
+const char * const MSG_UNLOAD_FILAMENT_3_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_UNLOAD_FILAMENT_3_EN,
+	MSG_UNLOAD_FILAMENT_3_CZ
+};
+
+const char MSG_UNLOAD_FILAMENT_4_EN[] PROGMEM = "Unload filament 4";
+const char MSG_UNLOAD_FILAMENT_4_CZ[] PROGMEM = "Vyjmout filam. 4";
+const char * const MSG_UNLOAD_FILAMENT_4_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_UNLOAD_FILAMENT_4_EN,
+	MSG_UNLOAD_FILAMENT_4_CZ
+};
+
+const char MSG_UNLOAD_SUCCESSFUL_EN[] PROGMEM = "Was filament unload successful?";
+const char MSG_UNLOAD_SUCCESSFUL_CZ[] PROGMEM = "Bylo vysunuti filamentu uspesne?";
+const char * const MSG_UNLOAD_SUCCESSFUL_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_UNLOAD_SUCCESSFUL_EN,
+	MSG_UNLOAD_SUCCESSFUL_CZ
+};
+
+const char MSG_USB_PRINTING_EN[] PROGMEM = "USB printing  ";
+const char MSG_USB_PRINTING_CZ[] PROGMEM = "Tisk z USB  ";
+const char * const MSG_USB_PRINTING_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_USB_PRINTING_EN,
+	MSG_USB_PRINTING_CZ
+};
+
+const char MSG_USED_EN[] PROGMEM = "Used during print";
+const char MSG_USED_CZ[] PROGMEM = "Pouzite behem tisku";
+const char * const MSG_USED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_USED_EN,
+	MSG_USED_CZ
+};
+
+const char MSG_USERWAIT_EN[] PROGMEM = "Wait for user...";
+const char * const MSG_USERWAIT_LANG_TABLE[1] PROGMEM = {
+	MSG_USERWAIT_EN
+};
+
+const char MSG_V2_CALIBRATION_EN[] PROGMEM = "First layer cal.";
+const char MSG_V2_CALIBRATION_CZ[] PROGMEM = "Kal. prvni vrstvy";
+const char * const MSG_V2_CALIBRATION_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_V2_CALIBRATION_EN,
+	MSG_V2_CALIBRATION_CZ
+};
+
+const char MSG_VMIN_EN[] PROGMEM = "Vmin";
+const char * const MSG_VMIN_LANG_TABLE[1] PROGMEM = {
+	MSG_VMIN_EN
+};
+
+const char MSG_VOLUMETRIC_EN[] PROGMEM = "Filament";
+const char * const MSG_VOLUMETRIC_LANG_TABLE[1] PROGMEM = {
+	MSG_VOLUMETRIC_EN
+};
+
+const char MSG_VOLUMETRIC_ENABLED_EN[] PROGMEM = "E in mm3";
+const char * const MSG_VOLUMETRIC_ENABLED_LANG_TABLE[1] PROGMEM = {
+	MSG_VOLUMETRIC_ENABLED_EN
+};
+
+const char MSG_VTRAV_MIN_EN[] PROGMEM = "VTrav min";
+const char * const MSG_VTRAV_MIN_LANG_TABLE[1] PROGMEM = {
+	MSG_VTRAV_MIN_EN
+};
+
+const char MSG_WAITING_TEMP_EN[] PROGMEM = "Waiting for nozzle and bed cooling";
+const char MSG_WAITING_TEMP_CZ[] PROGMEM = "Cekani na zchladnuti trysky a podlozky.";
+const char * const MSG_WAITING_TEMP_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WAITING_TEMP_EN,
+	MSG_WAITING_TEMP_CZ
+};
+
+const char MSG_WATCH_EN[] PROGMEM = "Info screen";
+const char MSG_WATCH_CZ[] PROGMEM = "Informace";
+const char * const MSG_WATCH_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WATCH_EN,
+	MSG_WATCH_CZ
+};
+
+const char MSG_WATCHDOG_RESET_EN[] PROGMEM = " Watchdog Reset";
+const char * const MSG_WATCHDOG_RESET_LANG_TABLE[1] PROGMEM = {
+	MSG_WATCHDOG_RESET_EN
+};
+
+const char MSG_WIZARD_EN[] PROGMEM = "Wizard";
+const char * const MSG_WIZARD_LANG_TABLE[1] PROGMEM = {
+	MSG_WIZARD_EN
+};
+
+const char MSG_WIZARD_CALIBRATION_FAILED_EN[] PROGMEM = "Please check our handbook and fix the problem. Then resume the Wizard by rebooting the printer.";
+const char MSG_WIZARD_CALIBRATION_FAILED_CZ[] PROGMEM = "Prosim nahlednete do manualu a opravte problem. Po te obnovte Wizarda rebootovanim tiskarny.";
+const char * const MSG_WIZARD_CALIBRATION_FAILED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_CALIBRATION_FAILED_EN,
+	MSG_WIZARD_CALIBRATION_FAILED_CZ
+};
+
+const char MSG_WIZARD_CLEAN_HEATBED_EN[] PROGMEM = "Please clean heatbed and then press the knob.";
+const char MSG_WIZARD_CLEAN_HEATBED_CZ[] PROGMEM = "Prosim ocistete heatbed a stisknete tlacitko.";
+const char * const MSG_WIZARD_CLEAN_HEATBED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_CLEAN_HEATBED_EN,
+	MSG_WIZARD_CLEAN_HEATBED_CZ
+};
+
+const char MSG_WIZARD_DONE_EN[] PROGMEM = "All is done. Happy printing!";
+const char MSG_WIZARD_DONE_CZ[] PROGMEM = "Vse je hotovo.";
+const char * const MSG_WIZARD_DONE_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_DONE_EN,
+	MSG_WIZARD_DONE_CZ
+};
+
+const char MSG_WIZARD_FILAMENT_LOADED_EN[] PROGMEM = "Is filament loaded?";
+const char MSG_WIZARD_FILAMENT_LOADED_CZ[] PROGMEM = "Je filament zaveden?";
+const char * const MSG_WIZARD_FILAMENT_LOADED_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_FILAMENT_LOADED_EN,
+	MSG_WIZARD_FILAMENT_LOADED_CZ
+};
+
+const char MSG_WIZARD_HEATING_EN[] PROGMEM = "Preheating nozzle. Please wait.";
+const char MSG_WIZARD_HEATING_CZ[] PROGMEM = "Predehrivam trysku. Prosim cekejte.";
+const char * const MSG_WIZARD_HEATING_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_HEATING_EN,
+	MSG_WIZARD_HEATING_CZ
+};
+
+const char MSG_WIZARD_INSERT_CORRECT_FILAMENT_EN[] PROGMEM = "Please load PLA filament and then resume Wizard by rebooting the printer.";
+const char MSG_WIZARD_INSERT_CORRECT_FILAMENT_CZ[] PROGMEM = "Prosim zavedte PLA filament a po te obnovte Wizarda stisknutim reset tlacitka.";
+const char * const MSG_WIZARD_INSERT_CORRECT_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_INSERT_CORRECT_FILAMENT_EN,
+	MSG_WIZARD_INSERT_CORRECT_FILAMENT_CZ
+};
+
+const char MSG_WIZARD_LOAD_FILAMENT_EN[] PROGMEM = "Please insert PLA filament to the extruder, then press knob to load it.";
+const char MSG_WIZARD_LOAD_FILAMENT_CZ[] PROGMEM = "Prosim vlozte PLA filament do extruderu, po te stisknete tlacitko pro zavedeni filamentu.";
+const char * const MSG_WIZARD_LOAD_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_LOAD_FILAMENT_EN,
+	MSG_WIZARD_LOAD_FILAMENT_CZ
+};
+
+const char MSG_WIZARD_PLA_FILAMENT_EN[] PROGMEM = "Is it PLA filament?";
+const char MSG_WIZARD_PLA_FILAMENT_CZ[] PROGMEM = "Je to PLA filament?";
+const char * const MSG_WIZARD_PLA_FILAMENT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_PLA_FILAMENT_EN,
+	MSG_WIZARD_PLA_FILAMENT_CZ
+};
+
+const char MSG_WIZARD_QUIT_EN[] PROGMEM = "You can always resume the Wizard from Calibration -> Wizard.";
+const char MSG_WIZARD_QUIT_CZ[] PROGMEM = "Wizarda muzete kdykoliv znovu spustit z menu Calibration -> Wizard";
+const char * const MSG_WIZARD_QUIT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_QUIT_EN,
+	MSG_WIZARD_QUIT_CZ
+};
+
+const char MSG_WIZARD_REPEAT_V2_CAL_EN[] PROGMEM = "Do you want to repeat last step to readjust distance between nozzle and heatbed?";
+const char MSG_WIZARD_REPEAT_V2_CAL_CZ[] PROGMEM = "Chcete opakovat posledni krok a pozmenit vzdalenost mezi tryskou a heatbed?";
+const char * const MSG_WIZARD_REPEAT_V2_CAL_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_REPEAT_V2_CAL_EN,
+	MSG_WIZARD_REPEAT_V2_CAL_CZ
+};
+
+const char MSG_WIZARD_RERUN_EN[] PROGMEM = "Running Wizard will delete current calibration results and start from the beginning. Continue?";
+const char MSG_WIZARD_RERUN_CZ[] PROGMEM = "Spusteni Wizarda vymaze ulozene vysledky vsech kalibraci a spusti kalibracni proces od zacatku. Pokracovat?";
+const char * const MSG_WIZARD_RERUN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_RERUN_EN,
+	MSG_WIZARD_RERUN_CZ
+};
+
+const char MSG_WIZARD_SELFTEST_EN[] PROGMEM = "First, I will run the selftest to check most common assembly problems.";
+const char MSG_WIZARD_SELFTEST_CZ[] PROGMEM = "Nejdriv pomoci selftestu zkontoluji nejcastejsi chyby vznikajici pri sestaveni tiskarny.";
+const char * const MSG_WIZARD_SELFTEST_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_SELFTEST_EN,
+	MSG_WIZARD_SELFTEST_CZ
+};
+
+const char MSG_WIZARD_V2_CAL_EN[] PROGMEM = "Now I will calibrate distance between tip of the nozzle and heatbed surface.";
+const char MSG_WIZARD_V2_CAL_CZ[] PROGMEM = "Nyni zkalibruji vzdalenost mezi koncem trysky a povrchem heatbedu.";
+const char * const MSG_WIZARD_V2_CAL_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_V2_CAL_EN,
+	MSG_WIZARD_V2_CAL_CZ
+};
+
+const char MSG_WIZARD_V2_CAL_2_EN[] PROGMEM = "I will start to print line and you will gradually lower the nozzle by rotating the knob, until you reach optimal height. Check the pictures in our handbook in chapter Calibration.";
+const char MSG_WIZARD_V2_CAL_2_CZ[] PROGMEM = "Zacnu tisknout linku a Vy budete postupne snizovat trysku otacenim tlacitka dokud nedosahnete optimalni vysky. Prohlednete si obrazky v nasi prirucce v kapitole Kalibrace";
+const char * const MSG_WIZARD_V2_CAL_2_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_V2_CAL_2_EN,
+	MSG_WIZARD_V2_CAL_2_CZ
+};
+
+const char MSG_WIZARD_WELCOME_EN[] PROGMEM = "Hi, I am your Original Prusa i3 printer. Would you like me to guide you through the setup process?";
+const char MSG_WIZARD_WELCOME_CZ[] PROGMEM = "Dobry den, jsem vase tiskarna Original Prusa i3. Chcete abych Vas provedla kalibracnim procesem?";
+const char * const MSG_WIZARD_WELCOME_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_WELCOME_EN,
+	MSG_WIZARD_WELCOME_CZ
+};
+
+const char MSG_WIZARD_WILL_PREHEAT_EN[] PROGMEM = "Now I will preheat nozzle for PLA.";
+const char MSG_WIZARD_WILL_PREHEAT_CZ[] PROGMEM = "Nyni predehreji trysku pro PLA.";
+const char * const MSG_WIZARD_WILL_PREHEAT_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_WILL_PREHEAT_EN,
+	MSG_WIZARD_WILL_PREHEAT_CZ
+};
+
+const char MSG_WIZARD_XYZ_CAL_EN[] PROGMEM = "I will run xyz calibration now. It will take approx. 12 mins.";
+const char MSG_WIZARD_XYZ_CAL_CZ[] PROGMEM = "Nyni provedu xyz kalibraci. Zabere to priblizne 12 min.";
+const char * const MSG_WIZARD_XYZ_CAL_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_XYZ_CAL_EN,
+	MSG_WIZARD_XYZ_CAL_CZ
+};
+
+const char MSG_WIZARD_Z_CAL_EN[] PROGMEM = "I will run z calibration now.";
+const char MSG_WIZARD_Z_CAL_CZ[] PROGMEM = "Nyni provedu z kalibraci.";
+const char * const MSG_WIZARD_Z_CAL_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_WIZARD_Z_CAL_EN,
+	MSG_WIZARD_Z_CAL_CZ
+};
+
+const char MSG_XYZ_DETAILS_EN[] PROGMEM = "XYZ cal. details";
+const char MSG_XYZ_DETAILS_CZ[] PROGMEM = "Detaily XYZ kal.";
+const char * const MSG_XYZ_DETAILS_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_XYZ_DETAILS_EN,
+	MSG_XYZ_DETAILS_CZ
+};
+
+const char MSG_X_MAX_EN[] PROGMEM = "x_max: ";
+const char * const MSG_X_MAX_LANG_TABLE[1] PROGMEM = {
+	MSG_X_MAX_EN
+};
+
+const char MSG_X_MIN_EN[] PROGMEM = "x_min: ";
+const char * const MSG_X_MIN_LANG_TABLE[1] PROGMEM = {
+	MSG_X_MIN_EN
+};
+
+const char MSG_YES_EN[] PROGMEM = "Yes";
+const char MSG_YES_CZ[] PROGMEM = "Ano";
+const char * const MSG_YES_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_YES_EN,
+	MSG_YES_CZ
+};
+
+const char MSG_Y_DISTANCE_FROM_MIN_EN[] PROGMEM = "Y distance from min:";
+const char MSG_Y_DISTANCE_FROM_MIN_CZ[] PROGMEM = "Y vzdalenost od min:";
+const char * const MSG_Y_DISTANCE_FROM_MIN_LANG_TABLE[LANG_NUM] PROGMEM = {
+	MSG_Y_DISTANCE_FROM_MIN_EN,
+	MSG_Y_DISTANCE_FROM_MIN_CZ
+};
+
+const char MSG_Y_MAX_EN[] PROGMEM = "y_max: ";
+const char * const MSG_Y_MAX_LANG_TABLE[1] PROGMEM = {
+	MSG_Y_MAX_EN
+};
+
+const char MSG_Y_MIN_EN[] PROGMEM = "y_min: ";
+const char * const MSG_Y_MIN_LANG_TABLE[1] PROGMEM = {
+	MSG_Y_MIN_EN
+};
+
+const char MSG_ZPROBE_OUT_EN[] PROGMEM = "Z probe out. bed";
+const char * const MSG_ZPROBE_OUT_LANG_TABLE[1] PROGMEM = {
+	MSG_ZPROBE_OUT_EN
+};
+
+const char MSG_ZPROBE_ZOFFSET_EN[] PROGMEM = "Z Offset";
+const char * const MSG_ZPROBE_ZOFFSET_LANG_TABLE[1] PROGMEM = {
+	MSG_ZPROBE_ZOFFSET_EN
+};
+
+const char MSG_Z_MAX_EN[] PROGMEM = "z_max: ";
+const char * const MSG_Z_MAX_LANG_TABLE[1] PROGMEM = {
+	MSG_Z_MAX_EN
+};
+
+const char MSG_Z_MIN_EN[] PROGMEM = "z_min: ";
+const char * const MSG_Z_MIN_LANG_TABLE[1] PROGMEM = {
+	MSG_Z_MIN_EN
+};
+
+const char WELCOME_MSG_EN[] PROGMEM = CUSTOM_MENDEL_NAME " ready.";
+const char WELCOME_MSG_CZ[] PROGMEM = CUSTOM_MENDEL_NAME " ok";
+const char * const WELCOME_MSG_LANG_TABLE[LANG_NUM] PROGMEM = {
+	WELCOME_MSG_EN,
+	WELCOME_MSG_CZ
 };
 
 
-const char** MSG_ALL[] = {MSGEN,MSGCZ,MSGIT,MSGES,MSGPL};
 char langbuffer[LCD_WIDTH+1];
 char* CAT2(const char *s1,const char *s2) {
   unsigned char len=0;

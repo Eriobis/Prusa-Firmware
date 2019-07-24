@@ -319,9 +319,20 @@
 
 #endif
 
+* Rambo Pin Assignments 1.3
+******************************************************************/
 
+#if MOTHERBOARD == 200 //200 - orig 102
+#include "pins_Rambo_1_0.h"
+#endif //MOTHERBOARD == 200
 
+#if MOTHERBOARD == 203 //203 - orig 302
+#include "pins_Rambo_1_3.h"
+#endif //MOTHERBOARD == 203
 
+#if MOTHERBOARD == 310 //310 - new
+#include "pins_Einsy_1_0.h"
+#endif //MOTHERBOARD == 310
 
 #ifndef KNOWN_BOARD
 #error Unknown MOTHERBOARD value in configuration.h

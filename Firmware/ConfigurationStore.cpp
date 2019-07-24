@@ -5,14 +5,28 @@
 #include "ConfigurationStore.h"
 #include "Configuration_prusa.h"
 
+#ifdef MESH_BED_LEVELING
+#include "mesh_bed_leveling.h"
+#endif
+
 void _EEPROM_writeData(int &pos, uint8_t* value, uint8_t size)
 {
-    do
-    {
-        eeprom_write_byte((unsigned char*)pos, *value);
-        pos++;
-        value++;
-    }while(--size);
+	while (size--) {
+		uint8_t * const p = (uint8_t * const)pos;
+		uint8_t v = *value;
+		// EEPROM has only ~100,000 write cycles,
+		// so only write bytes that have changed!
+		if (v != eeprom_read_byte(p)) {
+			eeprom_write_byte(p, v);
+			if (eeprom_read_byte(p) != v) {
+				SERIAL_ECHOLNPGM("EEPROM Error");
+				return;
+			}
+		}
+		pos++;
+		value++;
+	};
+
 }
 #define EEPROM_WRITE_VAR(pos, value) _EEPROM_writeData(pos, (uint8_t*)&value, sizeof(value))
 void _EEPROM_readData(int &pos, uint8_t* value, uint8_t size)
@@ -26,26 +40,20 @@ void _EEPROM_readData(int &pos, uint8_t* value, uint8_t size)
 }
 #define EEPROM_READ_VAR(pos, value) _EEPROM_readData(pos, (uint8_t*)&value, sizeof(value))
 //======================================================================================
-
-
-
-
-#define EEPROM_OFFSET 100
-
-
+#define EEPROM_OFFSET 20
 // IMPORTANT:  Whenever there are changes made to the variables stored in EEPROM
 // in the functions below, also increment the version number. This makes sure that
 // the default values are used whenever there is a change to the data, to prevent
 // wrong data being written to the variables.
 // ALSO:  always make sure the variables in the Store and retrieve sections are in the same order.
 
-#define EEPROM_VERSION "V13"
+#define EEPROM_VERSION "V2"
 
 #ifdef EEPROM_SETTINGS
-void Config_StoreSettings() 
+void Config_StoreSettings(uint16_t offset, uint8_t level) 
 {
   char ver[4]= "000";
-  int i=EEPROM_OFFSET;
+  int i = offset;
   EEPROM_WRITE_VAR(i,ver); // invalidate data first 
   EEPROM_WRITE_VAR(i,axis_steps_per_unit);
   EEPROM_WRITE_VAR(i,max_feedrate);  
@@ -55,16 +63,11 @@ void Config_StoreSettings()
   EEPROM_WRITE_VAR(i,minimumfeedrate);
   EEPROM_WRITE_VAR(i,mintravelfeedrate);
   EEPROM_WRITE_VAR(i,minsegmenttime);
-  EEPROM_WRITE_VAR(i,max_xy_jerk);
-  EEPROM_WRITE_VAR(i,max_z_jerk);
-  EEPROM_WRITE_VAR(i,max_e_jerk);
+  EEPROM_WRITE_VAR(i,max_jerk[X_AXIS]);
+  EEPROM_WRITE_VAR(i,max_jerk[Y_AXIS]);
+  EEPROM_WRITE_VAR(i,max_jerk[Z_AXIS]);
+  EEPROM_WRITE_VAR(i,max_jerk[E_AXIS]);
   EEPROM_WRITE_VAR(i,add_homing);
-  #ifdef DELTA
-  EEPROM_WRITE_VAR(i,endstop_adj);
-  EEPROM_WRITE_VAR(i,delta_radius);
-  EEPROM_WRITE_VAR(i,delta_diagonal_rod);
-  EEPROM_WRITE_VAR(i,delta_segments_per_second);
-  #endif
   #ifndef ULTIPANEL
   int plaPreheatHotendTemp = PLA_PREHEAT_HOTEND_TEMP, plaPreheatHPBTemp = PLA_PREHEAT_HPB_TEMP, plaPreheatFanSpeed = PLA_PREHEAT_FAN_SPEED;
   int absPreheatHotendTemp = ABS_PREHEAT_HOTEND_TEMP, absPreheatHPBTemp = ABS_PREHEAT_HPB_TEMP, absPreheatFanSpeed = ABS_PREHEAT_FAN_SPEED;
@@ -72,12 +75,13 @@ void Config_StoreSettings()
 
   
   #endif
-  EEPROM_WRITE_VAR(i,plaPreheatHotendTemp);
+/*  EEPROM_WRITE_VAR(i,plaPreheatHotendTemp);
   EEPROM_WRITE_VAR(i,plaPreheatHPBTemp);
   EEPROM_WRITE_VAR(i,plaPreheatFanSpeed);
   EEPROM_WRITE_VAR(i,absPreheatHotendTemp);
   EEPROM_WRITE_VAR(i,absPreheatHPBTemp);
   EEPROM_WRITE_VAR(i,absPreheatFanSpeed);
+*/
   
   EEPROM_WRITE_VAR(i,zprobe_zoffset);
   #ifdef PIDTEMP
@@ -91,13 +95,15 @@ void Config_StoreSettings()
     EEPROM_WRITE_VAR(i,dummy);
     EEPROM_WRITE_VAR(i,dummy);
   #endif
+  #ifdef PIDTEMPBED
+	EEPROM_WRITE_VAR(i, bedKp);
+	EEPROM_WRITE_VAR(i, bedKi);
+	EEPROM_WRITE_VAR(i, bedKd);
+  #endif
   #ifndef DOGLCD
     int lcd_contrast = 32;
   #endif
   EEPROM_WRITE_VAR(i,lcd_contrast);
-  #ifdef SCARA
-  EEPROM_WRITE_VAR(i,axis_scaling);        // Add scaling for SCARA
-  #endif
   #ifdef FWRETRACT
   EEPROM_WRITE_VAR(i,autoretract_enabled);
   EEPROM_WRITE_VAR(i,retract_length);
@@ -122,9 +128,22 @@ void Config_StoreSettings()
   EEPROM_WRITE_VAR(i, filament_size[2]);
   #endif
   #endif
-  
+
+#ifdef LIN_ADVANCE
+  if (level >= 10) {
+	  EEPROM_WRITE_VAR(i, extruder_advance_k);
+	  EEPROM_WRITE_VAR(i, advance_ed_ratio);
+  }
+#endif //LIN_ADVANCE
+
+/*  MYSERIAL.print("Top address used:\n");
+  MYSERIAL.print(i); 
+  MYSERIAL.print("; (0x");
+  MYSERIAL.print(i, HEX);
+  MYSERIAL.println(")");
+*/ 
   char ver2[4]=EEPROM_VERSION;
-  i=EEPROM_OFFSET;
+  i=offset;
   EEPROM_WRITE_VAR(i,ver2); // validate data
   SERIAL_ECHO_START;
   SERIAL_ECHOLNPGM("Settings Stored");
@@ -133,9 +152,10 @@ void Config_StoreSettings()
 
 
 #ifndef DISABLE_M503
-void Config_PrintSettings()
+void Config_PrintSettings(uint8_t level)
 {  // Always have this function, even with EEPROM_SETTINGS disabled, the current values will be shown
-    SERIAL_ECHO_START;
+	
+	SERIAL_ECHO_START;
     SERIAL_ECHOLNPGM("Steps per unit:");
     SERIAL_ECHO_START;
     SERIAL_ECHOPAIR("  M92 X",axis_steps_per_unit[X_AXIS]);
@@ -145,16 +165,6 @@ void Config_PrintSettings()
     SERIAL_ECHOLN("");
       
     SERIAL_ECHO_START;
-#ifdef SCARA
-SERIAL_ECHOLNPGM("Scaling factors:");
-    SERIAL_ECHO_START;
-    SERIAL_ECHOPAIR("  M365 X",axis_scaling[X_AXIS]);
-    SERIAL_ECHOPAIR(" Y",axis_scaling[Y_AXIS]);
-    SERIAL_ECHOPAIR(" Z",axis_scaling[Z_AXIS]);
-    SERIAL_ECHOLN("");
-      
-    SERIAL_ECHO_START;
-#endif
     SERIAL_ECHOLNPGM("Maximum feedrates (mm/s):");
     SERIAL_ECHO_START;
     SERIAL_ECHOPAIR("  M203 X", max_feedrate[X_AXIS]);
@@ -184,9 +194,10 @@ SERIAL_ECHOLNPGM("Scaling factors:");
     SERIAL_ECHOPAIR("  M205 S",minimumfeedrate ); 
     SERIAL_ECHOPAIR(" T" ,mintravelfeedrate ); 
     SERIAL_ECHOPAIR(" B" ,minsegmenttime ); 
-    SERIAL_ECHOPAIR(" X" ,max_xy_jerk ); 
-    SERIAL_ECHOPAIR(" Z" ,max_z_jerk);
-    SERIAL_ECHOPAIR(" E" ,max_e_jerk);
+    SERIAL_ECHOPAIR(" X" ,max_jerk[X_AXIS] ); 
+    SERIAL_ECHOPAIR(" Y" ,max_jerk[Y_AXIS] ); 
+    SERIAL_ECHOPAIR(" Z" ,max_jerk[Z_AXIS] ); 
+    SERIAL_ECHOPAIR(" E" ,max_jerk[E_AXIS] ); 
     SERIAL_ECHOLN(""); 
 
     SERIAL_ECHO_START;
@@ -196,22 +207,6 @@ SERIAL_ECHOLNPGM("Scaling factors:");
     SERIAL_ECHOPAIR(" Y" ,add_homing[Y_AXIS] );
     SERIAL_ECHOPAIR(" Z" ,add_homing[Z_AXIS] );
     SERIAL_ECHOLN("");
-#ifdef DELTA
-    SERIAL_ECHO_START;
-    SERIAL_ECHOLNPGM("Endstop adjustement (mm):");
-    SERIAL_ECHO_START;
-    SERIAL_ECHOPAIR("  M666 X",endstop_adj[X_AXIS] );
-    SERIAL_ECHOPAIR(" Y" ,endstop_adj[Y_AXIS] );
-    SERIAL_ECHOPAIR(" Z" ,endstop_adj[Z_AXIS] );
-	SERIAL_ECHOLN("");
-	SERIAL_ECHO_START;
-	SERIAL_ECHOLNPGM("Delta settings: L=delta_diagonal_rod, R=delta_radius, S=delta_segments_per_second");
-	SERIAL_ECHO_START;
-	SERIAL_ECHOPAIR("  M665 L",delta_diagonal_rod );
-	SERIAL_ECHOPAIR(" R" ,delta_radius );
-	SERIAL_ECHOPAIR(" S" ,delta_segments_per_second );
-	SERIAL_ECHOLN("");
-#endif
 #ifdef PIDTEMP
     SERIAL_ECHO_START;
     SERIAL_ECHOLNPGM("PID settings:");
@@ -220,6 +215,15 @@ SERIAL_ECHOLNPGM("Scaling factors:");
     SERIAL_ECHOPAIR(" I" ,unscalePID_i(Ki)); 
     SERIAL_ECHOPAIR(" D" ,unscalePID_d(Kd));
     SERIAL_ECHOLN(""); 
+#endif
+#ifdef PIDTEMPBED
+	SERIAL_ECHO_START;
+	SERIAL_ECHOLNPGM("PID heatbed settings:");
+	SERIAL_ECHO_START;
+	SERIAL_ECHOPAIR("   M304 P", bedKp);
+	SERIAL_ECHOPAIR(" I", unscalePID_i(bedKi));
+	SERIAL_ECHOPAIR(" D", unscalePID_d(bedKd));
+	SERIAL_ECHOLN("");
 #endif
 #ifdef FWRETRACT
     SERIAL_ECHO_START;
@@ -270,14 +274,23 @@ SERIAL_ECHOLNPGM("Scaling factors:");
         SERIAL_ECHOLNPGM("Filament settings: Disabled");
     }
 #endif
+	if (level >= 10) {
+#ifdef LIN_ADVANCE
+		SERIAL_ECHO_START;
+		SERIAL_ECHOLNPGM("Linear advance settings:");
+		SERIAL_ECHOPAIR("   M900 K", extruder_advance_k);
+		SERIAL_ECHOPAIR("   E/D = ", advance_ed_ratio);
+#endif //LIN_ADVANCE
+	}
 }
 #endif
 
 
 #ifdef EEPROM_SETTINGS
-void Config_RetrieveSettings()
+bool Config_RetrieveSettings(uint16_t offset, uint8_t level)
 {
-    int i=EEPROM_OFFSET;
+    int i=offset;
+	bool previous_settings_retrieved = true;
     char stored_ver[4];
     char ver[4]=EEPROM_VERSION;
     EEPROM_READ_VAR(i,stored_ver); //read stored version
@@ -297,28 +310,26 @@ void Config_RetrieveSettings()
         EEPROM_READ_VAR(i,minimumfeedrate);
         EEPROM_READ_VAR(i,mintravelfeedrate);
         EEPROM_READ_VAR(i,minsegmenttime);
-        EEPROM_READ_VAR(i,max_xy_jerk);
-        EEPROM_READ_VAR(i,max_z_jerk);
-        EEPROM_READ_VAR(i,max_e_jerk);
+        EEPROM_READ_VAR(i,max_jerk[X_AXIS]);
+        EEPROM_READ_VAR(i,max_jerk[Y_AXIS]);
+		EEPROM_READ_VAR(i,max_jerk[Z_AXIS]);
+		EEPROM_READ_VAR(i,max_jerk[E_AXIS]);
+		if (max_jerk[X_AXIS] > DEFAULT_XJERK) max_jerk[X_AXIS] = DEFAULT_XJERK;
+		if (max_jerk[Y_AXIS] > DEFAULT_YJERK) max_jerk[Y_AXIS] = DEFAULT_YJERK;
         EEPROM_READ_VAR(i,add_homing);
-        #ifdef DELTA
-		EEPROM_READ_VAR(i,endstop_adj);
-		EEPROM_READ_VAR(i,delta_radius);
-		EEPROM_READ_VAR(i,delta_diagonal_rod);
-		EEPROM_READ_VAR(i,delta_segments_per_second);
-        #endif
         #ifndef ULTIPANEL
         int plaPreheatHotendTemp, plaPreheatHPBTemp, plaPreheatFanSpeed;
         int absPreheatHotendTemp, absPreheatHPBTemp, absPreheatFanSpeed;
 
         #endif
+	/*
         EEPROM_READ_VAR(i,plaPreheatHotendTemp);
         EEPROM_READ_VAR(i,plaPreheatHPBTemp);
         EEPROM_READ_VAR(i,plaPreheatFanSpeed);
         EEPROM_READ_VAR(i,absPreheatHotendTemp);
         EEPROM_READ_VAR(i,absPreheatHPBTemp);
         EEPROM_READ_VAR(i,absPreheatFanSpeed);
-        
+        */
 
         
         EEPROM_READ_VAR(i,zprobe_zoffset);
@@ -329,13 +340,15 @@ void Config_RetrieveSettings()
         EEPROM_READ_VAR(i,Kp);
         EEPROM_READ_VAR(i,Ki);
         EEPROM_READ_VAR(i,Kd);
-        #ifndef DOGLCD
+		#ifdef PIDTEMPBED
+		EEPROM_READ_VAR(i, bedKp);
+		EEPROM_READ_VAR(i, bedKi);
+		EEPROM_READ_VAR(i, bedKd);
+		#endif
+		#ifndef DOGLCD
         int lcd_contrast;
         #endif
         EEPROM_READ_VAR(i,lcd_contrast);
-		#ifdef SCARA
-		EEPROM_READ_VAR(i,axis_scaling);
-		#endif
 
 		#ifdef FWRETRACT
 		EEPROM_READ_VAR(i,autoretract_enabled);
@@ -360,7 +373,14 @@ void Config_RetrieveSettings()
 		EEPROM_READ_VAR(i, filament_size[2]);
 #endif
 #endif
-		calculate_volumetric_multipliers();
+#ifdef LIN_ADVANCE
+		if (level >= 10) {
+			EEPROM_READ_VAR(i, extruder_advance_k);
+			EEPROM_READ_VAR(i, advance_ed_ratio);
+		}
+#endif //LIN_ADVANCE
+    calculate_extruder_multipliers();
+
 		// Call updatePID (similar to when we have processed M301)
 		updatePID();
         SERIAL_ECHO_START;
@@ -369,10 +389,18 @@ void Config_RetrieveSettings()
     else
     {
         Config_ResetDefault();
+		//Return false to inform user that eeprom version was changed and firmware is using default hardcoded settings now.
+		//In case that storing to eeprom was not used yet, do not inform user that hardcoded settings are used.
+		if (eeprom_read_byte((uint8_t *)offset) != 0xFF ||
+			eeprom_read_byte((uint8_t *)offset + 1) != 0xFF ||
+			eeprom_read_byte((uint8_t *)offset + 2) != 0xFF) {
+			previous_settings_retrieved = false;
+		}
     }
     #ifdef EEPROM_CHITCHAT
       Config_PrintSettings();
     #endif
+	return previous_settings_retrieved;
 }
 #endif
 
@@ -386,9 +414,6 @@ void Config_ResetDefault()
         axis_steps_per_unit[i]=tmp1[i];  
         max_feedrate[i]=tmp2[i];  
         max_acceleration_units_per_sq_second[i]=tmp3[i];
-		#ifdef SCARA
-		axis_scaling[i]=1;
-		#endif
     }
     
     // steps per sq second need to be updated to agree with the units per sq second
@@ -399,27 +424,12 @@ void Config_ResetDefault()
     minimumfeedrate=DEFAULT_MINIMUMFEEDRATE;
     minsegmenttime=DEFAULT_MINSEGMENTTIME;       
     mintravelfeedrate=DEFAULT_MINTRAVELFEEDRATE;
-    max_xy_jerk=DEFAULT_XYJERK;
-    max_z_jerk=DEFAULT_ZJERK;
-    max_e_jerk=DEFAULT_EJERK;
+    max_jerk[X_AXIS] = DEFAULT_XJERK;
+    max_jerk[Y_AXIS] = DEFAULT_YJERK;
+    max_jerk[Z_AXIS] = DEFAULT_ZJERK;
+    max_jerk[E_AXIS] = DEFAULT_EJERK;
     add_homing[X_AXIS] = add_homing[Y_AXIS] = add_homing[Z_AXIS] = 0;
-#ifdef DELTA
-	endstop_adj[X_AXIS] = endstop_adj[Y_AXIS] = endstop_adj[Z_AXIS] = 0;
-	delta_radius= DELTA_RADIUS;
-	delta_diagonal_rod= DELTA_DIAGONAL_ROD;
-	delta_segments_per_second= DELTA_SEGMENTS_PER_SECOND;
-	recalc_delta_settings(delta_radius, delta_diagonal_rod);
-#endif
-#ifdef ULTIPANEL
-    plaPreheatHotendTemp = PLA_PREHEAT_HOTEND_TEMP;
-    plaPreheatHPBTemp = PLA_PREHEAT_HPB_TEMP;
-    plaPreheatFanSpeed = PLA_PREHEAT_FAN_SPEED;
-    absPreheatHotendTemp = ABS_PREHEAT_HOTEND_TEMP;
-    absPreheatHPBTemp = ABS_PREHEAT_HPB_TEMP;
-    absPreheatFanSpeed = ABS_PREHEAT_FAN_SPEED;
-    
 
-#endif
 #ifdef ENABLE_AUTO_BED_LEVELING
     zprobe_zoffset = -Z_PROBE_OFFSET_FROM_EXTRUDER;
 #endif
@@ -462,7 +472,7 @@ void Config_ResetDefault()
 	filament_size[2] = DEFAULT_NOMINAL_FILAMENT_DIA;
 #endif
 #endif
-	calculate_volumetric_multipliers();
+	calculate_extruder_multipliers();
 
 SERIAL_ECHO_START;
 SERIAL_ECHOLNPGM("Hardcoded Default Settings Loaded");

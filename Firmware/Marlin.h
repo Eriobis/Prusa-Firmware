@@ -62,6 +62,12 @@
   #define MYSERIAL MSerial
 #endif
 
+extern FILE _lcdout;
+#define lcdout (&_lcdout)
+
+extern FILE _uartout;
+#define uartout (&_uartout)
+
 #define SERIAL_PROTOCOL(x) (MYSERIAL.print(x))
 #define SERIAL_PROTOCOL_F(x,y) (MYSERIAL.print(x,y))
 #define SERIAL_PROTOCOLPGM(x) (serialprintPGM(PSTR(x)))
@@ -108,17 +114,14 @@ FORCE_INLINE void serialprintPGM(const char *str)
   }
 }
 
-
+bool is_buffer_empty();
 void get_command();
 void process_commands();
+void ramming();
 
 void manage_inactivity(bool ignore_stepper_queue=false);
 
-#if defined(DUAL_X_CARRIAGE) && defined(X_ENABLE_PIN) && X_ENABLE_PIN > -1 \
-    && defined(X2_ENABLE_PIN) && X2_ENABLE_PIN > -1
-  #define  enable_x() do { WRITE(X_ENABLE_PIN, X_ENABLE_ON); WRITE(X2_ENABLE_PIN, X_ENABLE_ON); } while (0)
-  #define disable_x() do { WRITE(X_ENABLE_PIN,!X_ENABLE_ON); WRITE(X2_ENABLE_PIN,!X_ENABLE_ON); axis_known_position[X_AXIS] = false; } while (0)
-#elif defined(X_ENABLE_PIN) && X_ENABLE_PIN > -1
+#if defined(X_ENABLE_PIN) && X_ENABLE_PIN > -1
   #define  enable_x() WRITE(X_ENABLE_PIN, X_ENABLE_ON)
   #define disable_x() { WRITE(X_ENABLE_PIN,!X_ENABLE_ON); axis_known_position[X_AXIS] = false; }
 #else
@@ -139,18 +142,45 @@ void manage_inactivity(bool ignore_stepper_queue=false);
   #define disable_y() ;
 #endif
 
-#if defined(Z_ENABLE_PIN) && Z_ENABLE_PIN > -1
-  #ifdef Z_DUAL_STEPPER_DRIVERS
-    #define  enable_z() { WRITE(Z_ENABLE_PIN, Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN, Z_ENABLE_ON); }
-    #define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
-  #else
-    #define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
-    #define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
-  #endif
+#if defined(Z_ENABLE_PIN) && Z_ENABLE_PIN > -1 
+	#if defined(Z_AXIS_ALWAYS_ON)
+		  #ifdef Z_DUAL_STEPPER_DRIVERS
+			#define  enable_z() { WRITE(Z_ENABLE_PIN, Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN, Z_ENABLE_ON); }
+			#define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
+		  #else
+			#define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
+			#define  disable_z() ;
+		  #endif
+	#else
+		#ifdef Z_DUAL_STEPPER_DRIVERS
+			#define  enable_z() { WRITE(Z_ENABLE_PIN, Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN, Z_ENABLE_ON); }
+			#define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
+		#else
+			#define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
+			#define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
+		#endif
+	#endif
 #else
   #define enable_z() ;
   #define disable_z() ;
 #endif
+
+
+
+
+//#if defined(Z_ENABLE_PIN) && Z_ENABLE_PIN > -1
+//#ifdef Z_DUAL_STEPPER_DRIVERS
+//#define  enable_z() { WRITE(Z_ENABLE_PIN, Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN, Z_ENABLE_ON); }
+//#define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
+//#else
+//#define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
+//#define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }
+//#endif
+//#else
+//#define enable_z() ;
+//#define disable_z() ;
+//#endif
+
 
 #if defined(E0_ENABLE_PIN) && (E0_ENABLE_PIN > -1)
   #define enable_e0() WRITE(E0_ENABLE_PIN, E_ENABLE_ON)
@@ -178,32 +208,49 @@ void manage_inactivity(bool ignore_stepper_queue=false);
 
 
 enum AxisEnum {X_AXIS=0, Y_AXIS=1, Z_AXIS=2, E_AXIS=3, X_HEAD=4, Y_HEAD=5};
+#define X_AXIS_MASK  1
+#define Y_AXIS_MASK  2
+#define Z_AXIS_MASK  4
+#define E_AXIS_MASK  8
+#define X_HEAD_MASK 16
+#define Y_HEAD_MASK 32
 
 
 void FlushSerialRequestResend();
 void ClearToSend();
+void update_currents();
 
 void get_coordinates();
-#ifdef DELTA
-void calculate_delta(float cartesian[3]);
-extern float delta[3];
-#endif
-#ifdef SCARA
-void calculate_delta(float cartesian[3]);
-void calculate_SCARA_forward_Transform(float f_scara[3]);
-#endif
 void prepare_move();
-void kill();
+void kill(const char *full_screen_message = NULL, unsigned char id = 0);
 void Stop();
 
 bool IsStopped();
 
-void enquecommand(const char *cmd); //put an ASCII command at the end of the current buffer.
-void enquecommand_P(const char *cmd); //put an ASCII command at the end of the current buffer, read from flash
+//put an ASCII command at the end of the current buffer.
+void enquecommand(const char *cmd, bool from_progmem = false);
+//put an ASCII command at the end of the current buffer, read from flash
+#define enquecommand_P(cmd) enquecommand(cmd, true)
+void enquecommand_front(const char *cmd, bool from_progmem = false);
+//put an ASCII command at the end of the current buffer, read from flash
+#define enquecommand_P(cmd) enquecommand(cmd, true)
+#define enquecommand_front_P(cmd) enquecommand_front(cmd, true)
+void repeatcommand_front();
+// Remove all lines from the command queue.
+void cmdqueue_reset();
+
 void prepare_arc_move(char isclockwise);
 void clamp_to_software_endstops(float target[3]);
-
 void refresh_cmd_timeout(void);
+
+// Timer counter, incremented by the 1ms Arduino timer.
+// The standard Arduino timer() function returns this value atomically
+// by disabling / enabling interrupts. This is costly, if the interrupts are known
+// to be disabled.
+extern volatile unsigned long timer0_millis;
+// An unsynchronized equivalent to a standard Arduino millis() function.
+// To be used inside an interrupt routine.
+FORCE_INLINE unsigned long millis_nc() { return timer0_millis; }
 
 #ifdef FAST_PWM_FAN
 void setPwmFrequency(uint8_t pin, int val);
@@ -223,39 +270,18 @@ extern int extruder_multiply[EXTRUDERS]; // sets extrude multiply factor (in per
 extern float filament_size[EXTRUDERS]; // cross-sectional area of filament (in millimeters), typically around 1.75 or 2.85, 0 disables the volumetric calculations for the extruder.
 extern float volumetric_multiplier[EXTRUDERS]; // reciprocal of cross-sectional area of filament (in square millimeters), stored this way to reduce computational burden in planner
 extern float current_position[NUM_AXIS] ;
+extern float destination[NUM_AXIS] ;
 extern float add_homing[3];
-#ifdef DELTA
-extern float endstop_adj[3];
-extern float delta_radius;
-extern float delta_diagonal_rod;
-extern float delta_segments_per_second;
-void recalc_delta_settings(float radius, float diagonal_rod);
-#endif
-#ifdef SCARA
-extern float axis_scaling[3];  // Build size scaling
-#endif
 extern float min_pos[3];
 extern float max_pos[3];
 extern bool axis_known_position[3];
 extern float zprobe_zoffset;
 extern int fanSpeed;
-#ifdef BARICUDA
-extern int ValvePressure;
-extern int EtoPPressure;
-#endif
+extern void homeaxis(int axis);
+
 
 #ifdef FAN_SOFT_PWM
 extern unsigned char fanSpeedSoftPwm;
-#endif
-
-#ifdef FILAMENT_SENSOR
-  extern float filament_width_nominal;  //holds the theoretical filament diameter ie., 3.00 or 1.75
-  extern bool filament_sensor;  //indicates that filament sensor readings should control extrusion
-  extern float filament_width_meas; //holds the filament diameter as accurately measured
-  extern signed char measurement_delay[];  //ring buffer to delay measurement
-  extern int delay_index1, delay_index2;  //index into ring buffer
-  extern float delay_dist; //delay distance counter
-  extern int meas_delay_cm; //delay distance
 #endif
 
 #ifdef FWRETRACT
@@ -265,8 +291,35 @@ extern float retract_length, retract_length_swap, retract_feedrate, retract_zlif
 extern float retract_recover_length, retract_recover_length_swap, retract_recover_feedrate;
 #endif
 
+#ifdef HOST_KEEPALIVE_FEATURE
+extern uint8_t host_keepalive_interval;
+#endif
+
 extern unsigned long starttime;
 extern unsigned long stoptime;
+extern int bowden_length[4];
+extern bool is_usb_printing;
+extern bool homing_flag;
+extern bool temp_cal_active;
+extern bool loading_flag;
+extern unsigned int usb_printing_counter;
+
+extern unsigned long kicktime;
+
+extern unsigned long total_filament_used;
+void save_statistics(unsigned long _total_filament_used, unsigned long _total_print_time);
+extern unsigned int heating_status;
+extern unsigned int status_number;
+extern unsigned int heating_status_counter;
+extern bool custom_message;
+extern unsigned int custom_message_type;
+extern unsigned int custom_message_state;
+extern char snmm_filaments_used;
+extern unsigned long PingTime;
+
+extern bool fan_state[2];
+extern int fan_edge_counter[2];
+extern int fan_speed[2];
 
 // Handling multiple extruders pins
 extern uint8_t active_extruder;
@@ -278,9 +331,114 @@ extern void digipot_i2c_init();
 
 #endif
 
+//Long pause
+extern int saved_feedmultiply;
+extern float HotendTempBckp;
+extern int fanSpeedBckp;
+extern float pause_lastpos[4];
+extern unsigned long pause_time;
+extern unsigned long start_pause_print;
+extern unsigned long t_fan_rising_edge;
 
+extern bool mesh_bed_leveling_flag;
+extern bool mesh_bed_run_from_menu;
 
+extern float distance_from_min[2];
+extern bool sortAlpha;
 
+extern char dir_names[3][9];
 
-extern void calculate_volumetric_multipliers();
+extern void calculate_extruder_multipliers();
 
+// Similar to the default Arduino delay function, 
+// but it keeps the background tasks running.
+extern void delay_keep_alive(unsigned int ms);
+
+extern void check_babystep();
+
+extern void long_pause();
+
+#ifdef DIS
+
+void d_setup();
+float d_ReadData();
+void bed_analysis(float x_dimension, float y_dimension, int x_points_num, int y_points_num, float shift_x, float shift_y);
+
+#endif
+float temp_comp_interpolation(float temperature);
+void temp_compensation_apply();
+void temp_compensation_start();
+void show_fw_version_warnings();
+void erase_eeprom_section(uint16_t offset, uint16_t bytes);
+uint8_t check_printer_version();
+
+#ifdef PINDA_THERMISTOR
+float temp_compensation_pinda_thermistor_offset(float temperature_pinda);
+#endif //PINDA_THERMISTOR
+
+void wait_for_heater(long codenum);
+void serialecho_temperatures();
+bool check_commands();
+
+void uvlo_();
+void recover_print(uint8_t automatic); 
+void setup_uvlo_interrupt();
+
+#if defined(TACH_1) && TACH_1 >-1
+void setup_fan_interrupt();
+#endif
+
+extern void recover_machine_state_after_power_panic();
+extern void restore_print_from_eeprom();
+extern void position_menu();
+
+extern void print_world_coordinates();
+extern void print_physical_coordinates();
+extern void print_mesh_bed_leveling_table();
+
+#ifdef PAT9125
+extern void fsensor_init();
+#endif //PAT9125
+
+#ifdef HOST_KEEPALIVE_FEATURE
+
+// States for managing Marlin and host communication
+// Marlin sends messages if blocked or busy
+/*enum MarlinBusyState {
+	NOT_BUSY,           // Not in a handler
+	IN_HANDLER,         // Processing a GCode
+	IN_PROCESS,         // Known to be blocking command input (as in G29)
+	PAUSED_FOR_USER,    // Blocking pending any input
+	PAUSED_FOR_INPUT    // Blocking pending text input (concept)
+};*/
+
+#define NOT_BUSY          1
+#define IN_HANDLER        2
+#define IN_PROCESS        3
+#define PAUSED_FOR_USER   4
+#define PAUSED_FOR_INPUT  5
+
+#define KEEPALIVE_STATE(n) do { busy_state = n;} while (0)
+extern void host_keepalive();
+//extern MarlinBusyState busy_state;
+extern int busy_state;
+
+#endif //HOST_KEEPALIVE_FEATURE
+
+#ifdef TMC2130
+
+#define FORCE_HIGH_POWER_START	force_high_power_mode(true)
+#define FORCE_HIGH_POWER_END	force_high_power_mode(false)
+
+void force_high_power_mode(bool start_high_power_section);
+
+#endif //TMC2130
+
+// G-codes
+bool gcode_M45(bool onlyZ, int8_t verbosity_level);
+void gcode_M114();
+void gcode_M701();
+
+#define UVLO !(PINE & (1<<4))
+
+void extr_unload2();

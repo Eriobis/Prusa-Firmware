@@ -14,15 +14,14 @@ Enjoy
 
 ## General instructions
 
-Pre-compiled hex files for all printers by PRUSA RESEARCH are available in hex_files folder.
+Pre-compiled hex output on PRUSA RESEARCH site: http://prusa3d.com/downloads/firmware/
 
-Just clone the repo and flash it to the firmware
+Just download and flash it to the electronics
 
 
 ## Build instructions
 
-### Step 1
-
+### Step 
 Install arduino
 
 ### Step 2
@@ -31,11 +30,11 @@ Remove Liquid Crystal library from your arduino or rename it
 
 ### Step 3
 
-Install the arduino addon in root of this repo
+Install the arduino addon located in the root of this repo. Don't forget to install correct version!
 
 ### Step 4
 
-Copy one of the configuration from variants folder to the the Firmware folder
+Copy the configuration file matching your printer from variants folder to the the Firmware folder
 
 ### Step 5
 

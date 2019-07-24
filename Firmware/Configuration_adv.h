@@ -68,7 +68,7 @@
 // When first starting the main fan, run it at full speed for the
 // given number of milliseconds.  This gets the fan spinning reliably
 // before setting a PWM value. (Does not work with software PWM for fan on Sanguinololu)
-//#define FAN_KICKSTART_TIME 100
+#define FAN_KICKSTART_TIME 800
 
 
 
@@ -156,53 +156,6 @@
   #error "You cannot have dual drivers for both Y and Z"
 #endif
 
-// Enable this for dual x-carriage printers.
-// A dual x-carriage design has the advantage that the inactive extruder can be parked which
-// prevents hot-end ooze contaminating the print. It also reduces the weight of each x-carriage
-// allowing faster printing speeds.
-//#define DUAL_X_CARRIAGE
-#ifdef DUAL_X_CARRIAGE
-// Configuration for second X-carriage
-// Note: the first x-carriage is defined as the x-carriage which homes to the minimum endstop;
-// the second x-carriage always homes to the maximum endstop.
-#define X2_MIN_POS 80     // set minimum to ensure second x-carriage doesn't hit the parked first X-carriage
-#define X2_MAX_POS 353    // set maximum to the distance between toolheads when both heads are homed
-#define X2_HOME_DIR 1     // the second X-carriage always homes to the maximum endstop position
-#define X2_HOME_POS X2_MAX_POS // default home position is the maximum carriage position
-    // However: In this mode the EXTRUDER_OFFSET_X value for the second extruder provides a software
-    // override for X2_HOME_POS. This also allow recalibration of the distance between the two endstops
-    // without modifying the firmware (through the "M218 T1 X???" command).
-    // Remember: you should set the second extruder x-offset to 0 in your slicer.
-
-// Pins for second x-carriage stepper driver (defined here to avoid further complicating pins.h)
-#define X2_ENABLE_PIN 29
-#define X2_STEP_PIN 25
-#define X2_DIR_PIN 23
-
-// There are a few selectable movement modes for dual x-carriages using M605 S<mode>
-//    Mode 0: Full control. The slicer has full control over both x-carriages and can achieve optimal travel results
-//                           as long as it supports dual x-carriages. (M605 S0)
-//    Mode 1: Auto-park mode. The firmware will automatically park and unpark the x-carriages on tool changes so
-//                           that additional slicer support is not required. (M605 S1)
-//    Mode 2: Duplication mode. The firmware will transparently make the second x-carriage and extruder copy all
-//                           actions of the first x-carriage. This allows the printer to print 2 arbitrary items at
-//                           once. (2nd extruder x offset and temp offset are set using: M605 S2 [Xnnn] [Rmmm])
-
-// This is the default power-up mode which can be later using M605.
-#define DEFAULT_DUAL_X_CARRIAGE_MODE 0
-
-// As the x-carriages are independent we can now account for any relative Z offset
-#define EXTRUDER1_Z_OFFSET 0.0           // z offset relative to extruder 0
-
-// Default settings in "Auto-park Mode"
-#define TOOLCHANGE_PARK_ZLIFT   0.2      // the distance to raise Z axis when parking an extruder
-#define TOOLCHANGE_UNPARK_ZLIFT 1        // the distance to raise Z axis when unparking an extruder
-
-// Default x offset in duplication mode (typically set to half print bed width)
-#define DEFAULT_DUPLICATION_X_OFFSET 100
-
-#endif //DUAL_X_CARRIAGE
-
 //homing hits the endstop, then retracts by this distance, before it tries to slowly bump again:
 #define X_HOME_RETRACT_MM 5
 #define Y_HOME_RETRACT_MM 5
@@ -210,11 +163,7 @@
 //#define QUICK_HOME  //if this is defined, if both x and y are to be homed, a diagonal move will be performed initially.
 
 #define AXIS_RELATIVE_MODES {false, false, false, false}
-#ifdef CONFIG_STEPPERS_TOSHIBA
-#define MAX_STEP_FREQUENCY 10000 // Max step frequency for Toshiba Stepper Controllers
-#else
-#define MAX_STEP_FREQUENCY 40000 // Max step frequency for Ultimaker (5000 pps / half step)
-#endif
+#define MAX_STEP_FREQUENCY 40000 // Max step frequency for Ultimaker (5000 pps / half step). Toshiba steppers are 4x slower, but Prusa3D does not use those.
 //By default pololu step drivers require an active high signal. However, some high power drivers require an active low signal as step.
 #define INVERT_X_STEP_PIN false
 #define INVERT_Y_STEP_PIN false
@@ -240,16 +189,6 @@
 
 // If defined the movements slow down when the look ahead buffer is only half full
 #define SLOWDOWN
-
-// Frequency limit
-// See nophead's blog for more info
-// Not working O
-//#define XY_FREQUENCY_LIMIT  15
-
-// Minimum planner junction speed. Sets the default minimum speed the planner plans for at the end
-// of the buffer and all stops. This should not be much greater than zero and should only be changed
-// if unwanted behavior is observed on a user's machine when running at very slow speeds.
-#define MINIMUM_PLANNER_SPEED 0.05// (mm/sec)
 
 // MS1 MS2 Stepper Driver Microstepping mode table
 #define MICROSTEP1 LOW,LOW
@@ -285,6 +224,52 @@
 // using:
 //#define MENU_ADDAUTOSTART
 
+/**
+* Sort SD file listings in alphabetical order.
+*
+* With this option enabled, items on SD cards will be sorted
+* by name for easier navigation.
+*
+* By default...
+*
+*  - Use the slowest -but safest- method for sorting.
+*  - Folders are sorted to the top.
+*  - The sort key is statically allocated.
+*  - No added G-code (M34) support.
+*  - 40 item sorting limit. (Items after the first 40 are unsorted.)
+*
+* SD sorting uses static allocation (as set by SDSORT_LIMIT), allowing the
+* compiler to calculate the worst-case usage and throw an error if the SRAM
+* limit is exceeded.
+*
+*  - SDSORT_USES_RAM provides faster sorting via a static directory buffer.
+*  - SDSORT_USES_STACK does the same, but uses a local stack-based buffer.
+*  - SDSORT_CACHE_NAMES will retain the sorted file listing in RAM. (Expensive!)
+*  - SDSORT_DYNAMIC_RAM only uses RAM when the SD menu is visible. (Use with caution!)
+*/
+	#define SDCARD_SORT_ALPHA //Alphabetical sorting of SD files menu
+	
+	// SD Card Sorting options
+	// In current firmware Prusa Firmware version,
+	// SDSORT_CACHE_NAMES and SDSORT_DYNAMIC_RAM is not supported and must be set to false.
+	#ifdef SDCARD_SORT_ALPHA
+	  #define SD_SORT_TIME 0
+	  #define SD_SORT_ALPHA 1
+	  #define SD_SORT_NONE 2
+	
+	  #define SDSORT_LIMIT       100    // Maximum number of sorted items (10-256).
+	  #define FOLDER_SORTING     -1     // -1=above  0=none  1=below
+	  #define SDSORT_GCODE       false  // Allow turning sorting on/off with LCD and M34 g-code.
+	  #define SDSORT_USES_RAM    false  // Pre-allocate a static array for faster pre-sorting.
+	  #define SDSORT_USES_STACK  false  // Prefer the stack for pre-sorting to give back some SRAM. (Negated by next 2 options.)
+	  #define SDSORT_CACHE_NAMES false  // Keep sorted items in RAM longer for speedy performance. Most expensive option.
+	  #define SDSORT_DYNAMIC_RAM false  // Use dynamic allocation (within SD menus). Least expensive option. Set SDSORT_LIMIT before use!
+	#endif
+	
+	#if defined(SDCARD_SORT_ALPHA)
+	  #define HAS_FOLDER_SORTING (FOLDER_SORTING || SDSORT_GCODE)
+	#endif
+
 // Show a progress bar on the LCD when printing from SD?
 //#define LCD_PROGRESS_BAR
 
@@ -297,16 +282,6 @@
   #define PROGRESS_MSG_EXPIRE   0
   // Enable this to show messages for MSG_TIME then hide them
   //#define PROGRESS_MSG_ONCE
-#endif
-
-// The hardware watchdog should reset the microcontroller disabling all outputs, in case the firmware gets stuck and doesn't do temperature regulation.
-//#define USE_WATCHDOG
-
-#ifdef USE_WATCHDOG
-// If you have a watchdog reboot in an ArduinoMega2560 then the device will hang forever, as a watchdog reset will leave the watchdog on.
-// The "WATCHDOG_RESET_MANUAL" goes around this by not using the hardware reset.
-//  However, THIS FEATURE IS UNSAFE!, as it will only work if interrupts are disabled. And the code could hang in an interrupt routine with interrupts disabled.
-//#define WATCHDOG_RESET_MANUAL
 #endif
 
 // Enable the option to stop SD printing when hitting and endstops, needs to be enabled from the LCD menu when this option is enabled.
@@ -324,32 +299,47 @@
   #ifdef COREXY
     #error BABYSTEPPING not implemented for COREXY yet.
   #endif
-
-  #ifdef DELTA
-    #ifdef BABYSTEP_XY
-      #error BABYSTEPPING only implemented for Z axis on deltabots.
-    #endif
-  #endif
 #endif
 
-// extruder advance constant (s2/mm3)
-//
-// advance (steps) = STEPS_PER_CUBIC_MM_E * EXTRUDER_ADVANCE_K * cubic mm per second ^ 2
-//
-// Hooke's law says:		force = k * distance
-// Bernoulli's principle says:	v ^ 2 / 2 + g . h + pressure / density = constant
-// so: v ^ 2 is proportional to number of steps we advance the extruder
-//#define ADVANCE
+/**
+    * Implementation of linear pressure control
+    *
+    * Assumption: advance = k * (delta velocity)
+    * K=0 means advance disabled.
+    * See Marlin documentation for calibration instructions.
+    */
+//#define LIN_ADVANCE
 
-#ifdef ADVANCE
-  #define EXTRUDER_ADVANCE_K .006
+#ifdef LIN_ADVANCE
+  #define LIN_ADVANCE_K 0 //Try around 45 for PLA, around 25 for ABS.
 
-  #define D_FILAMENT 1.75
-  #define STEPS_MM_E 174.6
-  #define EXTRUSION_AREA (0.25 * D_FILAMENT * D_FILAMENT * 3.14159)
-  #define STEPS_PER_CUBIC_MM_E (axis_steps_per_unit[E_AXIS]/ EXTRUSION_AREA)
-
-#endif // ADVANCE
+ /**
+        * Some Slicers produce Gcode with randomly jumping extrusion widths occasionally.
+        * For example within a 0.4mm perimeter it may produce a single segment of 0.05mm width.
+        * While this is harmless for normal printing (the fluid nature of the filament will
+        * close this very, very tiny gap), it throws off the LIN_ADVANCE pressure adaption.
+        *
+        * For this case LIN_ADVANCE_E_D_RATIO can be used to set the extrusion:distance ratio
+        * to a fixed value. Note that using a fixed ratio will lead to wrong nozzle pressures
+        * if the slicer is using variable widths or layer heights within one print!
+        *
+        * This option sets the default E:D ratio at startup. Use `M900` to override this value.
+        *
+        * Example: `M900 W0.4 H0.2 D1.75`, where:
+        *   - W is the extrusion width in mm
+        *   - H is the layer height in mm
+        *   - D is the filament diameter in mm
+        *
+        * Example: `M900 R0.0458` to set the ratio directly.
+        *
+        * Set to 0 to auto-detect the ratio based on given Gcode G1 print moves.
+        *
+        * Slic3r (including Prusa Slic3r) produces Gcode compatible with the automatic mode.
+        * Cura (as of this writing) may produce Gcode incompatible with the automatic mode.
+        */
+#define LIN_ADVANCE_E_D_RATIO 0 // The calculated ratio (or 0) according to the formula W * H / ((D / 2) ^ 2 * PI)
+                                // Example: 0.4 * 0.2 / ((1.75 / 2) ^ 2 * PI) = 0.033260135
+#endif
 
 // Arc interpretation settings:
 #define MM_PER_ARC_SEGMENT 1
@@ -402,6 +392,10 @@ const unsigned int dropsegments=5; //everything with less than this number of st
 //The ASCII buffer for receiving from the serial:
 #define MAX_CMD_SIZE 96
 #define BUFSIZE 4
+// The command header contains the following values:
+// 1st byte: the command source (CMDBUFFER_CURRENT_TYPE_USB, CMDBUFFER_CURRENT_TYPE_SDCARD, CMDBUFFER_CURRENT_TYPE_UI or CMDBUFFER_CURRENT_TYPE_CHAINED)
+// 2nd and 3rd byte (LSB first) contains a 16bit length of a command including its preceding comments.
+#define CMDHDRSIZE 3
 
 
 // Firmware based and LCD controlled retract
@@ -435,10 +429,6 @@ const unsigned int dropsegments=5; //everything with less than this number of st
 //=============================  Define Defines  ============================
 //===========================================================================
 
-#if defined (ENABLE_AUTO_BED_LEVELING) && defined (DELTA)
-  #error "Bed Auto Leveling is still not compatible with Delta Kinematics."
-#endif
-
 #if EXTRUDERS > 1 && defined TEMP_SENSOR_1_AS_REDUNDANT
   #error "You cannot use TEMP_SENSOR_1_AS_REDUNDANT if EXTRUDERS > 1"
 #endif
@@ -462,6 +452,12 @@ const unsigned int dropsegments=5; //everything with less than this number of st
 #if TEMP_SENSOR_BED > 0
   #define THERMISTORBED TEMP_SENSOR_BED
   #define BED_USES_THERMISTOR
+#endif
+#if TEMP_SENSOR_PINDA > 0
+  #define THERMISTORPINDA TEMP_SENSOR_PINDA
+#endif
+#if TEMP_SENSOR_AMBIENT > 0
+  #define THERMISTORAMBIENT TEMP_SENSOR_AMBIENT
 #endif
 #if TEMP_SENSOR_0 == -1
   #define HEATER_0_USES_AD595
