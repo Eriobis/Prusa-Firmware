@@ -5,6 +5,11 @@
 
 #define LARGE_FLASH true
 
+#if MB(RAMPS_14_EFB)
+  #include "pins_ZRIB.h"
+  #define KNOWN_BOARD
+#endif
+
 /*****************************************************************
 * Rambo Pin Assignments 1.3
 ******************************************************************/
@@ -236,18 +241,18 @@
   #define X_STEP_PIN 37
   #define X_DIR_PIN 48
   #define X_ENABLE_PIN 29
-  #define X_MS1_PIN 40
-  #define X_MS2_PIN 41
+  #define X_MS1_PIN -1
+  #define X_MS2_PIN -1
   #define Y_STEP_PIN 36
   #define Y_DIR_PIN 49
   #define Y_ENABLE_PIN 28
-  #define Y_MS1_PIN 69
-  #define Y_MS2_PIN 39
+  #define Y_MS1_PIN -1
+  #define Y_MS2_PIN -1
   #define Z_STEP_PIN 35
   #define Z_DIR_PIN 47
   #define Z_ENABLE_PIN 27
-  #define Z_MS1_PIN 68
-  #define Z_MS2_PIN 67
+  #define Z_MS1_PIN -1
+  #define Z_MS2_PIN -1
   #define TEMP_BED_PIN 2
   #define TEMP_0_PIN 0
   #define HEATER_1_PIN 7
@@ -304,8 +309,8 @@
   #define E0_STEP_PIN         34
   #define E0_DIR_PIN          43
   #define E0_ENABLE_PIN       26
-  #define E0_MS1_PIN 65
-  #define E0_MS2_PIN 66
+  #define E0_MS1_PIN -1
+  #define E0_MS2_PIN -1
   #define LED_PIN            13
   #ifdef THREEMM_PRINTER
       #define FAN_PIN            8
